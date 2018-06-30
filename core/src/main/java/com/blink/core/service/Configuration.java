@@ -26,6 +26,12 @@ public class Configuration {
         return data.get("adminPort");
     }
 
+    public String getDBHost() { return data.get("dbHost");}
+
+    public String getDBPort() { return data.get("dbPort");}
+
+    public String getDBName() { return data.get("dbName");}
+
     public Map<String, String> getData() {
         return data;
     }

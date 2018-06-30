@@ -9,7 +9,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
@@ -18,16 +17,14 @@ import java.net.URI;
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
 
-
     protected String[] getSupportedTypes() {
-        return new String[] {"*"};
+        return new String[]{"*"};
     }
 
     private static Configuration createConfiguration(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.INFO);
-        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL).
-                addAttribute("level", Level.DEBUG));
+        //builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.DENY).addAttribute("level", Level.INFO));
 
         LayoutComponentBuilder layoutComponentBuilder = builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable");
@@ -46,7 +43,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         builder.add(file);
 
 
-        builder.add(builder.newLogger("com", Level.INFO).
+        builder.add(builder.newLogger("com", Level.WARN).
                 add(builder.newAppenderRef("Stdout")).
                 add(builder.newAppenderRef("log")).
                 addAttribute("additivity", false));

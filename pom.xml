@@ -14,6 +14,7 @@
         <module>office-runner</module>
         <module>shared-dependencies</module>
         <module>services</module>
+        <module>utilities</module>
     </modules>
 
     <build>
