@@ -4,6 +4,7 @@ import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.service.Configuration;
 import com.blink.core.service.ConfigurationFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -15,7 +16,6 @@ public class FileConfigurationFactory extends ConfigurationFactory {
 
     public Configuration getConfiguration() {
         Gson gson = new Gson();
-
 
         String fileName = "blink.conf";
         try (JsonReader reader = new JsonReader(new FileReader(fileName))) {

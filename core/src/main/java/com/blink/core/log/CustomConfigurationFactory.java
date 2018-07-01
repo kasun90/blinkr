@@ -43,12 +43,14 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         builder.add(file);
 
 
-        builder.add(builder.newLogger("com", Level.WARN).
+        builder.add(builder.newLogger("com", Level.INFO).
                 add(builder.newAppenderRef("Stdout")).
                 add(builder.newAppenderRef("log")).
                 addAttribute("additivity", false));
 
-        builder.add(builder.newLogger("io.vertx", Level.FATAL).addAttribute("additivity", false));
+        builder.add(builder.newLogger("io.vertx", Level.OFF).addAttribute("additivity", false));
+
+        builder.add(builder.newLogger("io.netty", Level.OFF).addAttribute("additivity", false));
 
         builder.add(builder.newRootLogger(Level.INFO).add(builder.newAppenderRef("Stdout")).add(builder.newAppenderRef("log")));
         return builder.build();
