@@ -5,7 +5,8 @@ public abstract class BaseService {
 
     private Context context;
 
-    public BaseService() {
+    public BaseService(Context context) {
+        this.context = context;
     }
 
     public void setContext(Context context) {

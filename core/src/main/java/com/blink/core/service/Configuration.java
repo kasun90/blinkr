@@ -5,38 +5,38 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class Configuration {
-    private Map<String, String> data = new HashMap<>();
+    private Map<String, Object> data = new HashMap<>();
 
     public Configuration() {
     }
 
-    public Configuration(Map<String, String> data) {
+    public Configuration(Map<String, Object> data) {
         this.data = data;
     }
 
     public String getDBDriver() {
-        return data.get("dbDriver");
+        return String.class.cast(data.get("dbDriver"));
     }
 
-    public String getClientPort() {
-        return data.get("clientPort");
+    public int getClientPort() {
+        return Integer.parseInt(String.class.cast(data.get("clientPort")));
     }
 
-    public String getAdminPort() {
-        return data.get("adminPort");
+    public int getAdminPort() {
+        return Integer.parseInt(String.class.cast(data.get("adminPort")));
     }
 
-    public String getDBHost() { return data.get("dbHost");}
+    public String getDBHost() { return String.class.cast(data.get("dbHost"));}
 
-    public String getDBPort() { return data.get("dbPort");}
+    public int getDBPort() { return Integer.parseInt(String.class.cast(data.get("dbPort")));}
 
-    public String getDBName() { return data.get("dbName");}
+    public String getDBName() { return String.class.cast(data.get("dbName"));}
 
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(Map<String, String> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 }

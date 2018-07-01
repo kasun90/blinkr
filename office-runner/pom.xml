@@ -11,5 +11,18 @@
 
     <artifactId>office-runner</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.blink</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blink</groupId>
+            <artifactId>web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

@@ -16,11 +16,12 @@ public class FileConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration() {
         Gson gson = new Gson();
 
+
         String fileName = "blink.conf";
         try (JsonReader reader = new JsonReader(new FileReader(fileName))) {
-            Type type = new TypeToken<Map<String, String>>() {
+            Type type = new TypeToken<Map<String, Object>>() {
             }.getType();
-            Map<String, String> data = gson.fromJson(reader, type);
+            Map<String, Object> data = gson.fromJson(reader, type);
             return new Configuration(data);
         } catch (Exception e) {
             throw new BlinkRuntimeException(e);

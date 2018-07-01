@@ -15,6 +15,7 @@
         <module>shared-dependencies</module>
         <module>services</module>
         <module>utilities</module>
+        <module>shared-messages</module>
     </modules>
 
     <build>
