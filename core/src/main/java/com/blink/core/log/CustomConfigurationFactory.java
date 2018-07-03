@@ -27,7 +27,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         //builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.DENY).addAttribute("level", Level.INFO));
 
         LayoutComponentBuilder layoutComponentBuilder = builder.newLayout("PatternLayout").
-                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable");
+                addAttribute("pattern", "%d [%t] %c{1} %-5level: %msg%n%throwable");
 
 
         AppenderComponentBuilder console = builder.newAppender("Stdout", "CONSOLE").

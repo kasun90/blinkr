@@ -16,6 +16,8 @@ import io.netty.util.internal.logging.Log4J2LoggerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class Bootstrap {
@@ -28,10 +30,9 @@ public class Bootstrap {
 
     public void start() throws Exception {
 
-        Logger logger = LogManager.getLogger(this.getClass().getName());
+        Logger logger = LogManager.getLogger();
 
         logger.info("Starting system");
-        logger.info("Starting {}", "Kasun");
 
         ConfigurationFactory.setFactory(new FileConfigurationFactory());
 
@@ -39,9 +40,10 @@ public class Bootstrap {
         EventBus eventBus = new AsyncEventBus(Executors.newCachedThreadPool());
 
         Context.ContextBuilder builder = new Context.ContextBuilder();
-        builder.setConfiguration(configuration);
-        builder.setEventBus(eventBus);
-        Context context = builder.build();
+        Context context = builder.setConfiguration(configuration)
+                .setEventBus(eventBus)
+                .setLogger(logger)
+                .build();
 
         BaseService system = new SystemService(context);
         eventBus.register(system);

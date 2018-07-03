@@ -2,18 +2,24 @@ package com.blink.shared.system;
 
 public class WebInMessage {
     private String requestID;
-    private String payload;
+    private String target;
+    private Object data;
 
-    public WebInMessage(String requestID, String payload) {
+    public WebInMessage(String requestID, String target, Object data) {
         this.requestID = requestID;
-        this.payload = payload;
+        this.target = target;
+        this.data = data;
     }
 
     public String getRequestID() {
         return requestID;
     }
 
-    public String getPayload() {
-        return payload;
+    public Object getData() {
+        return data;
+    }
+
+    public String getTarget() {
+        return target;
     }
 }

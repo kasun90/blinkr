@@ -2,18 +2,18 @@ package com.blink.shared.system;
 
 public class WebOutMessage {
     private String requestID;
-    private String payload;
+    private Object data;
 
-    public WebOutMessage(String requestID, String payload) {
+    public WebOutMessage(String requestID, Object data) {
         this.requestID = requestID;
-        this.payload = payload;
+        this.data = data;
     }
 
     public String getRequestID() {
         return requestID;
     }
 
-    public String getPayload() {
-        return payload;
+    public Object getData() {
+        return data;
     }
 }

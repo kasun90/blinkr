@@ -24,6 +24,7 @@ public class XMLParser {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document doc = documentBuilder.parse(file);
+        doc.normalizeDocument();
 
         if (doc.getDocumentElement().hasAttribute("extends")) {
             builder.setExtendClassName(doc.getDocumentElement().getAttribute("extends"));

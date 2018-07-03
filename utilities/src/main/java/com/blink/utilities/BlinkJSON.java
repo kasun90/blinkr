@@ -1,7 +1,8 @@
 package com.blink.utilities;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+
+import java.io.IOException;
 
 public class BlinkJSON {
     private static Gson gson = new Gson();
@@ -9,6 +10,12 @@ public class BlinkJSON {
 
     public static String toJSON(Object object) {
         return gson.toJson(object);
+    }
+
+    public static String toJSONWithType(Object object) {
+        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
+        jsonObject.addProperty("_type", object.getClass().getName());
+        return gson.toJson(jsonObject);
     }
 
     public static <T> T fromJson(String jsonString, Class<T> clazz) {
