@@ -1,4 +1,4 @@
-package com.blink.core.log;
+package com.blink.core.log.apache;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;

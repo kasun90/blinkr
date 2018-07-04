@@ -16,7 +16,7 @@ public class SystemService extends BaseService {
     @Subscribe
     public void onWebIn(WebInMessage message) {
         String tempplayload = null;
-        getContext().getEventBus().post(new WebOutMessage(message.getRequestID(), tempplayload.replace("Kasun", "Frank")));
+        getContext().getBus().post(new WebOutMessage(message.getRequestID(), tempplayload.replace("Kasun", "Frank")));
     }
 
     @Override

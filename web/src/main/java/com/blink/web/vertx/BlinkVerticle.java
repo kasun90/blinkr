@@ -1,13 +1,11 @@
 package com.blink.web.vertx;
 
 import com.blink.core.service.Context;
-import io.vertx.core.*;
-import io.vertx.core.http.HttpServer;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.MultiMap;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
-
-import java.util.Map;
 
 public class BlinkVerticle extends AbstractVerticle {
 
@@ -17,7 +15,7 @@ public class BlinkVerticle extends AbstractVerticle {
     public BlinkVerticle(Context context) {
         this.context = context;
         this.worker = new VertxWorker(context);
-        context.getEventBus().register(this.worker);
+        context.getBus().register(this.worker);
     }
 
     @Override
@@ -33,11 +31,11 @@ public class BlinkVerticle extends AbstractVerticle {
 
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort(),
                 result -> {
-            if (result.succeeded())
-                startFuture.complete();
-            else
-                startFuture.fail(result.cause());
-        });
+                    if (result.succeeded())
+                        startFuture.complete();
+                    else
+                        startFuture.fail(result.cause());
+                });
     }
 
     @Override

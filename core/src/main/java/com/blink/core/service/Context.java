@@ -1,38 +1,39 @@
 package com.blink.core.service;
 
-import com.google.common.eventbus.EventBus;
-import org.apache.logging.log4j.Logger;
+import com.blink.core.log.Logger;
+import com.blink.core.log.LoggerFactory;
+import com.blink.core.transport.Bus;
 
 public final class Context {
     private Configuration configuration;
-    private EventBus eventBus;
-    private Logger logger;
+    private Bus bus;
+    private LoggerFactory loggerFactory;
 
     public Context(ContextBuilder builder) {
         this.configuration = builder.configuration;
-        this.eventBus = builder.eventBus;
-        this.logger = builder.logger;
+        this.bus = builder.bus;
+        this.loggerFactory = builder.loggerFactory;
     }
 
-    public EventBus getEventBus() {
-        return eventBus;
+    public Bus getBus() {
+        return bus;
     }
 
     public Configuration getConfiguration() {
         return configuration;
     }
 
-    public Logger getLogger() {
-        return logger;
+    public LoggerFactory getLoggerFactory() {
+        return loggerFactory;
     }
 
     public static class ContextBuilder {
         private Configuration configuration;
-        private EventBus eventBus;
-        private Logger logger;
+        private Bus bus;
+        private LoggerFactory loggerFactory;
 
-        public ContextBuilder setEventBus(EventBus eventBus) {
-            this.eventBus = eventBus;
+        public ContextBuilder setBus(Bus bus) {
+            this.bus = bus;
             return this;
         }
 
@@ -41,8 +42,8 @@ public final class Context {
             return this;
         }
 
-        public ContextBuilder setLogger(Logger logger) {
-            this.logger = logger;
+        public ContextBuilder setLoggerFactory(LoggerFactory loggerFactory) {
+            this.loggerFactory = loggerFactory;
             return this;
         }
 

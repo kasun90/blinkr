@@ -6,13 +6,11 @@ public abstract class BaseService implements Logger {
     public abstract String getServiceName();
 
     private Context context;
+    private Logger logger;
 
     public BaseService(Context context) {
         this.context = context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
+        this.logger = context.getLoggerFactory().getLogger(getServiceName());
     }
 
     public Context getContext() {
@@ -21,66 +19,66 @@ public abstract class BaseService implements Logger {
 
     @Override
     public void debug(Object o) {
-        context.getLogger().debug(o);
+        logger.debug(o);
     }
 
     @Override
     public void debug(String s) {
-        context.getLogger().debug(s);
+        logger.debug(s);
     }
 
     @Override
     public void debug(String format, Object... args) {
-        context.getLogger().debug(format, args);
+        logger.debug(format, args);
     }
 
     @Override
     public void info(Object o) {
-        context.getLogger().info(o);
+        logger.info(o);
     }
 
     @Override
     public void info(String s) {
-        context.getLogger().info(s);
+        logger.info(s);
     }
 
     @Override
     public void info(String format, Object... args) {
-        context.getLogger().info(format, args);
+        logger.info(format, args);
     }
 
     @Override
     public void warn(Object o) {
-        context.getLogger().warn(o);
+        logger.warn(o);
     }
 
     @Override
     public void warn(String s) {
-        context.getLogger().warn(s);
+        logger.warn(s);
     }
 
     @Override
     public void warn(String format, Object... args) {
-        context.getLogger().warn(format, args);
+        logger.warn(format, args);
     }
 
     @Override
     public void error(Object o) {
-        context.getLogger().error(o);
+        logger.error(o);
     }
 
     @Override
     public void error(String s) {
-        context.getLogger().error(s);
+        logger.error(s);
     }
 
     @Override
     public void error(String format, Object... args) {
-        context.getLogger().error(format, args);
+        logger.error(format, args);
     }
 
     @Override
     public void exception(String s, Throwable throwable) {
-        context.getLogger().fatal(s, throwable);
+        logger.exception(s, throwable);
     }
 }

@@ -2,16 +2,13 @@ package com.blink.core.database.mongodb;
 
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
-import com.blink.core.service.Configuration;
+import com.blink.core.service.Context;
 import com.blink.utilities.BlinkJSON;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +26,11 @@ public class MongoDBService extends DBService {
         this.coll = this.db.getCollection(collection);
     }
 
-    public MongoDBService(Configuration configuration) {
-        super(configuration);
-        mongoClient = new MongoClient(configuration.getDBHost(), configuration.getDBPort());
-        this.db = mongoClient.getDatabase(configuration.getDBName());
+    public MongoDBService(Context context) {
+        super(context);
+        mongoClient = new MongoClient(context.getConfiguration().getDBHost(), context.getConfiguration().getDBPort());
+        this.db = mongoClient.getDatabase(context.getConfiguration().getDBName());
     }
-
 
     @Override
     public DBService withCollection(String collection) {
