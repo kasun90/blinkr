@@ -16,6 +16,7 @@
         <module>services</module>
         <module>utilities</module>
         <module>shared-messages</module>
+        <module>services-all</module>
     </modules>
 
     <build>

@@ -28,7 +28,12 @@ public class BlinkVerticle extends AbstractVerticle {
         clientRouter.route().handler(BodyHandler.create());
         clientRouter.post("/client").handler(routingContext -> {
             MultiMap params = routingContext.request().params();
+            MultiMap headers = routingContext.request().headers();
             worker.publishRequest(params.get("target"), params.get("message"), routingContext.response());
+        });
+
+        clientRouter.options("/client").handler(routingContext -> {
+             worker.respondToOption(routingContext.response());
         });
 
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort(),

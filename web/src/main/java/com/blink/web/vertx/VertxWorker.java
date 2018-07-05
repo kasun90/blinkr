@@ -25,6 +25,7 @@ class VertxWorker {
     VertxWorker(Context context) {
         this.context = context;
         this.logger = context.getLoggerFactory().getLogger();
+        context.getBus().register(this);
     }
 
     void publishRequest(String target, String message, HttpServerResponse response) {
@@ -44,6 +45,11 @@ class VertxWorker {
         }
     }
 
+    void respondToOption(HttpServerResponse response) {
+        modifyHeaders(response);
+        response.end();
+    }
+
     @Subscribe
     public void onWebOut(WebOutMessage message) {
         try {
@@ -54,9 +60,15 @@ class VertxWorker {
                 return;
             }
 
+            modifyHeaders(response);
             response.end(translator.toPayload(message.getData()));
         } catch (Exception e) {
             logger.error(e);
         }
+    }
+
+    private void modifyHeaders(HttpServerResponse response) {
+        response.putHeader("Access-Control-Allow-Origin", "*");
+        response.putHeader("Access-Control-Allow-Headers", "X-App-Key");
     }
 }

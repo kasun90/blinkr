@@ -24,6 +24,7 @@ public class SystemService extends BaseService {
         switch (target) {
             case "CLIENT":
                 onTargetClient(message.getRequestID(), message.getData());
+                break;
             default:
                 onReply(new ReplyMessage(message.getRequestID(), new InvalidRequest("Invalid target")));
                 break;

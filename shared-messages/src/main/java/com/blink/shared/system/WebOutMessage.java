@@ -1,5 +1,7 @@
 package com.blink.shared.system;
 
+import com.blink.utilities.BlinkJSON;
+
 public class WebOutMessage {
     private String requestID;
     private Object data;
@@ -15,5 +17,10 @@ public class WebOutMessage {
 
     public Object getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return BlinkJSON.toPrettyJSON(this);
     }
 }

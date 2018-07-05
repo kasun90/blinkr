@@ -48,7 +48,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
                 add(builder.newAppenderRef("log")).
                 addAttribute("additivity", false));
 
-        builder.add(builder.newLogger("io.vertx", Level.OFF).addAttribute("additivity", false));
+        builder.add(builder.newLogger("io.vertx", Level.INFO).addAttribute("additivity", false));
 
         builder.add(builder.newLogger("io.netty", Level.OFF).addAttribute("additivity", false));
 
