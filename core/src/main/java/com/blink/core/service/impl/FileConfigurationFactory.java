@@ -16,7 +16,6 @@ public class FileConfigurationFactory extends ConfigurationFactory {
 
     public Configuration getConfiguration() {
         Gson gson = new Gson();
-
         String fileName = "blink.conf";
         try (JsonReader reader = new JsonReader(new FileReader(fileName))) {
             Type type = new TypeToken<Map<String, Object>>() {
