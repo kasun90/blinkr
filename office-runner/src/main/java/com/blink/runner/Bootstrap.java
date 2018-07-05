@@ -2,7 +2,6 @@ package com.blink.runner;
 
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
-import com.blink.core.log.apache.ApacheLog4jLogger;
 import com.blink.core.log.apache.ApacheLog4jLoggerFactory;
 import com.blink.core.service.BaseService;
 import com.blink.core.service.Configuration;
@@ -39,6 +38,9 @@ public class Bootstrap {
         bootLogger.info("Registering services");
         BaseService system = new SystemService(context);
         context.getBus().register(system);
+
+        //register Services
+
 
         WebServer server = new VertxWebServer(context);
         server.initialize();

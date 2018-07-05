@@ -30,15 +30,22 @@ class VertxWorker {
     void publishRequest(String target, String message, HttpServerResponse response) {
         String reqID = UUID.randomUUID().toString();
         requestMap.put(reqID, response);
+
+        if (target == null || target.isEmpty() || message == null || message.isEmpty()) {
+            onWebOut(new WebOutMessage(reqID, new InvalidRequest("Invalid parameters")));
+            return;
+        }
+
         try {
             context.getBus().post(new WebInMessage(reqID, target, translator.fromPayload(message)));
         } catch (Exception e) {
-            onReply(new WebOutMessage(reqID, new InvalidRequest(e.getMessage())));
+            logger.exception("Web Request Exception", e);
+            onWebOut(new WebOutMessage(reqID, new InvalidRequest(e.getMessage())));
         }
     }
 
     @Subscribe
-    public void onReply(WebOutMessage message) {
+    public void onWebOut(WebOutMessage message) {
         try {
             HttpServerResponse response = requestMap.remove(message.getRequestID());
 

@@ -1,5 +1,6 @@
 package com.blink.web.vertx;
 
+import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -11,11 +12,12 @@ public class BlinkVerticle extends AbstractVerticle {
 
     private Context context;
     private VertxWorker worker;
+    private Logger logger;
 
     public BlinkVerticle(Context context) {
         this.context = context;
         this.worker = new VertxWorker(context);
-        context.getBus().register(this.worker);
+        this.logger = context.getLoggerFactory().getLogger("WEB");
     }
 
     @Override
@@ -36,6 +38,8 @@ public class BlinkVerticle extends AbstractVerticle {
                     else
                         startFuture.fail(result.cause());
                 });
+        logger.info("Server started on port {}", context.getConfiguration().getClientPort());
+
     }
 
     @Override

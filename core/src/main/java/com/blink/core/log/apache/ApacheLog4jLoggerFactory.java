@@ -12,11 +12,11 @@ public class ApacheLog4jLoggerFactory implements LoggerFactory {
 
     @Override
     public Logger getLogger(String name) {
-        return null;
+        return new ApacheLog4jLogger(name);
     }
 
     @Override
     public Logger getLogger(Class<?> clazz) {
-        return null;
+        return new ApacheLog4jLogger(clazz);
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <field type="String">message</field>
+    <field type="String">email</field>
+    <field type="String">phone</field>
+</model>

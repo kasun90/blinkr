@@ -67,7 +67,7 @@ public final class Context {
 
         public ContextBuilder() {
             imports = new HashSet<>();
-            fields = new HashMap<>();
+            fields = new LinkedHashMap<>();
         }
 
         public ContextBuilder setClassName(String className) {

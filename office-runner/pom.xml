@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.blink</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>services</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

@@ -1,6 +1,8 @@
 package com.blink.core.service;
 
 import com.blink.core.log.Logger;
+import com.blink.shared.system.InvalidRequest;
+import com.blink.shared.system.ReplyMessage;
 
 public abstract class BaseService implements Logger {
     public abstract String getServiceName();
@@ -11,6 +13,10 @@ public abstract class BaseService implements Logger {
     public BaseService(Context context) {
         this.context = context;
         this.logger = context.getLoggerFactory().getLogger(getServiceName());
+    }
+
+    public void sendReply(String requestID, Object message) {
+        context.getBus().post(new ReplyMessage(requestID, message));
     }
 
     public Context getContext() {
