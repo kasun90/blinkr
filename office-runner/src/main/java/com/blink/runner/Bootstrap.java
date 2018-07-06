@@ -1,6 +1,8 @@
 package com.blink.runner;
 
 import com.blink.client.ClientAppAgent;
+import com.blink.core.database.DBService;
+import com.blink.core.database.mongodb.MongoDBService;
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.log.apache.ApacheLog4jLoggerFactory;
@@ -29,11 +31,13 @@ public class Bootstrap {
         bootLogger.info("Building configuration complete");
 
         Bus bus = new GoogleEventBus();
+        DBService dbService = new MongoDBService(configuration);
 
         Context.ContextBuilder builder = new Context.ContextBuilder();
         Context context = builder.setConfiguration(configuration)
                 .setBus(bus)
                 .setLoggerFactory(loggerFactory)
+                .setDbService(dbService)
                 .build();
 
         bootLogger.info("Registering services");

@@ -1,6 +1,7 @@
 package com.blink.core.database;
 
 import com.blink.core.database.mongodb.MongoDBService;
+import com.blink.utilities.BlinkJSON;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,29 +26,18 @@ public class DBServiceTest {
 
     @Test
     public void findAllTest() throws Exception {
-        StringBuilder builder = new StringBuilder();
-        List<Person> all = dbService.findAll(Person.class);
-        all.forEach((person -> {
-            builder.append("name: ").append(person.getName()).append(" age: ").append(person.getAge()).
-                    append(" city: ").append(person.getCity()).append("\n");
-            System.out.println(builder.toString());
-            builder.setLength(0);
-        }));
+        for (Person person : dbService.findAll(Person.class)) {
+            System.out.println(BlinkJSON.toPrettyJSON(person));
+        }
     }
 
     @Test
     public void findTest() throws Exception {
         SimpleDBObject object = new SimpleDBObject().append("name", "Kasun").append("city", "Nugegoda");
 
-        StringBuilder builder = new StringBuilder();
-        List<Person> all = dbService.find(object, Person.class);
-        all.forEach((person -> {
-            builder.append("name: ").append(person.getName()).append(" age: ").append(person.getAge()).
-                    append(" city: ").append(person.getCity()).append("\n");
-            System.out.println(builder.toString());
-            builder.setLength(0);
-        }));
-
+        for (Person person : dbService.find(object, Person.class)) {
+            System.out.println(BlinkJSON.toPrettyJSON(person));
+        }
     }
 
 
@@ -60,8 +50,7 @@ public class DBServiceTest {
 
     @Test
     public void deleteTest() throws Exception {
-        SimpleDBObject object = new SimpleDBObject().append("age", 29);
-
+        SimpleDBObject object = new SimpleDBObject().append("age", 28);
         System.out.println("deleted: " + dbService.delete(object));
     }
 
