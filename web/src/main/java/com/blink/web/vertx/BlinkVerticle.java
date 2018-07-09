@@ -7,6 +7,10 @@ import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.FaviconHandler;
+import io.vertx.ext.web.handler.StaticHandler;
+
+import java.io.File;
 
 public class BlinkVerticle extends AbstractVerticle {
 
@@ -25,7 +29,7 @@ public class BlinkVerticle extends AbstractVerticle {
 
         Router clientRouter = Router.router(vertx);
 
-        clientRouter.route().handler(BodyHandler.create());
+        clientRouter.route("/client").handler(BodyHandler.create());
         clientRouter.post("/client").handler(routingContext -> {
             MultiMap params = routingContext.request().params();
             MultiMap headers = routingContext.request().headers();
@@ -35,6 +39,15 @@ public class BlinkVerticle extends AbstractVerticle {
         clientRouter.options("/client").handler(routingContext -> {
              worker.respondToOption(routingContext.response());
         });
+
+        String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
+        System.out.println(path);
+        String faviconPath = new File(context.getConfiguration().getValue("clientRoot") + "/favicon.ico").getPath();
+        System.out.println(faviconPath);
+        clientRouter.route().handler(FaviconHandler.create(faviconPath, 1));
+        //clientRouter.route("/favicon.ico").handler(FaviconHandler.create(faviconPath));
+        clientRouter.route().handler(StaticHandler.create(path).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+
 
 
 
