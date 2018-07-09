@@ -36,6 +36,8 @@ public class BlinkVerticle extends AbstractVerticle {
              worker.respondToOption(routingContext.response());
         });
 
+
+
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort(),
                 result -> {
                     if (result.succeeded())

@@ -68,7 +68,8 @@ class VertxWorker {
     }
 
     private void modifyHeaders(HttpServerResponse response) {
-        response.putHeader("Access-Control-Allow-Origin", "*");
+        response.putHeader("Access-Control-Allow-Origin", context.getConfiguration().getValue("allowedOrigin","*"));
+        response.putHeader("Vary", "Origin");
         response.putHeader("Access-Control-Allow-Headers", "X-App-Key");
     }
 }
