@@ -3,6 +3,8 @@ package com.blink.runner;
 import com.blink.client.ClientAppAgent;
 import com.blink.core.database.DBService;
 import com.blink.core.database.mongodb.MongoDBService;
+import com.blink.core.file.FileService;
+import com.blink.core.file.local.LocalFileService;
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.log.apache.ApacheLog4jLoggerFactory;
@@ -32,12 +34,14 @@ public class Bootstrap {
 
         Bus bus = new GoogleEventBus();
         DBService dbService = new MongoDBService(configuration);
+        FileService fileService = new LocalFileService(configuration);
 
         Context.ContextBuilder builder = new Context.ContextBuilder();
         Context context = builder.setConfiguration(configuration)
                 .setBus(bus)
                 .setLoggerFactory(loggerFactory)
                 .setDbService(dbService)
+                .setFileService(fileService)
                 .build();
 
         bootLogger.info("Registering services");

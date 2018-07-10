@@ -25,6 +25,7 @@ public class ClientAppAgent extends BaseService {
     }
 
     private void onUserMessage(String reqID, UserMessage message) {
+
         sendReply(reqID, new GenericReplyMessage("Message recorded"));
     }
 

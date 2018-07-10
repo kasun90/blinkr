@@ -1,6 +1,7 @@
 package com.blink.core.service;
 
 import com.blink.core.database.DBService;
+import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.transport.Bus;
@@ -10,12 +11,14 @@ public final class Context {
     private Bus bus;
     private LoggerFactory loggerFactory;
     private DBService dbService;
+    private FileService fileService;
 
     public Context(ContextBuilder builder) {
         this.configuration = builder.configuration;
         this.bus = builder.bus;
         this.loggerFactory = builder.loggerFactory;
         this.dbService = builder.dbService;
+        this.fileService = builder.fileService;
     }
 
     public Bus getBus() {
@@ -34,11 +37,16 @@ public final class Context {
         return dbService;
     }
 
+    public FileService getFileService() {
+        return fileService;
+    }
+
     public static class ContextBuilder {
         private Configuration configuration;
         private Bus bus;
         private LoggerFactory loggerFactory;
         private DBService dbService;
+        private FileService fileService;
 
         public ContextBuilder setBus(Bus bus) {
             this.bus = bus;
@@ -57,6 +65,11 @@ public final class Context {
 
         public ContextBuilder setDbService(DBService dbService) {
             this.dbService = dbService;
+            return this;
+        }
+
+        public ContextBuilder setFileService(FileService fileService) {
+            this.fileService = fileService;
             return this;
         }
 
