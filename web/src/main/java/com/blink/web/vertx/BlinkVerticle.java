@@ -8,7 +8,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.FaviconHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.io.File;
@@ -38,7 +37,7 @@ public class BlinkVerticle extends AbstractVerticle {
         });
 
         clientRouter.options("/client").handler(routingContext -> {
-             worker.respondToOption(routingContext.response());
+            worker.respondToOption(routingContext.response());
         });
 
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
@@ -52,8 +51,13 @@ public class BlinkVerticle extends AbstractVerticle {
 
         clientRouter.route().handler(StaticHandler.create(path).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
 
-
-
+        File staticFiles = new File(context.getConfiguration().getValue("staticFilesRoot"));
+        staticFiles.mkdirs();
+        final String staticFilesPath = staticFiles.getPath();
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append("/").append(context.getConfiguration().getValue("staticFilesRoot")).append("*");
+        clientRouter.get(pathBuilder.toString())
+                .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(false).setMaxAgeSeconds(0).setFilesReadOnly(false));
 
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort(),
                 result -> {
