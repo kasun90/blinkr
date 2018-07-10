@@ -83,6 +83,6 @@ public class LocalFileService extends TemporaryFileService {
 
     @Override
     public URL getURL(String path) throws Exception {
-        return new URL("http", domain, Integer.parseInt(clientPort), rootDir + path);
+        return new URL("http", domain, Integer.parseInt(clientPort), "/" + rootDir + path);
     }
 }

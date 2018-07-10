@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
@@ -45,6 +46,12 @@ public class FileServiceTest {
     @Test
     public void deleteTest() throws Exception {
         fileService.delete("articles/myfirst.txt");
+    }
+
+    @Test
+    public void URLTest() throws Exception {
+        URL url = fileService.getURL("articles/myfirst.txt");
+        System.out.println(url.toString());
     }
 
 
