@@ -11,7 +11,6 @@ public interface FileService {
     void upload(String path, boolean deleteLocal) throws Exception;
     void delete(String path) throws Exception;
     List<String> listFilePaths(String path) throws Exception;
-    List<File> listFiles(String path) throws Exception;
     String download(String path) throws Exception;
     URL getURL(String path) throws Exception;
 }

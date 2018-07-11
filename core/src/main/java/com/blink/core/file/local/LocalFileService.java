@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.*;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LocalFileService extends TemporaryFileService {
@@ -59,15 +60,7 @@ public class LocalFileService extends TemporaryFileService {
     public List<String> listFilePaths(String path) throws Exception {
         return Files.walk(Paths.get(rootDir + path))
                 .filter(path1 -> !path1.toFile().isDirectory())
-                .map(Path::toString)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<File> listFiles(String path) throws Exception {
-        return Files.walk(Paths.get(rootDir + path))
-                .filter(path1 -> !path1.toFile().isDirectory())
-                .map(Path::toFile)
+                .map(origin -> Paths.get(rootDir).relativize(origin).toString())
                 .collect(Collectors.toList());
     }
 
