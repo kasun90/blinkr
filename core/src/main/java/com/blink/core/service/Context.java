@@ -13,7 +13,7 @@ public final class Context {
     private DBService dbService;
     private FileService fileService;
 
-    public Context(ContextBuilder builder) {
+    private Context(ContextBuilder builder) {
         this.configuration = builder.configuration;
         this.bus = builder.bus;
         this.loggerFactory = builder.loggerFactory;
