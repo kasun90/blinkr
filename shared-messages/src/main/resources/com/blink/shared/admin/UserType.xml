@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model type="enum">
+    <case>SUPER_ADMIN</case>
+    <case>ADMIN</case>
+</model>

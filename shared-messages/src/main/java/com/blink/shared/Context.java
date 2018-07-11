@@ -4,20 +4,24 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public final class Context {
+    private Type type;
     private String className;
     private String fileName;
     private String packageName;
     private Set<String> imports;
     private String extendClassName;
     private Map<String, String> fields;
+    private List<String> cases;
 
     public Context(ContextBuilder builder) {
+        this.type = builder.type;
         this.className = builder.className;
         this.fileName = builder.fileName;
         this.packageName = builder.packageName;
         this.imports = builder.imports;
         this.extendClassName = builder.extendClassName;
         this.fields = builder.fields;
+        this.cases = builder.cases;
         refineContext();
     }
 
@@ -31,6 +35,10 @@ public final class Context {
                 this.imports.add("java.util.Map");
 
         });
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getClassName() {
@@ -57,17 +65,30 @@ public final class Context {
         return fields;
     }
 
+    public List<String> getCases() {
+        return cases;
+    }
+
     public static class ContextBuilder {
+        private Type type;
         private String className;
         private String fileName;
         private String packageName;
         private Set<String> imports;
         private String extendClassName;
         private Map<String, String> fields;
+        private List<String> cases;
 
         public ContextBuilder() {
+            type = Type.CLASS;
             imports = new HashSet<>();
             fields = new LinkedHashMap<>();
+            cases = new LinkedList<>();
+        }
+
+        public ContextBuilder setType(Type type) {
+            this.type = type;
+            return this;
         }
 
         public ContextBuilder setClassName(String className) {
@@ -100,10 +121,18 @@ public final class Context {
             return this;
         }
 
+        public ContextBuilder addCase(String caseName) {
+            cases.add(caseName);
+            return this;
+        }
+
         public Context build() {
             return new Context(this);
         }
+    }
 
-
+    public enum Type {
+        CLASS,
+        ENUM
     }
 }

@@ -7,7 +7,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.util.Objects;
 
 public class XMLParser {
 
@@ -30,6 +29,17 @@ public class XMLParser {
             builder.setExtendClassName(doc.getDocumentElement().getAttribute("extends"));
         }
 
+        String type = doc.getDocumentElement().getAttribute("type");
+        if (type != null) {
+            switch (type.toLowerCase()) {
+                case "enum":
+                    builder.setType(Context.Type.ENUM);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         NodeList importList = doc.getElementsByTagName("import");
 
         if (importList != null) {
@@ -44,6 +54,15 @@ public class XMLParser {
             for (int i = 0; i < fieldList.getLength(); i++) {
                 Element element = Element.class.cast(fieldList.item(i));
                 builder.addField(element.getTextContent(), element.getAttribute("type"));
+            }
+        }
+
+        NodeList caseList = doc.getElementsByTagName("case");
+
+        if (caseList != null) {
+            for (int i = 0; i < caseList.getLength(); i++) {
+                Element element = Element.class.cast(caseList.item(i));
+                builder.addCase(element.getTextContent());
             }
         }
     }

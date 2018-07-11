@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class ClassWriter implements AutoCloseable {
@@ -28,6 +29,36 @@ public class ClassWriter implements AutoCloseable {
         startLine().print("package ").print(context.getPackageName()).println(";")
                 .println();
 
+        switch (context.getType()) {
+            case CLASS:
+                writeClass();
+                break;
+            case ENUM:
+                writeEnum();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void writeEnum() {
+        startLine().print("public enum ").print(context.getClassName()).println(" {");
+        plusIndent();
+
+        List<String> cases = context.getCases();
+        while (!cases.isEmpty()) {
+            String caseName = cases.remove(0);
+            startLine().print(caseName);
+            if (!cases.isEmpty())
+                print(",");
+            println();
+        }
+
+        minusIndent();
+        startLine().print("}");
+    }
+
+    private void writeClass() {
         //imports
         context.getImports().forEach(value -> {
             startLine().print("import ").print(value).println(";");
