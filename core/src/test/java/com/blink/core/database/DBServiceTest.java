@@ -50,8 +50,18 @@ public class DBServiceTest {
 
     @Test
     public void deleteTest() throws Exception {
-        SimpleDBObject object = new SimpleDBObject().append("age", 28);
+        SimpleDBObject object = new SimpleDBObject().append("_name", "default");
         System.out.println("deleted: " + dbService.delete(object));
+    }
+
+    @Test
+    public void incrementTest() throws Exception {
+        System.out.println(dbService.getCounterValue());
+    }
+
+    @Test
+    public void incrementCustomTest() throws Exception {
+        System.out.println(dbService.getCounterValue("hello"));
     }
 
 }

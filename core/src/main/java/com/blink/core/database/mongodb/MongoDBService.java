@@ -6,13 +6,18 @@ import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Configuration;
 import com.blink.core.service.Context;
 import com.blink.utilities.BlinkJSON;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.InsertOneOptions;
+import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
+import com.mongodb.operation.UpdateOperation;
 import org.bson.Document;
 
 import java.util.LinkedList;
@@ -84,14 +89,15 @@ public class MongoDBService extends DBService {
 
     @Override
     public long getCounterValue() {
-        UpdateOptions updateOptions = new UpdateOptions().upsert(true);
-        UpdateResult updateResult = coll.updateOne(null, null, updateOptions);
-
-        return 0;
+        return getCounterValue("default");
     }
 
     @Override
     public long getCounterValue(String name) {
-        return 0;
+        FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
+        options.upsert(true);
+        options.returnDocument(ReturnDocument.AFTER);
+        Document result = coll.findOneAndUpdate(new Document("_name", name), new Document("$inc", new Document("value", 1L)), options);
+        return result.getLong("value");
     }
 }
