@@ -1,5 +1,6 @@
 package com.blink.runner;
 
+import com.blink.admin.AdminAppAgent;
 import com.blink.client.ClientAppAgent;
 import com.blink.core.database.DBService;
 import com.blink.core.database.mongodb.MongoDBService;
@@ -50,6 +51,7 @@ public class Bootstrap {
 
         //register Services
         context.getBus().register(new ClientAppAgent(context));
+        context.getBus().register(new AdminAppAgent(context));
 
         WebServer server = new VertxWebServer(context);
         server.initialize();

@@ -17,6 +17,11 @@
             <artifactId>client-app-agent</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.blink</groupId>
+            <artifactId>admin-app-agent</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 
