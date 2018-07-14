@@ -11,17 +11,20 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.io.File;
+import java.util.Set;
 
 public class BlinkVerticle extends AbstractVerticle {
 
     private Context context;
     private VertxWorker worker;
     private Logger logger;
+    private Set<String> allowedOrigins;
 
     public BlinkVerticle(Context context) {
         this.context = context;
         this.worker = new VertxWorker(context);
         this.logger = context.getLoggerFactory().getLogger("WEB");
+        this.allowedOrigins = context.getConfiguration().getValues("allowedOrigins");
     }
 
     @Override
@@ -33,11 +36,17 @@ public class BlinkVerticle extends AbstractVerticle {
         clientRouter.post("/client").handler(routingContext -> {
             MultiMap params = routingContext.request().params();
             MultiMap headers = routingContext.request().headers();
-            worker.publishRequest(params.get("target"), params.get("message"), routingContext.response());
+            String origin = headers.get("Origin");
+            if (allowedOrigins.isEmpty() || allowedOrigins.contains(origin))
+                worker.publishRequest(params.get("target"), params.get("message"), origin, routingContext.response());
+            else
+                worker.respondToInvalidOrigin(routingContext.response());
         });
 
         clientRouter.options("/client").handler(routingContext -> {
-            worker.respondToOption(routingContext.response());
+            MultiMap headers = routingContext.request().headers();
+            String origin = headers.get("Origin");
+            worker.respondToOption(origin, routingContext.response());
         });
 
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();

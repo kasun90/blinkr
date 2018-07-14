@@ -6,8 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Configuration {
     private Map<String, Object> data = new HashMap<>();
@@ -60,6 +59,22 @@ public class Configuration {
         if (o == null)
             return defaultVal;
         return String.class.cast(o);
+    }
+
+    public Set<String> getValues(String key) {
+        Object o = data.get(key);
+        Set<String> values = new HashSet<>();
+        if (o == null)
+            throw new BlinkRuntimeException(MessageFormat.format("Error reading configuration value for key \"{0}\"", key));
+        JsonElement tree = gson.toJsonTree(o);
+        if (!tree.isJsonArray()) {
+            return values;
+        } else {
+            for (JsonElement jsonElement : tree.getAsJsonArray()) {
+                values.add(jsonElement.getAsString());
+            }
+            return values;
+        }
     }
 
     public JsonObject getRawValue(String key) {

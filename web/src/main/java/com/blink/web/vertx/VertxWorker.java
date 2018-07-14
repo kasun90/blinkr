@@ -12,13 +12,14 @@ import com.google.common.eventbus.Subscribe;
 import io.vertx.core.http.HttpServerResponse;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 class VertxWorker {
 
     private Context context;
-    private Map<String, HttpServerResponse> requestMap = new ConcurrentHashMap<>();
+    private Map<String, ServerResponse> requestMap = new ConcurrentHashMap<>();
     private ClassTranslator translator = new ClassTranslator();
     private Logger logger;
 
@@ -28,9 +29,9 @@ class VertxWorker {
         context.getBus().register(this);
     }
 
-    void publishRequest(String target, String message, HttpServerResponse response) {
+    void publishRequest(String target, String message, String origin, HttpServerResponse response) {
         String reqID = UUID.randomUUID().toString();
-        requestMap.put(reqID, response);
+        requestMap.put(reqID, new ServerResponse(origin, response));
 
         if (target == null || target.isEmpty() || message == null || message.isEmpty()) {
             onWebOut(new WebOutMessage(reqID, new InvalidRequest("Invalid parameters")));
@@ -45,30 +46,36 @@ class VertxWorker {
         }
     }
 
-    void respondToOption(HttpServerResponse response) {
-        modifyHeaders(response);
+    void respondToOption(String origin, HttpServerResponse response) {
+        modifyHeaders(origin, response);
+        response.end();
+    }
+
+    void respondToInvalidOrigin(HttpServerResponse response) {
+        response.setStatusCode(403);
         response.end();
     }
 
     @Subscribe
     public void onWebOut(WebOutMessage message) {
         try {
-            HttpServerResponse response = requestMap.remove(message.getRequestID());
+            ServerResponse serverResponse = requestMap.get(message.getRequestID());
 
-            if (response == null) {
+            if (serverResponse == null) {
                 logger.error("Request ID {} not found to reply", message.getRequestID());
                 return;
             }
 
-            modifyHeaders(response);
-            response.end(translator.toPayload(message.getData()));
+            modifyHeaders(serverResponse.getOrigin(), serverResponse.getResponse());
+            serverResponse.getResponse().end(translator.toPayload(message.getData()));
         } catch (Exception e) {
             logger.error(e);
         }
     }
 
-    private void modifyHeaders(HttpServerResponse response) {
-        response.putHeader("Access-Control-Allow-Origin", context.getConfiguration().getValue("allowedOrigin","*"));
+    private void modifyHeaders(String origin, HttpServerResponse response) {
+
+        response.putHeader("Access-Control-Allow-Origin", origin);
         response.putHeader("Vary", "Origin");
         response.putHeader("Access-Control-Allow-Headers", "X-App-Key");
     }
