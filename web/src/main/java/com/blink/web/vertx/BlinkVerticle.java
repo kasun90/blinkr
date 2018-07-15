@@ -7,6 +7,7 @@ import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
@@ -33,21 +34,8 @@ public class BlinkVerticle extends AbstractVerticle {
         Router clientRouter = Router.router(vertx);
 
         clientRouter.route("/client").handler(BodyHandler.create());
-        clientRouter.post("/client").handler(routingContext -> {
-            MultiMap params = routingContext.request().params();
-            MultiMap headers = routingContext.request().headers();
-            String origin = headers.get("Origin");
-            if (allowedOrigins.isEmpty() || allowedOrigins.contains(origin))
-                worker.publishRequest(params.get("target"), params.get("message"), origin, routingContext.response());
-            else
-                worker.respondToInvalidOrigin(routingContext.response());
-        });
-
-        clientRouter.options("/client").handler(routingContext -> {
-            MultiMap headers = routingContext.request().headers();
-            String origin = headers.get("Origin");
-            worker.respondToOption(origin, routingContext.response());
-        });
+        clientRouter.post("/client").handler(this::routeAPIRequest);
+        clientRouter.options("/client").handler(this::respondToOption);
 
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
         final String faviconPath = new File(context.getConfiguration().getValue("clientRoot") + "/favicon.ico").getPath();
@@ -68,15 +56,47 @@ public class BlinkVerticle extends AbstractVerticle {
         clientRouter.get(pathBuilder.toString())
                 .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(false).setMaxAgeSeconds(0).setFilesReadOnly(false));
 
-        vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort(),
-                result -> {
-                    if (result.succeeded())
-                        startFuture.complete();
-                    else
-                        startFuture.fail(result.cause());
-                });
-        logger.info("Server started on port {}", context.getConfiguration().getClientPort());
+        vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort());
+        logger.info("Client server started on port {}", context.getConfiguration().getClientPort());
 
+        //admin Router
+
+        Router adminRouter = Router.router(vertx);
+
+        adminRouter.route("/admin").handler(BodyHandler.create());
+        adminRouter.post("/admin").handler(this::routeAPIRequest);
+        adminRouter.options("/admin").handler(this::respondToOption);
+
+        final String adminPath = new File(context.getConfiguration().getValue("adminRoot")).getPath();
+        final String adminFaviconPath = new File(context.getConfiguration().getValue("adminRoot") + "/favicon.ico").getPath();
+
+        clientRouter.get("/favicon.ico").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.putHeader("Content-Type", "image/x-icon");
+            response.sendFile(adminFaviconPath);
+        });
+
+        clientRouter.route().handler(StaticHandler.create(adminPath).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+
+        vertx.createHttpServer().requestHandler(adminRouter::accept).listen(context.getConfiguration().getAdminPort());
+
+        logger.info("Admin server started on port {}" , context.getConfiguration().getAdminPort());
+    }
+
+    private void routeAPIRequest(RoutingContext context) {
+        MultiMap params = context.request().params();
+        MultiMap headers = context.request().headers();
+        String origin = headers.get("Origin");
+        if (allowedOrigins.isEmpty() || allowedOrigins.contains(origin))
+            worker.publishRequest(params.get("target"), params.get("message"), origin, context.response());
+        else
+            worker.respondToInvalidOrigin(context.response());
+    }
+
+    private void respondToOption(RoutingContext context) {
+        MultiMap headers = context.request().headers();
+        String origin = headers.get("Origin");
+        worker.respondToOption(origin, context.response());
     }
 
     @Override
