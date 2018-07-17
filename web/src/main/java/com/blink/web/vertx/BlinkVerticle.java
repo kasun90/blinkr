@@ -87,8 +87,10 @@ public class BlinkVerticle extends AbstractVerticle {
         MultiMap params = context.request().params();
         MultiMap headers = context.request().headers();
         String origin = headers.get("Origin");
+        String appKey = headers.get("X-App-Key");
+        String appSession = headers.get("X-App-Session");
         if (allowedOrigins.isEmpty() || allowedOrigins.contains(origin))
-            worker.publishRequest(params.get("target"), params.get("message"), origin, context.response());
+            worker.publishRequest(params.get("target"), params.get("targetUser"), appKey, appSession, params.get("message"), origin, context.response());
         else
             worker.respondToInvalidOrigin(context.response());
     }

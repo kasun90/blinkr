@@ -27,7 +27,7 @@ public class SystemService extends BaseService {
                 onTargetClient(message.getRequestID(), message.getData());
                 break;
             case "ADMIN":
-                onTargetAdmin(message.getRequestID(), message.getData());
+                onTargetAdmin(message.getRequestID(), message.getTargetUser(), message.getAppSession(), message.getData());
                 break;
             default:
                 onReply(new ReplyMessage(message.getRequestID(), new InvalidRequest("Invalid target")));
@@ -39,8 +39,8 @@ public class SystemService extends BaseService {
         getContext().getBus().post(new ClientRequestMessage(requestID, data));
     }
 
-    private void onTargetAdmin(String requestID, Object data) {
-        getContext().getBus().post(new AdminRequestMessage(requestID, data));
+    private void onTargetAdmin(String requestID, String targetUser, String sessionID, Object data) {
+        getContext().getBus().post(new AdminRequestMessage(requestID, targetUser, sessionID, data));
     }
 
     @Subscribe

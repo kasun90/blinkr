@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
     <field type="String">requestID</field>
+    <field type="String">targetUser</field>
+    <field type="String">sessionID</field>
     <field type="Object">enclosedMessage</field>
 </model>

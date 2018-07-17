@@ -3,22 +3,22 @@ package com.blink.shared.admin.portal;
 import com.blink.utilities.BlinkJSON;
 
 public class LoginReplyMessage {
-	private String token;
+	private String sessionID;
 	private int code;
 	private String message;
 
-	public LoginReplyMessage(String token, int code, String message) {
-		this.token = token;
+	public LoginReplyMessage(String sessionID, int code, String message) {
+		this.sessionID = sessionID;
 		this.code = code;
 		this.message = message;
 	}
 
-	public String getToken() {
-		return token;
+	public String getSessionID() {
+		return sessionID;
 	}
 
-	public LoginReplyMessage setToken(String token) {
-		this.token = token;
+	public LoginReplyMessage setSessionID(String sessionID) {
+		this.sessionID = sessionID;
 		return this;
 	}
 
