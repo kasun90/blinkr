@@ -21,6 +21,12 @@ public class DBServiceTest {
         dbService.insert(person);
     }
 
+    @Test
+    public void insertOrUpdateTest() throws Exception {
+        SimpleDBObject toFind = new SimpleDBObject().append("name", "Piyumal");
+        dbService.insertOrUpdate(toFind, new Person("Piyumal", 22, "Walasmulla"));
+    }
+
 
     @Test
     public void findAllTest() throws Exception {
@@ -49,8 +55,8 @@ public class DBServiceTest {
 
     @Test
     public void deleteTest() throws Exception {
-        SimpleDBObject object = new SimpleDBObject().append("_name", "default");
-        System.out.println("deleted: " + dbService.delete(object));
+        SimpleDBObject object = new SimpleDBObject().append("age", 29);
+        System.out.println("deleted: " + dbService.delete(object, Person.class));
     }
 
     @Test

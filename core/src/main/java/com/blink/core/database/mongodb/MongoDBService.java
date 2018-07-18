@@ -58,32 +58,37 @@ public class MongoDBService extends DBService {
 
     @Override
     public void insert(Object object) throws Exception {
-        coll.insertOne(Document.parse(BlinkJSON.toJSON(object)));
+        coll.insertOne(Document.parse(serialize(object)));
     }
 
     @Override
     public void update(SimpleDBObject toFind, Object toUpdate) throws Exception {
-        coll.updateOne(MongoDBFilterConverter.fromBlink(toFind), new Document("$set", Document.parse(BlinkJSON.toJSON(toUpdate))));
+        toFind = modifyQuery(toFind, toUpdate.getClass());
+        coll.updateMany(MongoDBFilterConverter.fromBlink(toFind), new Document("$set", Document.parse(serialize(toUpdate))));
     }
 
     @Override
     public void insertOrUpdate(SimpleDBObject toFind, Object toUpdate) {
-        coll.updateOne(MongoDBFilterConverter.fromBlink(toFind), new Document("$set", Document.parse(BlinkJSON.toJSON(toUpdate))),
+        toFind = modifyQuery(toFind, toUpdate.getClass());
+        coll.updateMany(MongoDBFilterConverter.fromBlink(toFind), new Document("$set", Document.parse(serialize(toUpdate))),
                 new UpdateOptions().upsert(true));
     }
 
     @Override
-    public long delete(SimpleDBObject toDelete) throws Exception {
-        return coll.deleteOne(MongoDBFilterConverter.fromBlink(toDelete)).getDeletedCount();
+    public long delete(SimpleDBObject toDelete, Class<?> clazz) throws Exception {
+        toDelete = modifyQuery(toDelete, clazz);
+        return coll.deleteMany(MongoDBFilterConverter.fromBlink(toDelete)).getDeletedCount();
     }
 
     @Override
     public <T> DBCollection<T> findAll(Class<T> clazz) throws Exception {
-        return new CustomMongoCollection<>(coll.find(), clazz);
+        SimpleDBObject toFind = modifyQuery(new SimpleDBObject(), clazz);
+        return new CustomMongoCollection<>(coll.find(MongoDBFilterConverter.fromBlink(toFind)), clazz);
     }
 
     @Override
     public <T> DBCollection<T> find(SimpleDBObject toFind, Class<T> clazz) throws Exception {
+        toFind = modifyQuery(toFind, clazz);
         return new CustomMongoCollection<>(coll.find(MongoDBFilterConverter.fromBlink(toFind)), clazz);
     }
 
