@@ -25,6 +25,7 @@ public class DBServiceTest {
     @Test
     public void findAllTest() throws Exception {
         for (Person person : dbService.findAll(Person.class)) {
+            System.out.println("--------------");
             System.out.println(BlinkJSON.toPrettyJSON(person));
         }
     }
