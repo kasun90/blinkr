@@ -1,6 +1,7 @@
 package com.blink.admin.user;
 
 import com.blink.core.database.SimpleDBObject;
+import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
@@ -25,13 +26,19 @@ public class UserHandler {
                     find(new SimpleDBObject().append("username", username), UserDetails.class).first();
             if (user == null)
                 adminService.sendReply(requestID, new InvalidRequest("No user found"));
-            else
+            else {
                 adminService.sendReply(requestID, new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
+            }
+
         }
     }
 
-    private String getProfilePicture() {
-
-        return null;
+    private String getProfilePicture() throws Exception {
+        FileService fileService = adminService.getContext().getFileService();
+        String path = fileService.newFileURI().appendResource("media").appendResource("adminUser")
+                .appendResource(username).appendResource("profile.jpg").build();
+        if (!fileService.exists(path))
+            return null;
+        return fileService.getURL(path).toString();
     }
 }
