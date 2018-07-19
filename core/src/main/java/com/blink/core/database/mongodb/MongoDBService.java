@@ -40,6 +40,7 @@ public class MongoDBService extends DBService {
         super(configuration);
         mongoClient = new MongoClient(configuration.getDBHost(), configuration.getDBPort());
         this.db = mongoClient.getDatabase(configuration.getDBName());
+        this.coll = db.getCollection(collection);
     }
 
     @Override
