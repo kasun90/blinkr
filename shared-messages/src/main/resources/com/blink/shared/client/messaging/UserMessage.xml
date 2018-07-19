@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
+    <field type="String">name</field>
     <field type="String">message</field>
     <field type="String">email</field>
     <field type="String">phone</field>
+    <field type="long">timestamp</field>
 </model>
