@@ -18,7 +18,7 @@ public class AuthHelper {
 
     public AuthHelper(BaseService adminService) {
         this.adminService = adminService;
-        authDB = adminService.getContext().getDbService().withCollection("adminUser");
+        authDB = adminService.getContext().getDbServiceFactory().ofCollection("adminUser");
     }
 
     public boolean hasSession(String username) {

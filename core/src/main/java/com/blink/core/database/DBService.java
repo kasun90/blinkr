@@ -14,11 +14,6 @@ public abstract class DBService implements DBOperation {
         this.collection = collection;
     }
 
-    public DBService(Configuration configuration) {
-        this.database = configuration.getDBName();
-        this.collection = "common";
-    }
-
     public String serialize(Object object) {
         JsonObject jsonObject = BlinkJSON.toJsonTree(object);
         jsonObject.addProperty("_type", object.getClass().getName());

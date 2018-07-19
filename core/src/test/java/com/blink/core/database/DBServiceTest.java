@@ -1,6 +1,7 @@
 package com.blink.core.database;
 
 import com.blink.core.database.mongodb.MongoDBService;
+import com.blink.core.database.mongodb.MongoDBServiceFactory;
 import com.blink.utilities.BlinkJSON;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,8 @@ public class DBServiceTest {
 
     @Before
     public void initService() {
-        dbService = new MongoDBService("test", "testcollection");
+        MongoDBServiceFactory factory = new MongoDBServiceFactory("localhost", 27017, "test");
+        dbService = factory.ofCollection("testcollection");
     }
 
 

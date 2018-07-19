@@ -3,8 +3,6 @@ package com.blink.core.database;
 import java.util.List;
 
 public interface DBOperation {
-    DBService withCollection(String collection);
-    DBService withDatabase(String database);
     void insert(Object object) throws Exception;
     void update(SimpleDBObject toFind, Object toUpdate) throws Exception;
     void insertOrUpdate(SimpleDBObject toFind, Object toUpdate) throws Exception;

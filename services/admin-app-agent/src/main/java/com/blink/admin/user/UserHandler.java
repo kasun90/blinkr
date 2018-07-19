@@ -22,7 +22,7 @@ public class UserHandler {
 
     public void handleMessage(String requestID, Object message) throws Exception {
         if (message instanceof UserDetailsRequestMessage) {
-            UserDetails user = adminService.getContext().getDbService().withCollection("adminUser").
+            UserDetails user = adminService.getContext().getDbServiceFactory().ofCollection("adminUser").
                     find(new SimpleDBObject().append("username", username), UserDetails.class).first();
             if (user == null)
                 adminService.sendReply(requestID, new InvalidRequest("No user found"));

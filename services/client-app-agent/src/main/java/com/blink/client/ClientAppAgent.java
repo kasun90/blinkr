@@ -16,7 +16,7 @@ public class ClientAppAgent extends BaseService {
 
     public ClientAppAgent(Context context) {
         super(context);
-        userMessageDB = context.getDbService().withCollection("userMessage");
+        userMessageDB = context.getDbServiceFactory().ofCollection("userMessage");
     }
 
     @Subscribe

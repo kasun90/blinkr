@@ -1,7 +1,9 @@
 package com.blink.runner;
 
 import com.blink.core.database.DBService;
+import com.blink.core.database.DBServiceFactory;
 import com.blink.core.database.mongodb.MongoDBService;
+import com.blink.core.database.mongodb.MongoDBServiceFactory;
 import com.blink.core.file.FileService;
 import com.blink.core.file.local.LocalFileService;
 import com.blink.core.log.Logger;
@@ -26,20 +28,20 @@ public class EnvironmentCreator {
         ConfigurationFactory.setFactory(new FileConfigurationFactory());
         Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
 
-        DBService dbService = new MongoDBService(configuration);
+        DBServiceFactory dbServiceFactory = new MongoDBServiceFactory(configuration);
         FileService fileService = new LocalFileService(configuration);
 
         Context.ContextBuilder builder = new Context.ContextBuilder();
         Context context = builder.setConfiguration(configuration)
                 .setLoggerFactory(loggerFactory)
-                .setDbService(dbService)
+                .setDbServiceFactory(dbServiceFactory)
                 .setFileService(fileService)
                 .build();
 
         //create users
         //admin user with password 1234
 
-        DBService adminDB = context.getDbService().withCollection("adminUser");
+        DBService adminDB = context.getDbServiceFactory().ofCollection("adminUser");
         adminDB.insert(new UserDetails("admin", "Kasun Piyumal", UserType.SUPER_ADMIN,
                 "03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4", "kpiyumal90@gmail.com"));
         logger.info("Users created");

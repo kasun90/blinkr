@@ -4,61 +4,20 @@ import com.blink.core.database.DBCollection;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Configuration;
-import com.blink.core.service.Context;
-import com.blink.utilities.BlinkJSON;
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.UpdateResult;
-import com.mongodb.operation.UpdateOperation;
 import org.bson.Document;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class MongoDBService extends DBService {
-    private MongoClient mongoClient;
-    private MongoDatabase db;
     private MongoCollection<Document> coll;
 
-
-    public MongoDBService(String database, String collection) {
+    MongoDBService(String database, String collection, MongoCollection<Document> coll) {
         super(database, collection);
-        mongoClient = new MongoClient("localhost", 27017);
-        this.db = mongoClient.getDatabase(database);
-        this.coll = this.db.getCollection(collection);
-    }
-
-    public MongoDBService(Configuration configuration) {
-        super(configuration);
-        mongoClient = new MongoClient(configuration.getDBHost(), configuration.getDBPort());
-        this.db = mongoClient.getDatabase(configuration.getDBName());
-        this.coll = db.getCollection(collection);
-    }
-
-    private MongoDBService(Configuration configuration, MongoCollection<Document> coll) {
-       super(configuration);
-    }
-
-    @Override
-    public DBService withCollection(String collection) {
-        this.collection = collection;
-        this.coll = this.db.getCollection(collection);
-        return this;
-    }
-
-    @Override
-    public DBService withDatabase(String database) {
-        this.database = database;
-        this.db = mongoClient.getDatabase(database);
-        return this;
+        this.coll = coll;
     }
 
     @Override
