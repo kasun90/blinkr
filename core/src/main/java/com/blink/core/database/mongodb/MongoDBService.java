@@ -43,6 +43,10 @@ public class MongoDBService extends DBService {
         this.coll = db.getCollection(collection);
     }
 
+    private MongoDBService(Configuration configuration, MongoCollection<Document> coll) {
+       super(configuration);
+    }
+
     @Override
     public DBService withCollection(String collection) {
         this.collection = collection;
