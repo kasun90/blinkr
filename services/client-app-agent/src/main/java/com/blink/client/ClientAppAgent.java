@@ -12,7 +12,7 @@ import com.google.common.eventbus.Subscribe;
 
 public class ClientAppAgent extends BaseService {
 
-    DBService userMessageDB;
+    private DBService userMessageDB;
 
     public ClientAppAgent(Context context) {
         super(context);
