@@ -6,11 +6,13 @@ public class UserDetailsResponseMessage {
 	private String name;
 	private String type;
 	private String email;
+	private String profilePicture;
 
-	public UserDetailsResponseMessage(String name, String type, String email) {
+	public UserDetailsResponseMessage(String name, String type, String email, String profilePicture) {
 		this.name = name;
 		this.type = type;
 		this.email = email;
+		this.profilePicture = profilePicture;
 	}
 
 	public String getName() {
@@ -37,6 +39,15 @@ public class UserDetailsResponseMessage {
 
 	public UserDetailsResponseMessage setEmail(String email) {
 		this.email = email;
+		return this;
+	}
+
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+
+	public UserDetailsResponseMessage setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 		return this;
 	}
 

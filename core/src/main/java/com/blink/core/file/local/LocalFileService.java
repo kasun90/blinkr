@@ -1,6 +1,7 @@
 package com.blink.core.file.local;
 
 import com.blink.core.exception.BlinkRuntimeException;
+import com.blink.core.file.FileURI;
 import com.blink.core.file.TemporaryFileService;
 import com.blink.core.service.Configuration;
 
@@ -31,6 +32,11 @@ public class LocalFileService extends TemporaryFileService {
         this.rootDir = configuration.getValue("staticFilesRoot");
         this.domain = configuration.getValue("domain");
         this.clientPort = configuration.getValue("clientPort");
+    }
+
+    @Override
+    public boolean exists(String path) {
+        return new File(rootDir + path).exists();
     }
 
     @Override
@@ -77,5 +83,15 @@ public class LocalFileService extends TemporaryFileService {
     @Override
     public URL getURL(String path) throws Exception {
         return new URL("http", domain, Integer.parseInt(clientPort), "/" + rootDir + path);
+    }
+
+    @Override
+    public FileURI newFileURI() {
+        return new LocalFileURI();
+    }
+
+    @Override
+    public FileURI newFileURI(String base) {
+        return new LocalFileURI(base);
     }
 }

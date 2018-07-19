@@ -26,7 +26,12 @@ public class UserHandler {
             if (user == null)
                 adminService.sendReply(requestID, new InvalidRequest("No user found"));
             else
-                adminService.sendReply(requestID, new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail()));
+                adminService.sendReply(requestID, new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
         }
+    }
+
+    private String getProfilePicture() {
+
+        return null;
     }
 }

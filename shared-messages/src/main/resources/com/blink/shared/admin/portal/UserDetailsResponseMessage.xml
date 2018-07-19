@@ -3,4 +3,5 @@
     <field type="String">name</field>
     <field type="String">type</field>
     <field type="String">email</field>
+    <field type="String">profilePicture</field>
 </model>

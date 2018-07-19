@@ -54,6 +54,10 @@ public class FileServiceTest {
         System.out.println(url.toString());
     }
 
-
+    @Test
+    public void existsTest() throws Exception {
+        String articles = fileService.newFileURI().appendResource("articles").appendResource("myfirst2.txt").build();
+        System.out.println(fileService.exists(articles));
+    }
 
 }
