@@ -14,9 +14,10 @@ public class ClientAppAgent extends BaseService {
 
     private DBService userMessageDB;
 
-    public ClientAppAgent(Context context) {
+    public ClientAppAgent(Context context) throws Exception {
         super(context);
         userMessageDB = context.getDbServiceFactory().ofCollection("userMessage");
+        userMessageDB.createIndex(false, "timestamp");
     }
 
     @Subscribe

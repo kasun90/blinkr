@@ -112,7 +112,12 @@ public class ClassWriter implements AutoCloseable {
         context.getFields().forEach((name, type) -> {
             println();
             //getter
-            startLine().print("public ").print(type).print(" get").print(StringUtils.capitalize(name)).println("() {");
+            String getterForType;
+            if (type.equals("boolean"))
+                getterForType = " is";
+            else
+                getterForType = " get";
+            startLine().print("public ").print(type).print(getterForType).print(StringUtils.capitalize(name)).println("() {");
             plusIndent();
             startLine().print("return ").print(name).println(";");
             minusIndent();

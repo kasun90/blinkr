@@ -53,7 +53,7 @@ public class SharedMessageGenerator {
             ClassWriter classWriter = new ClassWriter(builder.build());
             classWriter.start();
             classWriter.close();
-            System.out.println("prcessed " + file.getPath());
+            System.out.println("processed " + file.getPath());
         } catch (Exception e){
             throw new RuntimeException(e);
         }

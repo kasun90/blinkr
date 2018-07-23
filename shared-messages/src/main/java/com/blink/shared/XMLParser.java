@@ -16,7 +16,6 @@ public class XMLParser {
     public XMLParser(File file, Context.ContextBuilder builder) {
         this.file = file;
         this.builder = builder;
-
     }
 
     public void parse() throws Exception {
@@ -53,7 +52,7 @@ public class XMLParser {
         if (fieldList != null) {
             for (int i = 0; i < fieldList.getLength(); i++) {
                 Element element = Element.class.cast(fieldList.item(i));
-                builder.addField(element.getTextContent(), element.getAttribute("type"));
+                builder.addField(element.getTextContent(), convertField(element.getAttribute("type")));
             }
         }
 
@@ -65,6 +64,21 @@ public class XMLParser {
                 builder.addCase(element.getTextContent());
             }
         }
+    }
+
+    private String convertField(String attrValue) {
+        StringBuilder builder = new StringBuilder();
+        if (attrValue.startsWith("List")) {
+            return builder.append("List<").append(attrValue.split("::")[1]).append(">").toString();
+        } else if (attrValue.startsWith("Map")) {
+            String[] split = attrValue.split("::");
+            if (split.length == 2)
+                builder.append("Map<String, ").append(split[1]).append(">");
+            else
+                builder.append("Map<").append(split[1]).append(", ").append(split[2]).append(">");
+            return builder.toString();
+        } else
+            return attrValue;
     }
 
     public Context.ContextBuilder getBuilder() {

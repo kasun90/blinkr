@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <import>com.blink.shared.client.messaging.UserMessage</import>
+    <field type="List::UserMessage">messages</field>
+    <field type="long">total</field>
+</model>
