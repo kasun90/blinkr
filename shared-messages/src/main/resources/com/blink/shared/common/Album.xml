@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <field type="String">title</field>
+    <field type="String">key</field>
+    <field type="String">description</field>
+    <field type="int">count</field>
+    <field type="List::Photo">photos</field>
+    <field type="Photo">cover</field>
+</model>
