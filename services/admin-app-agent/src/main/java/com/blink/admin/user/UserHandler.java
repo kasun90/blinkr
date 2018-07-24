@@ -1,10 +1,13 @@
 package com.blink.admin.user;
 
+import com.blink.common.AlbumHelper;
 import com.blink.core.database.*;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
+import com.blink.shared.admin.album.AlbumPhotoUploadMessage;
+import com.blink.shared.admin.album.AlbumPhotoUploadResponseMessage;
 import com.blink.shared.admin.portal.UserDetailsRequestMessage;
 import com.blink.shared.admin.portal.UserDetailsResponseMessage;
 import com.blink.shared.admin.portal.UserMessagesRequestMessage;
@@ -20,11 +23,13 @@ public class UserHandler {
     private BaseService adminService;
     private String username;
     private Logger logger;
+    private AlbumHelper albumHelper;
 
     public UserHandler(String username, BaseService adminService) {
         this.adminService = adminService;
         this.username = username;
         logger = adminService.getContext().getLoggerFactory().getLogger(String.format("%s-%s", "User", username));
+        this.albumHelper = new AlbumHelper(adminService);
     }
 
     public void handleMessage(String requestID, Object message) throws Exception {
@@ -39,6 +44,8 @@ public class UserHandler {
 
         } else if (message instanceof UserMessagesRequestMessage) {
             handleUserMessagesRequest(requestID, UserMessagesRequestMessage.class.cast(message));
+        } else if (message instanceof AlbumPhotoUploadMessage) {
+            handleAlbumPhotoUpload(requestID, AlbumPhotoUploadMessage.class.cast(message));
         } else {
             adminService.error("Unhandled message received {}", message);
             adminService.sendReply(requestID, new InvalidRequest("Unhandled Message received"));
@@ -81,5 +88,10 @@ public class UserHandler {
 
         }
         adminService.sendReply(requestID, new UserMessagesResponseMessage(messages, userMsgDB.count(UserMessage.class)));
+    }
+
+    private void handleAlbumPhotoUpload(String requestID, AlbumPhotoUploadMessage uploadMessage) throws Exception {
+        albumHelper.savePhoto(uploadMessage.getKey(), uploadMessage.getFileContent());
+        adminService.sendReply(requestID, new AlbumPhotoUploadResponseMessage(uploadMessage.getKey()));
     }
 }

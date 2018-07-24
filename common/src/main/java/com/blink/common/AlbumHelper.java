@@ -3,21 +3,26 @@ package com.blink.common;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.exception.BlinkRuntimeException;
+import com.blink.core.file.FileService;
+import com.blink.core.file.FileURI;
 import com.blink.core.service.BaseService;
 import com.blink.core.service.Context;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Photo;
 
+import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AlbumHelper {
     private BaseService service;
     private DBService albumDB;
+    private String albumBase;
 
     public AlbumHelper(BaseService service) {
         this.service = service;
         this.albumDB = service.getContext().getDbServiceFactory().ofCollection("albums");
+        albumBase = service.getContext().getFileService().newFileURI("albums").build();
     }
 
     public boolean isKeyAvailable(String key) throws Exception {
@@ -34,6 +39,19 @@ public class AlbumHelper {
         }
 
         albumDB.insertOrUpdate(new SimpleDBObject().append("key", album.getKey()), album);
+    }
+
+    public void savePhoto(String key, String fileContent) throws Exception {
+        FileService fileService = service.getContext().getFileService();
+        String path = fileService.newFileURI(albumBase).appendResource("key").appendResource("1.jpg").build();
+
+        String localFile = fileService.createLocalFile(path);
+
+        try (FileWriter writer = new FileWriter(localFile)) {
+            writer.write(fileContent);
+        }
+
+        fileService.upload(path);
     }
 
     public static class AlbumBuilder {
