@@ -6,6 +6,8 @@ import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
+import com.blink.shared.admin.album.AlbumKeyCheckRequestMessage;
+import com.blink.shared.admin.album.AlbumKeyCheckResponseMessage;
 import com.blink.shared.admin.album.AlbumPhotoUploadMessage;
 import com.blink.shared.admin.album.AlbumPhotoUploadResponseMessage;
 import com.blink.shared.admin.portal.UserDetailsRequestMessage;
@@ -44,6 +46,8 @@ public class UserHandler {
 
         } else if (message instanceof UserMessagesRequestMessage) {
             handleUserMessagesRequest(requestID, UserMessagesRequestMessage.class.cast(message));
+        } else if (message instanceof AlbumKeyCheckRequestMessage) {
+            handleAlbumKeyCheck(requestID, AlbumKeyCheckRequestMessage.class.cast(message));
         } else if (message instanceof AlbumPhotoUploadMessage) {
             handleAlbumPhotoUpload(requestID, AlbumPhotoUploadMessage.class.cast(message));
         } else {
@@ -88,6 +92,11 @@ public class UserHandler {
 
         }
         adminService.sendReply(requestID, new UserMessagesResponseMessage(messages, userMsgDB.count(UserMessage.class)));
+    }
+
+    private void handleAlbumKeyCheck(String requestID, AlbumKeyCheckRequestMessage message) throws Exception {
+        adminService.info("Key Check {}", message);
+        adminService.sendReply(requestID, new AlbumKeyCheckResponseMessage(albumHelper.isKeyAvailable(message.getKey())));
     }
 
     private void handleAlbumPhotoUpload(String requestID, AlbumPhotoUploadMessage uploadMessage) throws Exception {

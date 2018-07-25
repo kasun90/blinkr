@@ -10,7 +10,16 @@ import com.blink.core.service.Context;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Photo;
 
-import java.io.FileWriter;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,13 +51,20 @@ public class AlbumHelper {
     }
 
     public void savePhoto(String key, String fileContent) throws Exception {
+        service.info("file Content length {}", fileContent.length());
         FileService fileService = service.getContext().getFileService();
-        String path = fileService.newFileURI(albumBase).appendResource("key").appendResource("1.jpg").build();
+        String path = fileService.newFileURI(albumBase).appendResource(key).appendResource("1.jpg").build();
 
         String localFile = fileService.createLocalFile(path);
 
-        try (FileWriter writer = new FileWriter(localFile)) {
-            writer.write(fileContent);
+        String substring = fileContent.substring(fileContent.indexOf(",") + 1);
+        byte[] decode = Base64.getDecoder().decode(substring);
+        service.info(decode.length);
+//        BufferedImage read = ImageIO.read(new ByteArrayInputStream(decode));
+//        ImageIO.write(read, "jpg", new File(localFile));
+
+        try (OutputStream output = new BufferedOutputStream(new FileOutputStream(localFile))) {
+            output.write(decode);
         }
 
         fileService.upload(path);
