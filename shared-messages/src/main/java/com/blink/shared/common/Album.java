@@ -10,14 +10,16 @@ public class Album {
 	private int count;
 	private List<Photo> photos;
 	private Photo cover;
+	private long timestamp;
 
-	public Album(String title, String key, String description, int count, List<Photo> photos, Photo cover) {
+	public Album(String title, String key, String description, int count, List<Photo> photos, Photo cover, long timestamp) {
 		this.title = title;
 		this.key = key;
 		this.description = description;
 		this.count = count;
 		this.photos = photos;
 		this.cover = cover;
+		this.timestamp = timestamp;
 	}
 
 	public String getTitle() {
@@ -71,6 +73,15 @@ public class Album {
 
 	public Album setCover(Photo cover) {
 		this.cover = cover;
+		return this;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public Album setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 		return this;
 	}
 

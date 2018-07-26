@@ -3,8 +3,4 @@
     <field type="String">title</field>
     <field type="String">key</field>
     <field type="String">description</field>
-    <field type="int">count</field>
-    <field type="List::Photo">photos</field>
-    <field type="Photo">cover</field>
-    <field type="long">timestamp</field>
 </model>

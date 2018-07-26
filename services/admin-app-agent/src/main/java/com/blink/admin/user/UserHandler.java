@@ -6,16 +6,15 @@ import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
-import com.blink.shared.admin.album.AlbumKeyCheckRequestMessage;
-import com.blink.shared.admin.album.AlbumKeyCheckResponseMessage;
-import com.blink.shared.admin.album.AlbumPhotoUploadMessage;
-import com.blink.shared.admin.album.AlbumPhotoUploadResponseMessage;
+import com.blink.shared.admin.album.*;
 import com.blink.shared.admin.portal.UserDetailsRequestMessage;
 import com.blink.shared.admin.portal.UserDetailsResponseMessage;
 import com.blink.shared.admin.portal.UserMessagesRequestMessage;
 import com.blink.shared.admin.portal.UserMessagesResponseMessage;
 import com.blink.shared.client.messaging.UserMessage;
+import com.blink.shared.common.Album;
 import com.blink.shared.system.InvalidRequest;
+import com.blink.utilities.BlinkTime;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -45,11 +44,19 @@ public class UserHandler {
             }
 
         } else if (message instanceof UserMessagesRequestMessage) {
-            handleUserMessagesRequest(requestID, UserMessagesRequestMessage.class.cast(message));
+            handleUserMessagesRequest(requestID, (UserMessagesRequestMessage) message);
+        } else if (message instanceof AlbumsRequestMessage) {
+            handleAlbumsReq(requestID, (AlbumsRequestMessage) message);
         } else if (message instanceof AlbumKeyCheckRequestMessage) {
-            handleAlbumKeyCheck(requestID, AlbumKeyCheckRequestMessage.class.cast(message));
+            handleAlbumKeyCheck(requestID, (AlbumKeyCheckRequestMessage) message);
+        } else if (message instanceof CreateAlbumRequestMessage) {
+            handleCreateAlbum(requestID, (CreateAlbumRequestMessage) message);
         } else if (message instanceof AlbumPhotoUploadMessage) {
-            handleAlbumPhotoUpload(requestID, AlbumPhotoUploadMessage.class.cast(message));
+            handleAlbumPhotoUpload(requestID, (AlbumPhotoUploadMessage) message);
+        } else if (message instanceof AlbumCoverUploadMessage) {
+            handleAlbumCoverUpload(requestID, (AlbumCoverUploadMessage) message);
+        } else if (message instanceof AlbumDeleteMessage) {
+            handleAlbumDelete(requestID, (AlbumDeleteMessage) message);
         } else {
             adminService.error("Unhandled message received {}", message);
             adminService.sendReply(requestID, new InvalidRequest("Unhandled Message received"));
@@ -94,13 +101,41 @@ public class UserHandler {
         adminService.sendReply(requestID, new UserMessagesResponseMessage(messages, userMsgDB.count(UserMessage.class)));
     }
 
+    private void handleAlbumsReq(String requestID, AlbumsRequestMessage message) throws Exception {
+        adminService.sendReply(requestID, new AlbumsResponseMessage(albumHelper.getAlbums(message.getTimestamp(),
+                message.isLess(), message.getLimit()), albumHelper.getAlbumsCount()));
+    }
+
     private void handleAlbumKeyCheck(String requestID, AlbumKeyCheckRequestMessage message) throws Exception {
-        adminService.info("Key Check {}", message);
+        logger.info("Key Check {}", message);
         adminService.sendReply(requestID, new AlbumKeyCheckResponseMessage(albumHelper.isKeyAvailable(message.getKey())));
     }
 
+    private void handleCreateAlbum(String requestID, CreateAlbumRequestMessage message) throws Exception {
+        logger.info("Create album request {}", message);
+        AlbumHelper.AlbumBuilder builder = new AlbumHelper.AlbumBuilder();
+        Album album = builder.setTitle(message.getTitle())
+                .setKey(message.getKey())
+                .setDescription(message.getDescription())
+                .setTimestamp(BlinkTime.getCurrentTimeMillis())
+                .build();
+        albumHelper.saveAlbum(album);
+        adminService.sendReply(requestID, new CreateAlbumResponseMessage(message.getKey(),
+                true, "Success"));
+    }
+
     private void handleAlbumPhotoUpload(String requestID, AlbumPhotoUploadMessage uploadMessage) throws Exception {
-        albumHelper.savePhoto(uploadMessage.getKey(), uploadMessage.getFileContent());
-        adminService.sendReply(requestID, new AlbumPhotoUploadResponseMessage(uploadMessage.getKey()));
+        boolean success = albumHelper.savePhoto(uploadMessage.getKey(), uploadMessage.getFileContent());
+        adminService.sendReply(requestID, new AlbumPhotoUploadResponseMessage(uploadMessage.getKey(), success));
+    }
+
+    private void handleAlbumCoverUpload(String requestID, AlbumCoverUploadMessage message) throws Exception {
+        boolean success = albumHelper.saveCover(message.getKey(), message.getFileContent());
+        adminService.sendReply(requestID, new AlbumCoverUploadResponseMessage(message.getKey(), success));
+    }
+
+    private void handleAlbumDelete(String requestID, AlbumDeleteMessage message) throws Exception {
+        adminService.sendReply(requestID, new AlbumDeleteResponeMessage(message.getKey(),
+                albumHelper.deleteAlbum(message.getKey())));
     }
 }

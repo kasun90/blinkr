@@ -2,4 +2,5 @@
 <model>
     <field type="String">key</field>
     <field type="boolean">success</field>
+    <field type="String">description</field>
 </model>

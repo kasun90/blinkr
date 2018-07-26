@@ -2,11 +2,11 @@ package com.blink.shared.admin.album;
 
 import com.blink.utilities.BlinkJSON;
 
-public class AlbumPhotoUploadResponseMessage {
+public class AlbumDeleteResponeMessage {
 	private String key;
 	private boolean success;
 
-	public AlbumPhotoUploadResponseMessage(String key, boolean success) {
+	public AlbumDeleteResponeMessage(String key, boolean success) {
 		this.key = key;
 		this.success = success;
 	}
@@ -15,7 +15,7 @@ public class AlbumPhotoUploadResponseMessage {
 		return key;
 	}
 
-	public AlbumPhotoUploadResponseMessage setKey(String key) {
+	public AlbumDeleteResponeMessage setKey(String key) {
 		this.key = key;
 		return this;
 	}
@@ -24,7 +24,7 @@ public class AlbumPhotoUploadResponseMessage {
 		return success;
 	}
 
-	public AlbumPhotoUploadResponseMessage setSuccess(boolean success) {
+	public AlbumDeleteResponeMessage setSuccess(boolean success) {
 		this.success = success;
 		return this;
 	}
