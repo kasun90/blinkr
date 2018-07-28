@@ -132,10 +132,13 @@ public class UserHandler {
     private void handleAlbumCoverUpload(AlbumCoverUploadMessage message) throws Exception {
         boolean success = albumHelper.saveCover(message.getKey(), message.getFileContent());
         adminService.sendReply(new AlbumCoverUploadResponseMessage(message.getKey(), success));
+        adminService.info("Cover photo uploaded [key={}]", message.getKey());
     }
 
     private void handleAlbumDelete(AlbumDeleteMessage message) throws Exception {
+        boolean success = albumHelper.deleteAlbum(message.getKey());
         adminService.sendReply(new AlbumDeleteResponeMessage(message.getKey(),
-                albumHelper.deleteAlbum(message.getKey())));
+                success));
+        adminService.info("Album delete status [success={} key={}]", success, message.getKey());
     }
 }
