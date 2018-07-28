@@ -81,6 +81,13 @@ public class AlbumHelper {
         return albumDB.find(new SimpleDBObject().append("key", key), Album.class).first();
     }
 
+    public Album getDetailedAlbum(String key) throws Exception {
+        Album album = getAlbum(key);
+        if (album == null)
+            return null;
+        return fillPhotos(album);
+    }
+
     private Album fillPhotos(Album album) throws Exception {
         String photoPath = fileService.newFileURI(albumBase).appendResource(album.getKey()).appendResource("photos").build();
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <import>com.blink.shared.common.Album</import>
+    <field type="Album">album</field>
+</model>
