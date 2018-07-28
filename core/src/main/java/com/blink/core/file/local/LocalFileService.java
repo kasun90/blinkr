@@ -13,6 +13,7 @@ import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class LocalFileService extends TemporaryFileService {
@@ -70,7 +71,7 @@ public class LocalFileService extends TemporaryFileService {
             return new LinkedList<>();
         return Files.walk(filesPath)
                 .filter(path1 -> !path1.toFile().isDirectory())
-                .map(origin -> Paths.get(rootDir).relativize(origin).toString())
+                .map(origin -> Paths.get(rootDir).relativize(origin).toString().replaceAll("\\\\", Matcher.quoteReplacement("/")))
                 .collect(Collectors.toList());
     }
 
