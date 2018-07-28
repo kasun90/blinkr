@@ -23,18 +23,18 @@ public class ClientAppAgent extends BaseService {
     @Subscribe
     public void onClientRequest(ClientRequestMessage requestMessage) throws Exception {
         Object enclosedMessage = requestMessage.getEnclosedMessage();
-        String requestID = requestMessage.getRequestID();
+        setRequestID(requestMessage.getRequestID());
 
         if (enclosedMessage instanceof UserMessage) {
-            onUserMessage(requestID, UserMessage.class.cast(enclosedMessage));
+            onUserMessage((UserMessage) enclosedMessage);
         }
     }
 
-    private void onUserMessage(String reqID, UserMessage message) throws Exception {
+    private void onUserMessage(UserMessage message) throws Exception {
         message.setTimestamp(BlinkTime.getCurrentTimeMillis());
         userMessageDB.insertOrUpdate(new SimpleDBObject().append("timestamp", message.getTimestamp()),
                 message);
-        sendReply(reqID, new GenericReplyMessage("Message recorded"));
+        sendReply(new GenericReplyMessage("Message recorded"));
     }
 
     @Override

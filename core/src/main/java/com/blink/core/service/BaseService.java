@@ -1,11 +1,13 @@
 package com.blink.core.service;
 
+import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.log.Logger;
 import com.blink.shared.system.InvalidRequest;
 import com.blink.shared.system.ReplyMessage;
 
 public abstract class BaseService implements Logger {
     public abstract String getServiceName();
+    private static ThreadLocal<String> currentRequestID = new ThreadLocal<>();
 
     private Context context;
     private Logger logger;
@@ -15,7 +17,21 @@ public abstract class BaseService implements Logger {
         this.logger = context.getLoggerFactory().getLogger(getServiceName());
     }
 
+    protected void setRequestID(String requestID) {
+        currentRequestID.set(requestID);
+    }
+
+    protected String getRequestID() {
+        return currentRequestID.get();
+    }
+
+    public void sendReply(Object message) {
+        sendReply(currentRequestID.get(), message);
+    }
+
     public void sendReply(String requestID, Object message) {
+        if (requestID == null)
+            throw new BlinkRuntimeException("Request ID cannot be null. Please set the request ID first");
         context.getBus().post(new ReplyMessage(requestID, message));
     }
 

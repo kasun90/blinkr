@@ -27,30 +27,30 @@ public class AdminAppAgent extends BaseService {
     @Subscribe
     private void onAdminRequest(AdminRequestMessage message) throws Exception {
         Object enclosedMessage = message.getEnclosedMessage();
-        String requestID = message.getRequestID();
+        setRequestID(message.getRequestID());
 
         if (enclosedMessage instanceof LoginMessage) {
-            onLogin(requestID, LoginMessage.class.cast(enclosedMessage));
+            onLogin((LoginMessage) enclosedMessage);
         } else if (authHelper.isValidSession(message.getTargetUser(), message.getSessionID())) {
             UserHandler userHandler = userCache.get(message.getTargetUser());
             if (userHandler == null) {
                 userHandler = new UserHandler(message.getTargetUser(), this);
                 userCache.put(message.getTargetUser(), userHandler);
             }
-            userHandler.handleMessage(requestID, enclosedMessage);
+            userHandler.handleMessage(enclosedMessage);
         } else {
             error("Unauthorized message received [sessionID={} message={}]", message.getSessionID(), enclosedMessage);
-            sendReply(requestID, new InvalidRequest("Invalid Request"));
+            sendReply(new InvalidRequest("Invalid Request"));
         }
     }
 
-    private void onLogin(String requestID, LoginMessage message) throws Exception {
+    private void onLogin(LoginMessage message) throws Exception {
         if (authHelper.validateLogin(message.getUsername(), message.getPassword())) {
             info("Login success for user: {}", message.getUsername());
             String sessionID = authHelper.createSession(message.getUsername());
-            sendReply(requestID, new LoginReplyMessage(sessionID, 0, "Success"));
+            sendReply(new LoginReplyMessage(sessionID, 0, "Success"));
         } else {
-            sendReply(requestID, new LoginReplyMessage(null, 100, "Username or Password is incorrect"));
+            sendReply(new LoginReplyMessage(null, 100, "Username or Password is incorrect"));
         }
     }
 
