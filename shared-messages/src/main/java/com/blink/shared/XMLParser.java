@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.lang.reflect.Field;
 
 public class XMLParser {
 
@@ -23,6 +24,8 @@ public class XMLParser {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document doc = documentBuilder.parse(file);
         doc.normalizeDocument();
+
+
 
         if (doc.getDocumentElement().hasAttribute("extends")) {
             builder.setExtendClassName(doc.getDocumentElement().getAttribute("extends"));
@@ -83,5 +86,26 @@ public class XMLParser {
 
     public Context.ContextBuilder getBuilder() {
         return builder;
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException {
+        //com.blink.shared.client.ClientRequestMessage
+        //com.blink.shared.client.album.AlbumsResponseMessage
+        Class<?> aClass = Class.forName("com.blink.shared.client.album.AlbumsResponseMessage");
+
+        for (Field field : aClass.getDeclaredFields()) {
+            String genericType = field.getGenericType().getTypeName();
+            String simpleName = field.getType().getSimpleName();
+
+            System.out.println(field.getName());
+            System.out.println(field.getType().getSimpleName());
+
+            if (simpleName.equals("List")) {
+                String fullName = genericType.substring(genericType.indexOf('<'), genericType.indexOf('>'));
+                System.out.println("List<" + fullName.substring(fullName.lastIndexOf('.') + 1) + ">");
+            }
+
+            System.out.println("--------------------------------------");
+        }
     }
 }
