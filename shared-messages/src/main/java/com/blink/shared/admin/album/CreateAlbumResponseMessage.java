@@ -7,6 +7,8 @@ public class CreateAlbumResponseMessage {
 	private boolean success;
 	private String description;
 
+	public CreateAlbumResponseMessage() {}
+
 	public CreateAlbumResponseMessage(String key, boolean success, String description) {
 		this.key = key;
 		this.success = success;

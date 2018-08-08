@@ -6,6 +6,8 @@ public class AlbumDeleteResponeMessage {
 	private String key;
 	private boolean success;
 
+	public AlbumDeleteResponeMessage() {}
+
 	public AlbumDeleteResponeMessage(String key, boolean success) {
 		this.key = key;
 		this.success = success;

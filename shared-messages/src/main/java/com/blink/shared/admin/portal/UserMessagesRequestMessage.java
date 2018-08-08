@@ -7,6 +7,8 @@ public class UserMessagesRequestMessage {
 	private boolean less;
 	private int limit;
 
+	public UserMessagesRequestMessage() {}
+
 	public UserMessagesRequestMessage(long timestamp, boolean less, int limit) {
 		this.timestamp = timestamp;
 		this.less = less;

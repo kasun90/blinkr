@@ -6,6 +6,8 @@ public class ReplyMessage {
 	private String requestID;
 	private Object data;
 
+	public ReplyMessage() {}
+
 	public ReplyMessage(String requestID, Object data) {
 		this.requestID = requestID;
 		this.data = data;

@@ -6,6 +6,8 @@ public class Photo {
 	private String resource;
 	private String url;
 
+	public Photo() {}
+
 	public Photo(String resource, String url) {
 		this.resource = resource;
 		this.url = url;

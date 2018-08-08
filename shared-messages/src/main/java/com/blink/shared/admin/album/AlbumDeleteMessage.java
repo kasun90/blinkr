@@ -5,6 +5,8 @@ import com.blink.utilities.BlinkJSON;
 public class AlbumDeleteMessage {
 	private String key;
 
+	public AlbumDeleteMessage() {}
+
 	public AlbumDeleteMessage(String key) {
 		this.key = key;
 	}

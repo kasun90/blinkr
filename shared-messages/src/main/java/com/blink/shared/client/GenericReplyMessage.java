@@ -5,6 +5,8 @@ import com.blink.utilities.BlinkJSON;
 public class GenericReplyMessage {
 	private String description;
 
+	public GenericReplyMessage() {}
+
 	public GenericReplyMessage(String description) {
 		this.description = description;
 	}

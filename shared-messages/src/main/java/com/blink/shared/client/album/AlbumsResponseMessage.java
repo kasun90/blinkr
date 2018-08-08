@@ -7,6 +7,8 @@ import com.blink.shared.common.Album;
 public class AlbumsResponseMessage {
 	private List<Album> albums;
 
+	public AlbumsResponseMessage() {}
+
 	public AlbumsResponseMessage(List<Album> albums) {
 		this.albums = albums;
 	}

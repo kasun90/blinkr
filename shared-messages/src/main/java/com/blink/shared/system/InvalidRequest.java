@@ -5,6 +5,8 @@ import com.blink.utilities.BlinkJSON;
 public class InvalidRequest {
 	private String reason;
 
+	public InvalidRequest() {}
+
 	public InvalidRequest(String reason) {
 		this.reason = reason;
 	}

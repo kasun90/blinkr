@@ -5,6 +5,8 @@ import com.blink.utilities.BlinkJSON;
 public class AlbumKeyCheckResponseMessage {
 	private boolean available;
 
+	public AlbumKeyCheckResponseMessage() {}
+
 	public AlbumKeyCheckResponseMessage(boolean available) {
 		this.available = available;
 	}

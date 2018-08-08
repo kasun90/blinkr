@@ -6,6 +6,8 @@ public class AlbumCoverUploadResponseMessage {
 	private String key;
 	private boolean success;
 
+	public AlbumCoverUploadResponseMessage() {}
+
 	public AlbumCoverUploadResponseMessage(String key, boolean success) {
 		this.key = key;
 		this.success = success;

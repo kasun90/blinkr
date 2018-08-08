@@ -5,6 +5,8 @@ import com.blink.utilities.BlinkJSON;
 public class AlbumDetailsRequestMessage {
 	private String key;
 
+	public AlbumDetailsRequestMessage() {}
+
 	public AlbumDetailsRequestMessage(String key) {
 		this.key = key;
 	}

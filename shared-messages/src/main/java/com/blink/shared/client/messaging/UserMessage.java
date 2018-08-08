@@ -9,6 +9,8 @@ public class UserMessage {
 	private String phone;
 	private long timestamp;
 
+	public UserMessage() {}
+
 	public UserMessage(String name, String message, String email, String phone, long timestamp) {
 		this.name = name;
 		this.message = message;

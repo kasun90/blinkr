@@ -67,7 +67,10 @@ public class ClassWriter implements AutoCloseable {
         println();
 
         //define class
-        startLine().print("public class ").print(context.getClassName()).println(" {");
+        startLine().print("public class ").print(context.getClassName());
+        if (context.getExtendClassName() != null)
+            print(" extends ").print(context.getExtendClassName());
+        println(" {");
         plusIndent();
 
         context.getFields().forEach((name, type) -> {
@@ -76,12 +79,29 @@ public class ClassWriter implements AutoCloseable {
 
         println();
 
+        //write empty constructor
+        if (!context.getFields().isEmpty())
+            startLine().print("public ").print(context.getClassName()).println("() {}").println();
+
         //constructor start
         startLine().print("public ").print(context.getClassName()).print("(");
 
-
-        context.getFields().forEach(new BiConsumer<String, String>() {
+        context.getExtendFields().forEach(new BiConsumer<>() {
             boolean isFirst = true;
+
+            @Override
+            public void accept(String name, String type) {
+                if (!isFirst)
+                    print(", ");
+                print(type).print(" ").print(name);
+
+                if (isFirst)
+                    isFirst = false;
+            }
+        });
+
+        context.getFields().forEach(new BiConsumer<>() {
+            boolean isFirst = context.getExtendClassName() == null;
 
             @Override
             public void accept(String name, String type) {
@@ -98,14 +118,60 @@ public class ClassWriter implements AutoCloseable {
         println(") {");
 
         plusIndent();
-        context.getFields().forEach((name, type) -> {
-            startLine().print("this.").print(name).print(" = ").print(name).println(";");
-        });
+
+        if (context.getExtendClassName() != null) {
+            startLine().print("super(");
+
+            context.getExtendFields().forEach(new BiConsumer<>() {
+                boolean isFirst = true;
+
+                @Override
+                public void accept(String name, String type) {
+                    if (!isFirst)
+                        print(", ");
+                    print(name);
+                    isFirst = false;
+                }
+            });
+
+            println(");");
+        }
+
+        context.getFields().forEach((name, type) -> startLine().print("this.").print(name).print(" = ").print(name).println(";"));
         minusIndent();
 
         startLine().println("}");
 
         //constructor end
+
+        //extend getter setter start
+
+        context.getExtendFields().forEach((name, type) -> {
+            println();
+            //getter
+            String getterForType;
+            if (type.equals("boolean"))
+                getterForType = "is";
+            else
+                getterForType = "get";
+            startLine().print("public ").print(type).print(" ").print(getterForType).print(StringUtils.capitalize(name)).println("() {");
+            plusIndent();
+            startLine().print("return super.").print(getterForType).print(StringUtils.capitalize(name)).println("();");
+            minusIndent();
+            startLine().println("}");
+            println();
+
+            //setter
+            startLine().print("public ").print(context.getClassName()).print(" set").print(StringUtils.capitalize(name))
+                    .print("(").print(type).print(" ").print(name).println(") {");
+            plusIndent();
+            startLine().print("super.set").print(StringUtils.capitalize(name)).print("(").print(name).println(");");
+            startLine().println("return this;");
+            minusIndent();
+            startLine().println("}");
+        });
+
+        //extend getter setter end
 
         //getter setter start
 

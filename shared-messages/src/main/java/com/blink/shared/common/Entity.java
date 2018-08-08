@@ -1,13 +1,13 @@
-package com.blink.shared.admin.album;
+package com.blink.shared.common;
 
 import com.blink.utilities.BlinkJSON;
 
-public class AlbumKeyCheckRequestMessage {
+public class Entity {
 	private String key;
 
-	public AlbumKeyCheckRequestMessage() {}
+	public Entity() {}
 
-	public AlbumKeyCheckRequestMessage(String key) {
+	public Entity(String key) {
 		this.key = key;
 	}
 
@@ -15,7 +15,7 @@ public class AlbumKeyCheckRequestMessage {
 		return key;
 	}
 
-	public AlbumKeyCheckRequestMessage setKey(String key) {
+	public Entity setKey(String key) {
 		this.key = key;
 		return this;
 	}

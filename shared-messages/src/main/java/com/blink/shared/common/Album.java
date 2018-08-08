@@ -3,23 +3,33 @@ package com.blink.shared.common;
 import java.util.List;
 import com.blink.utilities.BlinkJSON;
 
-public class Album {
+public class Album extends Entity {
 	private String title;
-	private String key;
 	private String description;
 	private int count;
 	private List<Photo> photos;
 	private Photo cover;
 	private long timestamp;
 
-	public Album(String title, String key, String description, int count, List<Photo> photos, Photo cover, long timestamp) {
+	public Album() {}
+
+	public Album(String key, String title, String description, int count, List<Photo> photos, Photo cover, long timestamp) {
+		super(key);
 		this.title = title;
-		this.key = key;
 		this.description = description;
 		this.count = count;
 		this.photos = photos;
 		this.cover = cover;
 		this.timestamp = timestamp;
+	}
+
+	public String getKey() {
+		return super.getKey();
+	}
+
+	public Album setKey(String key) {
+		super.setKey(key);
+		return this;
 	}
 
 	public String getTitle() {
@@ -28,15 +38,6 @@ public class Album {
 
 	public Album setTitle(String title) {
 		this.title = title;
-		return this;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public Album setKey(String key) {
-		this.key = key;
 		return this;
 	}
 

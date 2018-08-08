@@ -8,6 +8,8 @@ public class UserDetailsResponseMessage {
 	private String email;
 	private String profilePicture;
 
+	public UserDetailsResponseMessage() {}
+
 	public UserDetailsResponseMessage(String name, String type, String email, String profilePicture) {
 		this.name = name;
 		this.type = type;

@@ -7,6 +7,8 @@ public class CreateAlbumRequestMessage {
 	private String key;
 	private String description;
 
+	public CreateAlbumRequestMessage() {}
+
 	public CreateAlbumRequestMessage(String title, String key, String description) {
 		this.title = title;
 		this.key = key;

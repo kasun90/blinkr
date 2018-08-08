@@ -6,6 +6,8 @@ public class AlbumCoverUploadMessage {
 	private String key;
 	private String fileContent;
 
+	public AlbumCoverUploadMessage() {}
+
 	public AlbumCoverUploadMessage(String key, String fileContent) {
 		this.key = key;
 		this.fileContent = fileContent;

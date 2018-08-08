@@ -7,6 +7,8 @@ public class AlbumsRequestMessage {
 	private boolean less;
 	private int limit;
 
+	public AlbumsRequestMessage() {}
+
 	public AlbumsRequestMessage(long timestamp, boolean less, int limit) {
 		this.timestamp = timestamp;
 		this.less = less;

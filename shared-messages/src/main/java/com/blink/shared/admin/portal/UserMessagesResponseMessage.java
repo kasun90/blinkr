@@ -8,6 +8,8 @@ public class UserMessagesResponseMessage {
 	private List<UserMessage> messages;
 	private long total;
 
+	public UserMessagesResponseMessage() {}
+
 	public UserMessagesResponseMessage(List<UserMessage> messages, long total) {
 		this.messages = messages;
 		this.total = total;

@@ -8,6 +8,8 @@ public class AlbumsResponseMessage {
 	private List<Album> albums;
 	private int total;
 
+	public AlbumsResponseMessage() {}
+
 	public AlbumsResponseMessage(List<Album> albums, int total) {
 		this.albums = albums;
 		this.total = total;

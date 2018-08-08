@@ -10,6 +10,7 @@ public final class Context {
     private String packageName;
     private Set<String> imports;
     private String extendClassName;
+    private Map<String, String> extendFields;
     private Map<String, String> fields;
     private List<String> cases;
 
@@ -20,6 +21,7 @@ public final class Context {
         this.packageName = builder.packageName;
         this.imports = builder.imports;
         this.extendClassName = builder.extendClassName;
+        this.extendFields = builder.extendFields;
         this.fields = builder.fields;
         this.cases = builder.cases;
         refineContext();
@@ -61,6 +63,10 @@ public final class Context {
         return extendClassName;
     }
 
+    public Map<String, String> getExtendFields() {
+        return extendFields;
+    }
+
     public Map<String, String> getFields() {
         return fields;
     }
@@ -76,6 +82,7 @@ public final class Context {
         private String packageName;
         private Set<String> imports;
         private String extendClassName;
+        private Map<String, String> extendFields;
         private Map<String, String> fields;
         private List<String> cases;
 
@@ -84,6 +91,7 @@ public final class Context {
             imports = new HashSet<>();
             fields = new LinkedHashMap<>();
             cases = new LinkedList<>();
+            extendFields = new LinkedHashMap<>();
         }
 
         public ContextBuilder setType(Type type) {
@@ -116,6 +124,11 @@ public final class Context {
             return this;
         }
 
+        public ContextBuilder addExtendField(String name, String type){
+            this.extendFields.put(name, type);
+            return this;
+        }
+
         public ContextBuilder addField(String name, String type) {
             fields.put(name, type);
             return this;
@@ -124,6 +137,18 @@ public final class Context {
         public ContextBuilder addCase(String caseName) {
             cases.add(caseName);
             return this;
+        }
+
+        public Set<String> getImports() {
+            return imports;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public String getExtendClassName() {
+            return extendClassName;
         }
 
         public Context build() {

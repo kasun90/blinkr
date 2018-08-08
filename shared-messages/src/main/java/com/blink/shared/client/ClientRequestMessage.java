@@ -6,6 +6,8 @@ public class ClientRequestMessage {
 	private String requestID;
 	private Object enclosedMessage;
 
+	public ClientRequestMessage() {}
+
 	public ClientRequestMessage(String requestID, Object enclosedMessage) {
 		this.requestID = requestID;
 		this.enclosedMessage = enclosedMessage;

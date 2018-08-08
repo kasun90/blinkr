@@ -8,6 +8,8 @@ public class AdminRequestMessage {
 	private String sessionID;
 	private Object enclosedMessage;
 
+	public AdminRequestMessage() {}
+
 	public AdminRequestMessage(String requestID, String targetUser, String sessionID, Object enclosedMessage) {
 		this.requestID = requestID;
 		this.targetUser = targetUser;

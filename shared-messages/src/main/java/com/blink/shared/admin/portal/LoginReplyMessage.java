@@ -7,6 +7,8 @@ public class LoginReplyMessage {
 	private int code;
 	private String message;
 
+	public LoginReplyMessage() {}
+
 	public LoginReplyMessage(String sessionID, int code, String message) {
 		this.sessionID = sessionID;
 		this.code = code;

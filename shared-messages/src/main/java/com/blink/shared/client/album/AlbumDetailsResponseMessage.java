@@ -6,6 +6,8 @@ import com.blink.shared.common.Album;
 public class AlbumDetailsResponseMessage {
 	private Album album;
 
+	public AlbumDetailsResponseMessage() {}
+
 	public AlbumDetailsResponseMessage(Album album) {
 		this.album = album;
 	}

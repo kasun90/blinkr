@@ -11,6 +11,8 @@ public class Preset {
 	private File templateFile;
 	private long timestamp;
 
+	public Preset() {}
+
 	public Preset(String title, String key, String description, Photo beforeImage, Photo afterImage, File templateFile, long timestamp) {
 		this.title = title;
 		this.key = key;

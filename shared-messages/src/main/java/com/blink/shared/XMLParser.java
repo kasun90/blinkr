@@ -25,12 +25,6 @@ public class XMLParser {
         Document doc = documentBuilder.parse(file);
         doc.normalizeDocument();
 
-
-
-        if (doc.getDocumentElement().hasAttribute("extends")) {
-            builder.setExtendClassName(doc.getDocumentElement().getAttribute("extends"));
-        }
-
         String type = doc.getDocumentElement().getAttribute("type");
         if (type != null) {
             switch (type.toLowerCase()) {
@@ -49,6 +43,12 @@ public class XMLParser {
                 builder.addImport(importList.item(i).getTextContent());
             }
         }
+
+        if (doc.getDocumentElement().hasAttribute("extends")) {
+            builder.setExtendClassName(doc.getDocumentElement().getAttribute("extends"));
+            fillExtendFields(builder);
+        }
+
 
         NodeList fieldList = doc.getElementsByTagName("field");
 
@@ -82,6 +82,54 @@ public class XMLParser {
             return builder.toString();
         } else
             return attrValue;
+    }
+
+    private void fillExtendFields(Context.ContextBuilder builder) throws Exception {
+        String extendFullClassName = null;
+
+        for (String anImport : builder.getImports()) {
+            if (anImport.contains(builder.getExtendClassName())) {
+                extendFullClassName = anImport;
+                break;
+            }
+        }
+
+        if (extendFullClassName == null)
+            extendFullClassName = builder.getPackageName() + "." + builder.getExtendClassName();
+
+        Class<?> aClass = Class.forName(extendFullClassName);
+        for (Field field : aClass.getDeclaredFields()) {
+            String name = field.getName();
+            String type = convertExtendField(field.getType().getSimpleName(), field.getGenericType().getTypeName());
+            builder.addExtendField(name, type);
+        }
+    }
+
+    private String convertExtendField(String simpleName, String genericName) {
+        StringBuilder builder = new StringBuilder();
+        switch (simpleName) {
+            case "List":
+                String genericClassFullName = genericName.substring(genericName.indexOf('<'), genericName.indexOf('>'));
+                return builder.append(simpleName)
+                        .append("<")
+                        .append(getSimpleNameFromFQN(genericClassFullName))
+                        .append(">").toString();
+            case "Map":
+                String genericClassName1 = genericName.substring(genericName.indexOf('<'), genericName.indexOf(',')).trim();
+                String genericClassName2 = genericName.substring(genericName.indexOf(','), genericName.indexOf('>')).trim();
+                return builder.append(simpleName)
+                        .append("<")
+                        .append(getSimpleNameFromFQN(genericClassName1))
+                        .append(", ")
+                        .append(getSimpleNameFromFQN(genericClassName2))
+                        .append(">").toString();
+            default:
+                return simpleName;
+        }
+    }
+
+    private String getSimpleNameFromFQN(String fqn) {
+        return fqn.substring(fqn.lastIndexOf('.') + 1);
     }
 
     public Context.ContextBuilder getBuilder() {

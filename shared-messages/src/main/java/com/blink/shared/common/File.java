@@ -6,6 +6,8 @@ public class File {
 	private String resource;
 	private String url;
 
+	public File() {}
+
 	public File(String resource, String url) {
 		this.resource = resource;
 		this.url = url;
