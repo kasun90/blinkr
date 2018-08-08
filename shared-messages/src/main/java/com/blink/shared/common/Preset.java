@@ -2,9 +2,8 @@ package com.blink.shared.common;
 
 import com.blink.utilities.BlinkJSON;
 
-public class Preset {
+public class Preset extends Entity {
 	private String title;
-	private String key;
 	private String description;
 	private Photo beforeImage;
 	private Photo afterImage;
@@ -13,14 +12,23 @@ public class Preset {
 
 	public Preset() {}
 
-	public Preset(String title, String key, String description, Photo beforeImage, Photo afterImage, File templateFile, long timestamp) {
+	public Preset(String key, String title, String description, Photo beforeImage, Photo afterImage, File templateFile, long timestamp) {
+		super(key);
 		this.title = title;
-		this.key = key;
 		this.description = description;
 		this.beforeImage = beforeImage;
 		this.afterImage = afterImage;
 		this.templateFile = templateFile;
 		this.timestamp = timestamp;
+	}
+
+	public String getKey() {
+		return super.getKey();
+	}
+
+	public Preset setKey(String key) {
+		super.setKey(key);
+		return this;
 	}
 
 	public String getTitle() {
@@ -29,15 +37,6 @@ public class Preset {
 
 	public Preset setTitle(String title) {
 		this.title = title;
-		return this;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public Preset setKey(String key) {
-		this.key = key;
 		return this;
 	}
 

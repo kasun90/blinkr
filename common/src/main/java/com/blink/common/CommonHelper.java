@@ -5,8 +5,9 @@ import com.blink.core.database.SimpleDBObject;
 import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.file.FileService;
 import com.blink.core.service.BaseService;
+import com.blink.shared.common.Entity;
 
-public abstract class CommonHelper<T> {
+public abstract class CommonHelper<T extends Entity> {
     BaseService service;
     FileService fileService;
     DBService entityDB;
