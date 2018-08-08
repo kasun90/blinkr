@@ -8,18 +8,16 @@ public class Preset extends Entity {
 	private Photo beforeImage;
 	private Photo afterImage;
 	private File templateFile;
-	private long timestamp;
 
 	public Preset() {}
 
-	public Preset(String key, String title, String description, Photo beforeImage, Photo afterImage, File templateFile, long timestamp) {
-		super(key);
+	public Preset(String key, long timestamp, String title, String description, Photo beforeImage, Photo afterImage, File templateFile) {
+		super(key, timestamp);
 		this.title = title;
 		this.description = description;
 		this.beforeImage = beforeImage;
 		this.afterImage = afterImage;
 		this.templateFile = templateFile;
-		this.timestamp = timestamp;
 	}
 
 	public String getKey() {
@@ -28,6 +26,15 @@ public class Preset extends Entity {
 
 	public Preset setKey(String key) {
 		super.setKey(key);
+		return this;
+	}
+
+	public long getTimestamp() {
+		return super.getTimestamp();
+	}
+
+	public Preset setTimestamp(long timestamp) {
+		super.setTimestamp(timestamp);
 		return this;
 	}
 
@@ -73,15 +80,6 @@ public class Preset extends Entity {
 
 	public Preset setTemplateFile(File templateFile) {
 		this.templateFile = templateFile;
-		return this;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public Preset setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
 		return this;
 	}
 

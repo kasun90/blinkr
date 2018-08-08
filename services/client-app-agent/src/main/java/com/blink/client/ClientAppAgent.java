@@ -49,12 +49,12 @@ public class ClientAppAgent extends BaseService {
     }
 
     private void onAlbumsRequest(AlbumsRequestMessage message) throws Exception {
-        sendReply(new AlbumsResponseMessage(albumHelper.getAlbums(message.getTimestamp(), message.isLess()
+        sendReply(new AlbumsResponseMessage(albumHelper.getEntities(message.getTimestamp(), message.isLess()
                 , message.getLimit())));
     }
 
     private void onAlbumDetails(AlbumDetailsRequestMessage message) throws Exception {
-        sendReply(new AlbumDetailsResponseMessage(albumHelper.getDetailedAlbum(message.getKey())));
+        sendReply(new AlbumDetailsResponseMessage(albumHelper.getDetailsEntity(message.getKey())));
     }
 
     @Override

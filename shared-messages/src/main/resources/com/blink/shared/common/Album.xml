@@ -5,5 +5,4 @@
     <field type="int">count</field>
     <field type="List::Photo">photos</field>
     <field type="Photo">cover</field>
-    <field type="long">timestamp</field>
 </model>

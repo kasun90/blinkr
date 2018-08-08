@@ -5,5 +5,4 @@
     <field type="Photo">beforeImage</field>
     <field type="Photo">afterImage</field>
     <field type="File">templateFile</field>
-    <field type="long">timestamp</field>
 </model>

@@ -102,8 +102,8 @@ public class UserHandler {
     }
 
     private void handleAlbumsReq(AlbumsRequestMessage message) throws Exception {
-        adminService.sendReply(new AlbumsResponseMessage(albumHelper.getAlbums(message.getTimestamp(),
-                message.isLess(), message.getLimit()), albumHelper.getAlbumsCount()));
+        adminService.sendReply(new AlbumsResponseMessage(albumHelper.getEntities(message.getTimestamp(),
+                message.isLess(), message.getLimit()), albumHelper.getEntityCount()));
     }
 
     private void handleAlbumKeyCheck( AlbumKeyCheckRequestMessage message) throws Exception {
@@ -119,7 +119,7 @@ public class UserHandler {
                 .setDescription(message.getDescription())
                 .setTimestamp(BlinkTime.getCurrentTimeMillis())
                 .build();
-        albumHelper.saveAlbum(album);
+        albumHelper.saveEntity(album);
         adminService.sendReply(new CreateAlbumResponseMessage(message.getKey(),
                 true, "Success"));
     }
@@ -136,7 +136,7 @@ public class UserHandler {
     }
 
     private void handleAlbumDelete(AlbumDeleteMessage message) throws Exception {
-        boolean success = albumHelper.deleteAlbum(message.getKey());
+        boolean success = albumHelper.deleteEntity(message.getKey());
         adminService.sendReply(new AlbumDeleteResponeMessage(message.getKey(),
                 success));
         adminService.info("Album delete status [success={} key={}]", success, message.getKey());

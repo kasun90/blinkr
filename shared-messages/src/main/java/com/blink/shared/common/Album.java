@@ -9,18 +9,16 @@ public class Album extends Entity {
 	private int count;
 	private List<Photo> photos;
 	private Photo cover;
-	private long timestamp;
 
 	public Album() {}
 
-	public Album(String key, String title, String description, int count, List<Photo> photos, Photo cover, long timestamp) {
-		super(key);
+	public Album(String key, long timestamp, String title, String description, int count, List<Photo> photos, Photo cover) {
+		super(key, timestamp);
 		this.title = title;
 		this.description = description;
 		this.count = count;
 		this.photos = photos;
 		this.cover = cover;
-		this.timestamp = timestamp;
 	}
 
 	public String getKey() {
@@ -29,6 +27,15 @@ public class Album extends Entity {
 
 	public Album setKey(String key) {
 		super.setKey(key);
+		return this;
+	}
+
+	public long getTimestamp() {
+		return super.getTimestamp();
+	}
+
+	public Album setTimestamp(long timestamp) {
+		super.setTimestamp(timestamp);
 		return this;
 	}
 
@@ -74,15 +81,6 @@ public class Album extends Entity {
 
 	public Album setCover(Photo cover) {
 		this.cover = cover;
-		return this;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public Album setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
 		return this;
 	}
 
