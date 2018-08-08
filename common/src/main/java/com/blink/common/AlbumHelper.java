@@ -1,24 +1,15 @@
 package com.blink.common;
 
-import com.blink.core.database.DBService;
-import com.blink.core.database.Filter;
-import com.blink.core.database.SimpleDBObject;
-import com.blink.core.database.SortCriteria;
-import com.blink.core.exception.BlinkRuntimeException;
-import com.blink.core.file.FileService;
 import com.blink.core.service.BaseService;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Photo;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AlbumHelper extends CommonHelper<Album>{
+public class AlbumHelper extends CommonHelper<Album> {
     private String coverPhotoName = "cover.jpg";
 
     public AlbumHelper(BaseService service) {
