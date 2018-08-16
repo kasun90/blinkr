@@ -1,6 +1,7 @@
 package com.blink.admin.user;
 
 import com.blink.common.AlbumHelper;
+import com.blink.common.PresetHelper;
 import com.blink.core.database.*;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
@@ -11,6 +12,10 @@ import com.blink.shared.admin.portal.UserDetailsRequestMessage;
 import com.blink.shared.admin.portal.UserDetailsResponseMessage;
 import com.blink.shared.admin.portal.UserMessagesRequestMessage;
 import com.blink.shared.admin.portal.UserMessagesResponseMessage;
+import com.blink.shared.admin.preset.PresetKeyCheckRequestMessage;
+import com.blink.shared.admin.preset.PresetKeyCheckResponseMessage;
+import com.blink.shared.admin.preset.PresetsRequestMessage;
+import com.blink.shared.admin.preset.PresetsResponseMessage;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.common.Album;
 import com.blink.shared.system.InvalidRequest;
@@ -25,12 +30,14 @@ public class UserHandler {
     private String username;
     private Logger logger;
     private AlbumHelper albumHelper;
+    private PresetHelper presetHelper;
 
     public UserHandler(String username, BaseService adminService) {
         this.adminService = adminService;
         this.username = username;
         logger = adminService.getContext().getLoggerFactory().getLogger(String.format("%s-%s", "User", username));
         this.albumHelper = new AlbumHelper(adminService);
+        this.presetHelper = new PresetHelper(adminService);
     }
 
     public void handleMessage(Object message) throws Exception {
@@ -57,6 +64,10 @@ public class UserHandler {
             handleAlbumCoverUpload((AlbumCoverUploadMessage) message);
         } else if (message instanceof AlbumDeleteMessage) {
             handleAlbumDelete((AlbumDeleteMessage) message);
+        } else if (message instanceof PresetsRequestMessage) {
+            handlePresetsReq(((PresetsRequestMessage) message));
+        } else if (message instanceof PresetKeyCheckRequestMessage) {
+            handlePresetKeyCheck(((PresetKeyCheckRequestMessage) message));
         } else {
             adminService.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -141,4 +152,16 @@ public class UserHandler {
                 success));
         adminService.info("Album delete status [success={} key={}]", success, message.getKey());
     }
+
+    private void handlePresetsReq(PresetsRequestMessage message) throws Exception {
+        adminService.sendReply(new PresetsResponseMessage(presetHelper.getEntities(message.getTimestamp(),
+                message.isLess(), message.getLimit()), presetHelper.getEntityCount()));
+    }
+
+    private void handlePresetKeyCheck(PresetKeyCheckRequestMessage message) throws Exception {
+        adminService.info("Preset key check {}", message);
+        adminService.sendReply(new PresetKeyCheckResponseMessage(presetHelper.isKeyAvailable(message.getKey())));
+    }
+
+
 }
