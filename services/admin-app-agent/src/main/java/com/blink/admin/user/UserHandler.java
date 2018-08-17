@@ -179,7 +179,8 @@ public class UserHandler {
         Preset newPreset = new Preset();
         newPreset.setKey(message.getKey())
                 .setTitle(message.getTitle())
-                .setDescription(message.getDescription());
+                .setDescription(message.getDescription())
+                .setTimestamp(BlinkTime.getCurrentTimeMillis());
         presetHelper.saveEntity(newPreset);
         adminService.sendReply(new CreatePresetResponseMessage(message.getKey(),
                 true, "Success"));
