@@ -8,17 +8,26 @@ public class PresetTemplateUploadMessage extends FileUploadMessage {
 
 	public PresetTemplateUploadMessage() {}
 
-	public PresetTemplateUploadMessage(String fileContent, String key) {
-		super(fileContent);
+	public PresetTemplateUploadMessage(String fileName, String content, String key) {
+		super(fileName, content);
 		this.key = key;
 	}
 
-	public String getFileContent() {
-		return super.getFileContent();
+	public String getFileName() {
+		return super.getFileName();
 	}
 
-	public PresetTemplateUploadMessage setFileContent(String fileContent) {
-		super.setFileContent(fileContent);
+	public PresetTemplateUploadMessage setFileName(String fileName) {
+		super.setFileName(fileName);
+		return this;
+	}
+
+	public String getContent() {
+		return super.getContent();
+	}
+
+	public PresetTemplateUploadMessage setContent(String content) {
+		super.setContent(content);
 		return this;
 	}
 

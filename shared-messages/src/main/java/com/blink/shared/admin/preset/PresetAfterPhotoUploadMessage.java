@@ -8,17 +8,26 @@ public class PresetAfterPhotoUploadMessage extends FileUploadMessage {
 
 	public PresetAfterPhotoUploadMessage() {}
 
-	public PresetAfterPhotoUploadMessage(String fileContent, String key) {
-		super(fileContent);
+	public PresetAfterPhotoUploadMessage(String fileName, String content, String key) {
+		super(fileName, content);
 		this.key = key;
 	}
 
-	public String getFileContent() {
-		return super.getFileContent();
+	public String getFileName() {
+		return super.getFileName();
 	}
 
-	public PresetAfterPhotoUploadMessage setFileContent(String fileContent) {
-		super.setFileContent(fileContent);
+	public PresetAfterPhotoUploadMessage setFileName(String fileName) {
+		super.setFileName(fileName);
+		return this;
+	}
+
+	public String getContent() {
+		return super.getContent();
+	}
+
+	public PresetAfterPhotoUploadMessage setContent(String content) {
+		super.setContent(content);
 		return this;
 	}
 

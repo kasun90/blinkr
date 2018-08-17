@@ -3,20 +3,31 @@ package com.blink.shared.admin;
 import com.blink.utilities.BlinkJSON;
 
 public class FileUploadMessage {
-	private String fileContent;
+	private String fileName;
+	private String content;
 
 	public FileUploadMessage() {}
 
-	public FileUploadMessage(String fileContent) {
-		this.fileContent = fileContent;
+	public FileUploadMessage(String fileName, String content) {
+		this.fileName = fileName;
+		this.content = content;
 	}
 
-	public String getFileContent() {
-		return fileContent;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public FileUploadMessage setFileContent(String fileContent) {
-		this.fileContent = fileContent;
+	public FileUploadMessage setFileName(String fileName) {
+		this.fileName = fileName;
+		return this;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public FileUploadMessage setContent(String content) {
+		this.content = content;
 		return this;
 	}
 

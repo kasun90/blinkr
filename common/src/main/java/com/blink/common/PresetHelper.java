@@ -1,22 +1,10 @@
 package com.blink.common;
 
-import com.blink.core.database.DBService;
-import com.blink.core.database.Filter;
-import com.blink.core.database.SimpleDBObject;
-import com.blink.core.database.SortCriteria;
-import com.blink.core.exception.BlinkRuntimeException;
-import com.blink.core.file.FileService;
 import com.blink.core.service.BaseService;
 import com.blink.shared.common.File;
 import com.blink.shared.common.Photo;
 import com.blink.shared.common.Preset;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PresetHelper extends CommonHelper<Preset> {
@@ -31,10 +19,9 @@ public class PresetHelper extends CommonHelper<Preset> {
 
     @Override
     public Preset fillEntity(Preset preset) throws Exception {
-        String templateFile = getTemplateFileURI(preset.getKey());
-
-        if (fileService.exists(templateFile))
-            preset.setTemplateFile(new File(templateFile, fileService.getURL(templateFile).toString()));
+        List<String> templateFiles = fileService.listFilePaths(getTemplateFileURIBase(preset.getKey()));
+        if (!templateFiles.isEmpty())
+            preset.setTemplateFile(new File(templateFiles.get(0), fileService.getURL(templateFiles.get(0)).toString()));
 
         String beforeImageFile = getBeforeImageURI(preset.getKey());
         if (fileService.exists(beforeImageFile))
@@ -48,13 +35,16 @@ public class PresetHelper extends CommonHelper<Preset> {
 
     @Override
     public void cleanupEntityGarbage(String key) throws Exception {
-        fileService.delete(getTemplateFileURI(key));
+        List<String> templates = fileService.listFilePaths(getTemplateFileURIBase(key));
+        for (String template : templates) {
+            fileService.delete(template);
+        }
         fileService.delete(getBeforeImageURI(key));
         fileService.delete(getAfterImageURI(key));
     }
 
-    public boolean saveTemplateFile(String key, String fileContent) throws Exception {
-        return saveFile(key, fileContent, getTemplateFileURI(key));
+    public boolean saveTemplateFile(String key, String fileContent, String fileName) throws Exception {
+        return saveFile(key, fileContent, getTemplateFileURI(key, fileName));
     }
 
     public boolean saveBeforeImage(String key, String fileContent) throws Exception {
@@ -76,8 +66,12 @@ public class PresetHelper extends CommonHelper<Preset> {
         return true;
     }
 
-    private String getTemplateFileURI(String key) {
-        return fileService.newFileURI(entityBase).appendResource(key).appendResource(key + ".zip").build();
+    private String getTemplateFileURI(String key, String fileName) {
+        return fileService.newFileURI(getTemplateFileURIBase(key)).appendResource(fileName).build();
+    }
+
+    private String getTemplateFileURIBase(String key) {
+        return fileService.newFileURI(entityBase).appendResource(key).appendResource("template").build();
     }
 
     private String getBeforeImageURI(String key) {

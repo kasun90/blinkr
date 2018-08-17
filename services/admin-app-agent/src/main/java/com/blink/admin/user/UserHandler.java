@@ -187,17 +187,17 @@ public class UserHandler {
     }
 
     private void handlePresetTemplateUpload(PresetTemplateUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getFileContent());
+        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getContent(), message.getFileName());
         adminService.sendReply(new PresetTemplateUploadResponseMessage(message.getKey(), success));
     }
 
     private void handlePresetBeforePhotoUpload(PresetBeforePhotoUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getFileContent());
+        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getContent());
         adminService.sendReply(new PresetBeforePhotoUploadResponseMessage(message.getKey(), success));
     }
 
     private void handlePresetAfterPhotoUpload(PresetAfterPhotoUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getFileContent());
+        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getContent());
         adminService.sendReply(new PresetAfterPhotoUploadResponseMessage(message.getKey(), success));
     }
 
