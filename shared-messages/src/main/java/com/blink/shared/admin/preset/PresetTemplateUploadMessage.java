@@ -1,16 +1,25 @@
 package com.blink.shared.admin.preset;
 
+import com.blink.shared.admin.FileUploadMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class PresetTemplateUploadMessage {
+public class PresetTemplateUploadMessage extends FileUploadMessage {
 	private String key;
-	private String fileContent;
 
 	public PresetTemplateUploadMessage() {}
 
-	public PresetTemplateUploadMessage(String key, String fileContent) {
+	public PresetTemplateUploadMessage(String fileContent, String key) {
+		super(fileContent);
 		this.key = key;
-		this.fileContent = fileContent;
+	}
+
+	public String getFileContent() {
+		return super.getFileContent();
+	}
+
+	public PresetTemplateUploadMessage setFileContent(String fileContent) {
+		super.setFileContent(fileContent);
+		return this;
 	}
 
 	public String getKey() {
@@ -19,15 +28,6 @@ public class PresetTemplateUploadMessage {
 
 	public PresetTemplateUploadMessage setKey(String key) {
 		this.key = key;
-		return this;
-	}
-
-	public String getFileContent() {
-		return fileContent;
-	}
-
-	public PresetTemplateUploadMessage setFileContent(String fileContent) {
-		this.fileContent = fileContent;
 		return this;
 	}
 
