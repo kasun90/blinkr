@@ -24,7 +24,7 @@ public class ClientAppAgent extends BaseService {
         super(context);
         userMessageDB = context.getDbServiceFactory().ofCollection("userMessage");
         userMessageDB.createIndex(false, "timestamp");
-        albumHelper = new AlbumHelper(this);
+        albumHelper = new AlbumHelper(this.getContext());
     }
 
     @Subscribe

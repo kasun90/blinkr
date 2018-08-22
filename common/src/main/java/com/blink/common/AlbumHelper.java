@@ -1,6 +1,6 @@
 package com.blink.common;
 
-import com.blink.core.service.BaseService;
+import com.blink.core.service.Context;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Photo;
 
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 public class AlbumHelper extends CommonHelper<Album> {
     private String coverPhotoName = "cover.jpg";
 
-    public AlbumHelper(BaseService service) {
-        super(service, "albums",
-                service.getContext().getFileService().newFileURI("albums").build(), Album.class);
+    public AlbumHelper(Context context) {
+        super(context, "albums",
+                context.getFileService().newFileURI("albums").build(), Album.class);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AlbumHelper extends CommonHelper<Album> {
             try {
                 fileService.delete(path);
             } catch (Exception e) {
-                service.exception("Exception while deleting photo", e);
+                logger.exception("Exception while deleting photo", e);
             }
         });
 
@@ -56,7 +56,7 @@ public class AlbumHelper extends CommonHelper<Album> {
             try {
                 fileService.delete(path);
             } catch (Exception e) {
-                service.exception("Exception while deleting photo", e);
+                logger.exception("Exception while deleting photo", e);
             }
         });
     }
@@ -65,7 +65,7 @@ public class AlbumHelper extends CommonHelper<Album> {
         Album album = getEntity(key);
 
         if (album == null) {
-            service.error("Album is not available to add the photo [key={}]", key);
+            logger.error("Album is not available to add the photo [key={}]", key);
             return false;
         }
 
@@ -81,7 +81,7 @@ public class AlbumHelper extends CommonHelper<Album> {
         Album album = getEntity(key);
 
         if (album == null) {
-            service.error("Album is not available to add the cover [key={}]", key);
+            logger.error("Album is not available to add the cover [key={}]", key);
             return false;
         }
 

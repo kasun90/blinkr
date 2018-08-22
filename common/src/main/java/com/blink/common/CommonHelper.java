@@ -6,7 +6,8 @@ import com.blink.core.database.SimpleDBObject;
 import com.blink.core.database.SortCriteria;
 import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.file.FileService;
-import com.blink.core.service.BaseService;
+import com.blink.core.log.Logger;
+import com.blink.core.service.Context;
 import com.blink.shared.common.Entity;
 
 import java.io.BufferedOutputStream;
@@ -18,17 +19,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class CommonHelper<T extends Entity> {
-    BaseService service;
+    Context context;
     FileService fileService;
     DBService entityDB;
     String entityBase;
+    Logger logger;
     private Class<T> entityType;
 
-    public CommonHelper(BaseService service, String entityCollectionName, String entityBaseName, Class<T> entityType) {
-        this.service = service;
-        this.entityDB = service.getContext().getDbServiceFactory().ofCollection(entityCollectionName);
-        this.fileService = service.getContext().getFileService();
-        this.entityBase = service.getContext().getFileService().newFileURI(entityBaseName).build();
+    public CommonHelper(Context context, String entityCollectionName, String entityBaseName, Class<T> entityType) {
+        this.context = context;
+        this.logger = context.getLoggerFactory().getLogger("Helper-" + entityType.getSimpleName());
+        this.entityDB = context.getDbServiceFactory().ofCollection(entityCollectionName);
+        this.fileService = context.getFileService();
+        this.entityBase = context.getFileService().newFileURI(entityBaseName).build();
         this.entityType = entityType;
     }
 
@@ -48,7 +51,7 @@ public abstract class CommonHelper<T extends Entity> {
 
     public void saveEntity(T entity) throws Exception {
         if (entity.getKey() == null) {
-            service.error("Key cannot be null");
+            logger.error("Key cannot be null");
             throw new BlinkRuntimeException("Key cannot be null");
         }
         entityDB.insertOrUpdate(new SimpleDBObject().append("key", entity.getKey()), entity);
@@ -99,14 +102,14 @@ public abstract class CommonHelper<T extends Entity> {
         }
 
         fileService.upload(path);
-        service.info("File uploaded {}", path);
+        logger.info("File uploaded {}", path);
     }
 
     public boolean deleteEntity(String key) throws Exception {
         T entity = getEntity(key);
 
         if (entity == null) {
-            service.error("No entity to delete [key={}]", key);
+            logger.error("No entity to delete [key={}]", key);
             return true;
         }
 

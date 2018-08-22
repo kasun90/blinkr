@@ -37,8 +37,8 @@ public class UserHandler {
         this.adminService = adminService;
         this.username = username;
         logger = adminService.getContext().getLoggerFactory().getLogger(String.format("%s-%s", "User", username));
-        this.albumHelper = new AlbumHelper(adminService);
-        this.presetHelper = new PresetHelper(adminService);
+        this.albumHelper = new AlbumHelper(adminService.getContext());
+        this.presetHelper = new PresetHelper(adminService.getContext());
     }
 
     public void handleMessage(Object message) throws Exception {

@@ -1,6 +1,6 @@
 package com.blink.common;
 
-import com.blink.core.service.BaseService;
+import com.blink.core.service.Context;
 import com.blink.shared.common.File;
 import com.blink.shared.common.Photo;
 import com.blink.shared.common.Preset;
@@ -11,9 +11,9 @@ public class PresetHelper extends CommonHelper<Preset> {
     private final String beforeImage = "before.jpg";
     private final String afterImage = "after.jpg";
 
-    public PresetHelper(BaseService service) {
-        super(service, "presets",
-                service.getContext().getFileService().newFileURI("presets").build(),
+    public PresetHelper(Context context) {
+        super(context, "presets",
+                context.getFileService().newFileURI("presets").build(),
                 Preset.class);
     }
 
@@ -59,7 +59,7 @@ public class PresetHelper extends CommonHelper<Preset> {
         Preset entity = getEntity(key);
 
         if (entity == null) {
-            service.error("No preset found [key={}]", key);
+            logger.error("No preset found [key={}]", key);
             return false;
         }
         uploadFile(path, fileContent);

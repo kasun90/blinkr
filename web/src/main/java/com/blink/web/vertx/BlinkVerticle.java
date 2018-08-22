@@ -4,6 +4,7 @@ import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
 import com.blink.web.meta.MetaTagResolver;
+import com.blink.web.meta.handlers.AlbumTagHandler;
 import com.blink.web.meta.impl.MetaTagResolverImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -31,6 +32,7 @@ public class BlinkVerticle extends AbstractVerticle {
         this.logger = context.getLoggerFactory().getLogger("WEB");
         this.allowedOrigins = context.getConfiguration().getValues("allowedOrigins");
         this.metaTagResolver = new MetaTagResolverImpl(context);
+        this.metaTagResolver.register("/albums/view/:key").handler(new AlbumTagHandler(context));
     }
 
     @Override
@@ -61,6 +63,11 @@ public class BlinkVerticle extends AbstractVerticle {
 
         //clientRouter.route().handler(StaticHandler.create(path).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
 
+        clientRouter.get("/service-worker.js").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/service-worker.js").getPath());
+        });
+
         clientRouter.get("/static/*").handler(StaticHandler.create(path + "/static").setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
         clientRouter.get("/*").handler(routingContext -> {
             try {
@@ -70,13 +77,6 @@ public class BlinkVerticle extends AbstractVerticle {
                 throw new BlinkRuntimeException(e);
             }
         });
-
-        clientRouter.get("/service-worker.js").handler(routingContext -> {
-            HttpServerResponse response = routingContext.response();
-            response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/service-worker.js").getPath());
-        });
-
-
 
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort());
         logger.info("Client server started on port {}", context.getConfiguration().getClientPort());
@@ -102,7 +102,7 @@ public class BlinkVerticle extends AbstractVerticle {
 
         vertx.createHttpServer().requestHandler(adminRouter::accept).listen(context.getConfiguration().getAdminPort());
 
-        logger.info("Admin server started on port {}" , context.getConfiguration().getAdminPort());
+        logger.info("Admin server started on port {}", context.getConfiguration().getAdminPort());
     }
 
     private void routeAPIRequest(RoutingContext context) {
