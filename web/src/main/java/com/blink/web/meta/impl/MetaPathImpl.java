@@ -24,6 +24,11 @@ public class MetaPathImpl implements MetaPath {
     }
 
     @Override
+    public String[] getSegments() {
+        return segments;
+    }
+
+    @Override
     public void handler(TagHandler handler) {
         this.handler = handler;
     }

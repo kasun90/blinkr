@@ -8,8 +8,14 @@ public interface MetaPath {
             return new String[]{};
         return path.split("/");
     }
+
     String getPath();
+
     int getSegmentCount();
+
+    String[] getSegments();
+
     void handler(TagHandler handler);
+
     TagHandler getHandler();
 }

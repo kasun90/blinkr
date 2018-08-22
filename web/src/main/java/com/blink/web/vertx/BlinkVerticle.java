@@ -1,7 +1,10 @@
 package com.blink.web.vertx;
 
+import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
+import com.blink.web.meta.MetaTagResolver;
+import com.blink.web.meta.impl.MetaTagResolverImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
@@ -20,12 +23,14 @@ public class BlinkVerticle extends AbstractVerticle {
     private VertxWorker worker;
     private Logger logger;
     private Set<String> allowedOrigins;
+    private MetaTagResolver metaTagResolver;
 
-    public BlinkVerticle(Context context) {
+    public BlinkVerticle(Context context) throws Exception {
         this.context = context;
         this.worker = new VertxWorker(context);
         this.logger = context.getLoggerFactory().getLogger("WEB");
         this.allowedOrigins = context.getConfiguration().getValues("allowedOrigins");
+        this.metaTagResolver = new MetaTagResolverImpl(context);
     }
 
     @Override
@@ -37,6 +42,14 @@ public class BlinkVerticle extends AbstractVerticle {
         clientRouter.post("/client").handler(this::routeAPIRequest);
         clientRouter.options("/client").handler(this::respondToOption);
 
+        File staticFiles = new File(context.getConfiguration().getValue("staticFilesRoot"));
+        staticFiles.mkdirs();
+        final String staticFilesPath = staticFiles.getPath();
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append("/").append(context.getConfiguration().getValue("staticFilesRoot")).append("*");
+        clientRouter.get(pathBuilder.toString())
+                .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(false).setMaxAgeSeconds(0).setFilesReadOnly(false));
+
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
         final String faviconPath = new File(context.getConfiguration().getValue("clientRoot") + "/favicon.ico").getPath();
 
@@ -46,15 +59,24 @@ public class BlinkVerticle extends AbstractVerticle {
             response.sendFile(faviconPath);
         });
 
-        clientRouter.route().handler(StaticHandler.create(path).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+        //clientRouter.route().handler(StaticHandler.create(path).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
 
-        File staticFiles = new File(context.getConfiguration().getValue("staticFilesRoot"));
-        staticFiles.mkdirs();
-        final String staticFilesPath = staticFiles.getPath();
-        StringBuilder pathBuilder = new StringBuilder();
-        pathBuilder.append("/").append(context.getConfiguration().getValue("staticFilesRoot")).append("*");
-        clientRouter.get(pathBuilder.toString())
-                .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(false).setMaxAgeSeconds(0).setFilesReadOnly(false));
+        clientRouter.get("/static/*").handler(StaticHandler.create(path + "/static").setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+        clientRouter.get("/*").handler(routingContext -> {
+            try {
+                String response = metaTagResolver.on(routingContext.request().path(), routingContext.request().absoluteURI());
+                routingContext.response().end(response);
+            } catch (Exception e) {
+                throw new BlinkRuntimeException(e);
+            }
+        });
+
+        clientRouter.get("/service-worker.js").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/service-worker.js").getPath());
+        });
+
+
 
         vertx.createHttpServer().requestHandler(clientRouter::accept).listen(context.getConfiguration().getClientPort());
         logger.info("Client server started on port {}", context.getConfiguration().getClientPort());
