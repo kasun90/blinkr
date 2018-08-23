@@ -151,7 +151,7 @@ public class AlbumHelper extends CommonHelper<Album> {
         }
 
         public Album build() {
-            return new Album(title, timestamp, key, description, count, photos, cover);
+            return new Album(key, timestamp, title, description, count, photos, cover);
         }
     }
 
