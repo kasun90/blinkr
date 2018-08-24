@@ -1,6 +1,7 @@
 package com.blink.client;
 
 import com.blink.common.AlbumHelper;
+import com.blink.common.PresetHelper;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.BaseService;
@@ -12,6 +13,8 @@ import com.blink.shared.client.album.AlbumDetailsResponseMessage;
 import com.blink.shared.client.album.AlbumsRequestMessage;
 import com.blink.shared.client.album.AlbumsResponseMessage;
 import com.blink.shared.client.messaging.UserMessage;
+import com.blink.shared.client.preset.PresetsRequestMessage;
+import com.blink.shared.client.preset.PresetsResponseMessage;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
 
@@ -19,12 +22,14 @@ public class ClientAppAgent extends BaseService {
 
     private DBService userMessageDB;
     private AlbumHelper albumHelper;
+    private PresetHelper presetHelper;
 
     public ClientAppAgent(Context context) throws Exception {
         super(context);
         userMessageDB = context.getDbServiceFactory().ofCollection("userMessage");
         userMessageDB.createIndex(false, "timestamp");
         albumHelper = new AlbumHelper(this.getContext());
+        presetHelper = new PresetHelper(this.getContext());
     }
 
     @Subscribe
@@ -38,6 +43,8 @@ public class ClientAppAgent extends BaseService {
             onAlbumsRequest((AlbumsRequestMessage) enclosedMessage);
         } else if (enclosedMessage instanceof AlbumDetailsRequestMessage) {
             onAlbumDetails((AlbumDetailsRequestMessage) enclosedMessage);
+        } else if (enclosedMessage instanceof PresetsRequestMessage) {
+            onPresetsRequest(((PresetsRequestMessage) enclosedMessage));
         }
     }
 
@@ -55,6 +62,11 @@ public class ClientAppAgent extends BaseService {
 
     private void onAlbumDetails(AlbumDetailsRequestMessage message) throws Exception {
         sendReply(new AlbumDetailsResponseMessage(albumHelper.getDetailsEntity(message.getKey())));
+    }
+
+    private void onPresetsRequest(PresetsRequestMessage message) throws Exception {
+        sendReply(new PresetsResponseMessage(presetHelper.getEntities(message.getTimestamp(), message.isLess(),
+                message.getLimit())));
     }
 
     @Override
