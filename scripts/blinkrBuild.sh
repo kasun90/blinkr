@@ -21,7 +21,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-TAG_NAME="v${1}"
+TAG_NAME="v${2}"
 git tag -a $TAG_NAME -m "Blinkr Release ${TAG_NAME}"
 git push origin $TAG_NAME
 
