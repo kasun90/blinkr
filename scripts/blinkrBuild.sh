@@ -21,6 +21,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+TAG_NAME="v${1}"
+git tag -a $TAG_NAME -m "Blinkr Release ${TAG_NAME}"
+git push origin $TAG_NAME
+
 
 cd ..
 cp $SOURCE_DIR/$1/target/blinkr-$2.jar $RELEASE_DIR
