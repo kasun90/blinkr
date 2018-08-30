@@ -24,5 +24,103 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>blinkr-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>app</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+                                    <mainClass>com.blink.runner.App</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>console</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>console</classifier>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+                                    <mainClass>com.blink.runner.EnvironmentCreator</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<version>1.8</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>antrun-archive</id>-->
+            <!--<phase>package</phase>-->
+            <!--<goals>-->
+            <!--<goal>run</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<target>-->
+            <!--<zip destfile="${project.build.directory}/${project.build.finalName}.zip">-->
+            <!--<zipfileset dir="${project.build.directory}">-->
+            <!--<include name="${project.build.finalName}.${project.packaging}" />-->
+            <!--<include name="${project.build.finalName}.lib/*" />-->
+            <!--</zipfileset>-->
+            <!--</zip>-->
+            <!--<tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">-->
+            <!--<tarfileset dir="${project.build.directory}">-->
+            <!--<include name="${project.build.finalName}.${project.packaging}" />-->
+            <!--<include name="${project.build.finalName}.lib/*" />-->
+            <!--</tarfileset>-->
+            <!--</tar>-->
+            <!--</target>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
+        </plugins>
+    </build>
 
 </project>
