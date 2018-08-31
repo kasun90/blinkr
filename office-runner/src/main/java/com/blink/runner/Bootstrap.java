@@ -22,16 +22,23 @@ import com.blink.core.transport.google.GoogleEventBus;
 import com.blink.web.WebServer;
 import com.blink.web.vertx.VertxWebServer;
 
+import java.util.Set;
+
 public class Bootstrap {
 
-
-    public void start() throws Exception {
+    public void start(String[] args) throws Exception {
 
         LoggerFactory loggerFactory = new ApacheLog4jLoggerFactory();
         Logger bootLogger = loggerFactory.getLogger();
         bootLogger.info("Starting system");
 
-        ConfigurationFactory.setFactory(new FileConfigurationFactory());
+        String environment = "";
+        if (args.length == 0)
+            bootLogger.info("System is running on development mode. Please use '--prod' argument to enable production mode");
+        else
+            environment = args[0].replaceAll("--", "");
+
+        ConfigurationFactory.setFactory(new FileConfigurationFactory(environment));
         Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
         bootLogger.info("Building configuration complete");
 

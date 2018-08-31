@@ -11,7 +11,7 @@ public class ConfigurationTest {
 
     @Before
     public void setFactory() {
-        ConfigurationFactory.setFactory(new FileConfigurationFactory());
+        ConfigurationFactory.setFactory(new FileConfigurationFactory(""));
     }
 
     @Test

@@ -14,9 +14,15 @@ import java.util.Map;
 
 public class FileConfigurationFactory extends ConfigurationFactory {
 
+    private String environment;
+
+    public FileConfigurationFactory(String environment) {
+        this.environment = environment;
+    }
+
     public Configuration getConfiguration() {
         Gson gson = new Gson();
-        String fileName = "blink.conf";
+        String fileName = environment.isEmpty() ? "blink.conf" : "blink." + environment + ".conf";
         try (JsonReader reader = new JsonReader(new FileReader(fileName))) {
             Type type = new TypeToken<Map<String, Object>>() {
             }.getType();

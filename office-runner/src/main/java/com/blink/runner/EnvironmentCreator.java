@@ -19,14 +19,18 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class EnvironmentCreator {
     public static void main(String[] args) throws Exception {
-        new EnvironmentCreator().create();
+        new EnvironmentCreator().create(args);
     }
 
-    private void create() throws Exception {
+    private void create(String[] args) throws Exception {
         LoggerFactory loggerFactory = new ApacheLog4jLoggerFactory();
         Logger logger = loggerFactory.getLogger("Environment");
 
-        ConfigurationFactory.setFactory(new FileConfigurationFactory());
+        String environment = "";
+        if (args.length != 0)
+            environment = args[0].replaceAll("--", "");
+
+        ConfigurationFactory.setFactory(new FileConfigurationFactory(environment));
         Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
 
         DBServiceFactory dbServiceFactory = new MongoDBServiceFactory(configuration);

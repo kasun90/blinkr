@@ -4,6 +4,6 @@ public class App {
 
 
     public static void main(String[] args) throws Exception {
-        new Bootstrap().start();
+        new Bootstrap().start(args);
     }
 }
