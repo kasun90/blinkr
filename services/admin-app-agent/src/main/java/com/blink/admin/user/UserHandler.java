@@ -11,10 +11,7 @@ import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.album.*;
-import com.blink.shared.admin.portal.UserDetailsRequestMessage;
-import com.blink.shared.admin.portal.UserDetailsResponseMessage;
-import com.blink.shared.admin.portal.UserMessagesRequestMessage;
-import com.blink.shared.admin.portal.UserMessagesResponseMessage;
+import com.blink.shared.admin.portal.*;
 import com.blink.shared.admin.preset.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.common.Album;
@@ -43,14 +40,15 @@ public class UserHandler {
 
     public void handleMessage(Object message) throws Exception {
         if (message instanceof UserDetailsRequestMessage) {
-            UserDetails user = adminService.getContext().getDbServiceFactory().ofCollection("adminUser").
-                    find(new SimpleDBObject().append("username", username), UserDetails.class).first();
+            UserDetails user = getUser();
             if (user == null)
                 adminService.sendReply(new InvalidRequest("No user found"));
             else {
                 adminService.sendReply(new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
             }
 
+        } else if (message instanceof ChangePasswordMessage) {
+            handleChangePassword(((ChangePasswordMessage) message));
         } else if (message instanceof UserMessagesRequestMessage) {
             handleUserMessagesRequest((UserMessagesRequestMessage) message);
         } else if (message instanceof AlbumsRequestMessage) {
@@ -83,6 +81,35 @@ public class UserHandler {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
         }
+    }
+
+    private void handleChangePassword(ChangePasswordMessage message) throws Exception {
+        logger.info("Change password request received for user: {}", username);
+        UserDetails user = getUser();
+        ChangePasswordResponseMessage response = new ChangePasswordResponseMessage();
+        if (user == null)
+            response.setSuccess(false).setDescription("No user Found");
+        else if (message.getOldPassword() == null || message.getNewPassword() == null)
+            response.setSuccess(false).setDescription("Passwords cannot be null");
+        else if (!user.getPassword().equalsIgnoreCase(message.getOldPassword()))
+            response.setSuccess(false).setDescription("Password not correct");
+        else {
+            logger.info("Password matched. Proceeding to change.");
+            user.setPassword(message.getNewPassword());
+            updateUser(user);
+            response.setSuccess(true).setDescription("Password changed Successfully");
+        }
+        adminService.sendReply(response);
+    }
+
+    private UserDetails getUser() throws Exception {
+        return adminService.getContext().getDbServiceFactory().ofCollection("adminUser").
+                find(new SimpleDBObject().append("username", username), UserDetails.class).first();
+    }
+
+    private void updateUser(UserDetails user) throws Exception {
+        adminService.getContext().getDbServiceFactory().ofCollection("adminUser")
+                .insertOrUpdate(new SimpleDBObject().append("username", username), user);
     }
 
     private String getProfilePicture() throws Exception {
