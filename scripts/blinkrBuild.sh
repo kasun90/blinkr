@@ -33,4 +33,6 @@ cp -r $SOURCE_DIR/static/ $RELEASE_DIR
 cp $SOURCE_DIR/blink.conf $RELEASE_DIR
 cp $SOURCE_DIR/system.conf $RELEASE_DIR
 rm -rf $SOURCE_DIR
-tar -zcvf blinkr-$2.tar.gz $RELEASE_DIR
+cd $RELEASE_DIR
+tar -czvf ../blinkr-$2.tar.gz *
+cd ..
