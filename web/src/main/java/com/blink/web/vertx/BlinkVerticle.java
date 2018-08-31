@@ -68,6 +68,11 @@ public class BlinkVerticle extends AbstractVerticle {
             response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/service-worker.js").getPath());
         });
 
+        clientRouter.get("/manifest.json").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/manifest.json").getPath());
+        });
+
         clientRouter.get("/static/*").handler(StaticHandler.create(path + "/static").setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
         clientRouter.get("/*").handler(routingContext -> {
             try {
