@@ -1,7 +1,7 @@
 package com.blink.atag;
 
-public interface AtagEngine {
-    void initialize() throws Exception;
-    void process(String raw) throws Exception;
+import com.blink.shared.common.Article;
 
+public interface AtagEngine {
+    Article process(String raw, Article article) throws Exception;
 }

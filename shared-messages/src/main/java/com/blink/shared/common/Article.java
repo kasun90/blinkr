@@ -9,15 +9,17 @@ public class Article extends Entity {
 	private String description;
 	private String author;
 	private List<ATag> tags;
+	private long updated;
 
 	public Article() {}
 
-	public Article(String key, long timestamp, String title, String description, String author, List<ATag> tags) {
+	public Article(String key, long timestamp, String title, String description, String author, List<ATag> tags, long updated) {
 		super(key, timestamp);
 		this.title = title;
 		this.description = description;
 		this.author = author;
 		this.tags = tags;
+		this.updated = updated;
 	}
 
 	public String getKey() {
@@ -71,6 +73,15 @@ public class Article extends Entity {
 
 	public Article setTags(List<ATag> tags) {
 		this.tags = tags;
+		return this;
+	}
+
+	public long getUpdated() {
+		return updated;
+	}
+
+	public Article setUpdated(long updated) {
+		this.updated = updated;
 		return this;
 	}
 
