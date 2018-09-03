@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model type="enum">
+    <case>PARAGRAPH</case>
+    <case>IMAGE</case>
+    <case>HEADER</case>
+    <case>LIST</case>
+    <case>TEXT</case>
+</model>

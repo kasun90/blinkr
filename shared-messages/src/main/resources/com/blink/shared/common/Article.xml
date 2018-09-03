@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model extends="Entity">
+    <import>com.blink.shared.article.ATag</import>
+    <field type="String">title</field>
+    <field type="String">description</field>
+    <field type="String">author</field>
+    <field type="List::ATag">tags</field>
+</model>

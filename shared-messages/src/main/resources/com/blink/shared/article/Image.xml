@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model extends="ATag">
+    <field type="String">source</field>
+    <field type="String">caption</field>
+</model>
