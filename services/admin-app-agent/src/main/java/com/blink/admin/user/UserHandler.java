@@ -272,6 +272,6 @@ public class UserHandler {
     private void handleArticleDelete(ArticleDeleteMessage message) throws Exception {
         boolean success = articleHelper.deleteEntity(message.getKey());
         adminService.sendReply(new ArticleDeleteResponeMessage(message.getKey(), success));
-        logger.info("Preset delete status [sucess={} key={}]", success, message.getKey());
+        logger.info("Article delete status [sucess={} key={}]", success, message.getKey());
     }
 }
