@@ -6,4 +6,5 @@
     <case>LIST</case>
     <case>TEXT</case>
     <case>NOTE</case>
+    <case>LINK</case>
 </model>
