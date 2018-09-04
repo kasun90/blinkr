@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <import>com.blink.shared.common.Article</import>
+    <field type="List::Article">articles</field>
+    <field type="int">total</field>
+</model>

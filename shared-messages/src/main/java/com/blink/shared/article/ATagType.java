@@ -6,6 +6,5 @@ public enum ATagType {
 	HEADER,
 	LIST,
 	TEXT,
-	NOTE,
-	LINK
+	NOTE
 }

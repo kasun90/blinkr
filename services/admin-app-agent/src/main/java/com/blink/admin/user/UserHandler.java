@@ -1,6 +1,7 @@
 package com.blink.admin.user;
 
 import com.blink.common.AlbumHelper;
+import com.blink.common.ArticleHelper;
 import com.blink.common.PresetHelper;
 import com.blink.core.database.DBService;
 import com.blink.core.database.Filter;
@@ -11,10 +12,12 @@ import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
 import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.album.*;
+import com.blink.shared.admin.article.*;
 import com.blink.shared.admin.portal.*;
 import com.blink.shared.admin.preset.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.common.Album;
+import com.blink.shared.common.Article;
 import com.blink.shared.common.Preset;
 import com.blink.shared.system.InvalidRequest;
 import com.blink.utilities.BlinkTime;
@@ -29,6 +32,7 @@ public class UserHandler {
     private Logger logger;
     private AlbumHelper albumHelper;
     private PresetHelper presetHelper;
+    private ArticleHelper articleHelper;
 
     public UserHandler(String username, BaseService adminService) {
         this.adminService = adminService;
@@ -36,6 +40,7 @@ public class UserHandler {
         logger = adminService.getContext().getLoggerFactory().getLogger(String.format("%s-%s", "User", username));
         this.albumHelper = new AlbumHelper(adminService.getContext());
         this.presetHelper = new PresetHelper(adminService.getContext());
+        this.articleHelper = new ArticleHelper(adminService.getContext());
     }
 
     public void handleMessage(Object message) throws Exception {
@@ -77,6 +82,14 @@ public class UserHandler {
             handlePresetAfterPhotoUpload(((PresetAfterPhotoUploadMessage) message));
         } else if (message instanceof PresetDeleteMessage) {
             handlePresetDelete(((PresetDeleteMessage) message));
+        } else if (message instanceof ArticlesRequestMessage) {
+            handleArticlesReq(((ArticlesRequestMessage) message));
+        } else if (message instanceof ArticleKeyCheckRequestMessage) {
+            handleArticleKeyCheck(((ArticleKeyCheckRequestMessage) message));
+        } else if (message instanceof CreateArticleRequestMessage) {
+            handleArticleCreate(((CreateArticleRequestMessage) message));
+        } else if (message instanceof ArticleDeleteMessage) {
+            handleArticleDelete(((ArticleDeleteMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -231,6 +244,34 @@ public class UserHandler {
     private void handlePresetDelete(PresetDeleteMessage message) throws Exception {
         boolean success = presetHelper.deleteEntity(message.getKey());
         adminService.sendReply(new PresetDeleteResponeMessage(message.getKey(), success));
+        logger.info("Preset delete status [sucess={} key={}]", success, message.getKey());
+    }
+
+    private void handleArticlesReq(ArticlesRequestMessage message) throws Exception {
+        adminService.sendReply(new ArticlesResponseMessage(articleHelper.getEntities(message.getTimestamp(),
+                message.isLess(), message.getLimit()), articleHelper.getEntityCount()));
+    }
+
+    private void handleArticleKeyCheck(ArticleKeyCheckRequestMessage message) throws Exception {
+        logger.info("Article key check: {}", message);
+        adminService.sendReply(new ArticleKeyCheckResponseMessage(articleHelper.isKeyAvailable(message.getKey())));
+    }
+
+    private void handleArticleCreate(CreateArticleRequestMessage message) throws Exception {
+        logger.info("Article create request received: {}", message);
+        Article article = new Article();
+        article.setKey(message.getKey())
+                .setTitle(message.getTitle())
+                .setDescription(message.getDescription())
+                .setAuthor(getUser().getName())
+                .setTimestamp(BlinkTime.getCurrentTimeMillis());
+        articleHelper.saveEntity(article);
+        adminService.sendReply(new CreateArticleResponseMessage(message.getKey(), true, "Success"));
+    }
+
+    private void handleArticleDelete(ArticleDeleteMessage message) throws Exception {
+        boolean success = articleHelper.deleteEntity(message.getKey());
+        adminService.sendReply(new ArticleDeleteResponeMessage(message.getKey(), success));
         logger.info("Preset delete status [sucess={} key={}]", success, message.getKey());
     }
 }
