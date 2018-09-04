@@ -7,12 +7,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Paragraph extends SimpleATag {
-    Paragraph() {
+    public Paragraph() {
         super(ATagType.PARAGRAPH);
         set("children", new LinkedList<SimpleATag>());
     }
 
     public void addChild(SimpleATag tag) {
         ((List<SimpleATag>) get("children")).add(tag);
+    }
+
+    public int getChildrenLength() {
+        return ((List<SimpleATag>) get("children")).size();
     }
 }
