@@ -18,6 +18,8 @@
         <module>shared-messages</module>
         <module>services-all</module>
         <module>common</module>
+        <module>processors</module>
+        <module>processors-all</module>
     </modules>
 
     <build>
