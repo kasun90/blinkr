@@ -90,6 +90,10 @@ public class UserHandler {
             handleArticleCreate(((CreateArticleRequestMessage) message));
         } else if (message instanceof ArticleDeleteMessage) {
             handleArticleDelete(((ArticleDeleteMessage) message));
+        } else if (message instanceof RawArticleRequestMessage) {
+            handleRawArticleReq(((RawArticleRequestMessage) message));
+        } else if (message instanceof UpdateArticleRequestMessage) {
+            handleUpdateArticleReq(((UpdateArticleRequestMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -273,5 +277,21 @@ public class UserHandler {
         boolean success = articleHelper.deleteEntity(message.getKey());
         adminService.sendReply(new ArticleDeleteResponeMessage(message.getKey(), success));
         logger.info("Article delete status [sucess={} key={}]", success, message.getKey());
+    }
+
+    private void handleRawArticleReq(RawArticleRequestMessage message) throws Exception {
+        RawArticle rawArticle = articleHelper.getRawArticle(message.getKey());
+        Object reply;
+        if (rawArticle == null)
+            reply = new InvalidRequest("Invalid key");
+        else
+            reply = new RawArticleResponseMessage(rawArticle.getKey(), rawArticle.getTitle(),
+                    rawArticle.getContent());
+        adminService.sendReply(reply);
+    }
+
+    private void handleUpdateArticleReq(UpdateArticleRequestMessage message) throws Exception {
+        String desc = articleHelper.updateArticle(message.getKey(), message.getContent());
+        adminService.sendReply(new UpdateArticleResponseMessage(desc == null, desc));
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <field type="String">key</field>
+    <field type="String">title</field>
+    <field type="String">content</field>
+</model>

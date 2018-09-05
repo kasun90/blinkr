@@ -1,8 +1,5 @@
 package com.blink.atag;
 
-import com.blink.atag.tags.Header;
-import com.blink.atag.tags.Note;
-import com.blink.atag.tags.Paragraph;
 import com.blink.atag.tags.builders.*;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
