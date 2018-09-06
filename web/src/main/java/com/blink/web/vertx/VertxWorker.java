@@ -25,7 +25,7 @@ class VertxWorker {
 
     VertxWorker(Context context) {
         this.context = context;
-        this.logger = context.getLoggerFactory().getLogger();
+        this.logger = context.getLoggerFactory().getLogger("VertxWorker");
         context.getBus().register(this);
     }
 
