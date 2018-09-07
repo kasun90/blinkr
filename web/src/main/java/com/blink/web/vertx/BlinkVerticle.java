@@ -103,7 +103,7 @@ public class BlinkVerticle extends AbstractVerticle {
             response.sendFile(adminFaviconPath);
         });
 
-        adminRouter.route().handler(StaticHandler.create(adminPath).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+        adminRouter.route("/*").handler(StaticHandler.create(adminPath).setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
 
         vertx.createHttpServer().requestHandler(adminRouter::accept).listen(context.getConfiguration().getAdminPort());
 
