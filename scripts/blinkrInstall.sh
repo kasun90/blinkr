@@ -10,5 +10,10 @@ SYSTEM_DIR="system"
 
 mkdir $SYSTEM_DIR
 
+cd $SYSTEM_DIR
+rm *.jar
+rm -rf *.lib
+cd ..
+
 tar -xzvf $BINARY_FILE -C $SYSTEM_DIR
 
