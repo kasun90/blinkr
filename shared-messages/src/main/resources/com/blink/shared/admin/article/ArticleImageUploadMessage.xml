@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model extends="FileUploadMessage">
+    <import>com.blink.shared.admin.FileUploadMessage</import>
+    <field type="String">key</field>
+</model>
