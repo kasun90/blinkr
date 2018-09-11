@@ -13,10 +13,7 @@ import com.blink.shared.client.album.AlbumDetailsRequestMessage;
 import com.blink.shared.client.album.AlbumDetailsResponseMessage;
 import com.blink.shared.client.album.AlbumsRequestMessage;
 import com.blink.shared.client.album.AlbumsResponseMessage;
-import com.blink.shared.client.article.ArticleDetailsRequestMessage;
-import com.blink.shared.client.article.ArticleDetailsResponseMessage;
-import com.blink.shared.client.article.ArticlesRequestMessage;
-import com.blink.shared.client.article.ArticlesResponseMessage;
+import com.blink.shared.client.article.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
@@ -56,6 +53,8 @@ public class ClientAppAgent extends BaseService {
             onArticlesRequest(((ArticlesRequestMessage) enclosedMessage));
         } else if (enclosedMessage instanceof ArticleDetailsRequestMessage) {
             onArticleDetails(((ArticleDetailsRequestMessage) enclosedMessage));
+        } else if (enclosedMessage instanceof ArticleViewAckMessage) {
+            onArticleViewAck(((ArticleViewAckMessage) enclosedMessage));
         }
     }
 
@@ -87,6 +86,12 @@ public class ClientAppAgent extends BaseService {
 
     private void onArticleDetails(ArticleDetailsRequestMessage message) throws Exception {
         sendReply(new ArticleDetailsResponseMessage(articleHelper.getDetailsEntity(message.getKey())));
+    }
+
+    private void onArticleViewAck(ArticleViewAckMessage message) throws Exception {
+        articleHelper.incrementViewCount(message.getKey());
+        info("Article views incremented [key={}]", message.getKey());
+        sendReply(message);
     }
 
     @Override

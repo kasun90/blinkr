@@ -41,6 +41,15 @@ public class ArticleHelper extends CommonHelper<Article> {
         return raw;
     }
 
+    public void incrementViewCount(String key) throws Exception {
+        Article entity = getEntity(key);
+
+        if (entity == null)
+            return;
+        entity.setViews(entity.getViews() + 1);
+        saveEntity(entity);
+    }
+
     private void saveRawArticle(RawArticle rawArticle) throws Exception {
         entityDB.insertOrUpdate(new SimpleDBObject().append("key", rawArticle.getKey()), rawArticle);
     }
