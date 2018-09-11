@@ -6,4 +6,5 @@
     <field type="String">author</field>
     <field type="List::ATag">tags</field>
     <field type="long">updated</field>
+    <field type="long">views</field>
 </model>
