@@ -76,8 +76,13 @@ public class ArticleHelper extends CommonHelper<Article> {
 
     public File saveArticleCover(String key, String fileContent, String fileName) throws Exception {
         logger.info("Article cover save request [key={}]", key);
-        return saveArticleResource(key, fileContent, fileService.newFileURI(entityBase)
-                .appendResource(key).appendResource("cover").appendResource(fileName).build());
+        String coverBase = fileService.newFileURI(entityBase).appendResource(key).appendResource("cover").build();
+        List<String> covers = fileService.listFilePaths(coverBase);
+        for (String cover : covers) {
+            fileService.delete(cover);
+        }
+
+        return saveArticleResource(key, fileContent, fileService.newFileURI(coverBase).appendResource(fileName).build());
     }
 
     private File saveArticleResource(String key, String fileContent, String path) throws Exception {
