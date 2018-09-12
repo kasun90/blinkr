@@ -10,6 +10,7 @@ import com.blink.core.database.SortCriteria;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
+import com.blink.shared.admin.FileUploadResponseMessage;
 import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.album.*;
 import com.blink.shared.admin.article.*;
@@ -18,6 +19,7 @@ import com.blink.shared.admin.preset.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Article;
+import com.blink.shared.common.File;
 import com.blink.shared.common.Preset;
 import com.blink.shared.system.InvalidRequest;
 import com.blink.utilities.BlinkTime;
@@ -94,6 +96,8 @@ public class UserHandler {
             handleRawArticleReq(((RawArticleRequestMessage) message));
         } else if (message instanceof UpdateArticleRequestMessage) {
             handleUpdateArticleReq(((UpdateArticleRequestMessage) message));
+        } else if (message instanceof ArticleImageUploadMessage) {
+            handleArticleImage(((ArticleImageUploadMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -293,5 +297,15 @@ public class UserHandler {
     private void handleUpdateArticleReq(UpdateArticleRequestMessage message) throws Exception {
         String desc = articleHelper.updateArticle(message.getKey(), message.getContent());
         adminService.sendReply(new UpdateArticleResponseMessage(desc == null, desc));
+    }
+
+    private void handleArticleImage(ArticleImageUploadMessage message) throws Exception {
+        File file = articleHelper.saveArticleImage(message.getKey(), message.getContent(), message.getFileName());
+        adminService.sendReply(new FileUploadResponseMessage(file != null, file));
+    }
+
+    private void handleArticleCoverUpload(ArticleCoverUploadMessage message) throws Exception {
+        File file = articleHelper.saveArticleCover(message.getKey(), message.getContent(), message.getFileName());
+        adminService.sendReply(new FileUploadResponseMessage(file != null, file));
     }
 }
