@@ -5,17 +5,17 @@ import com.blink.atag.tags.SimpleATag;
 
 public class ImageBuilder extends SimpleATagBuilder {
 
-    private String url;
+    private String resource;
     private String caption = "No Caption";
 
     @Override
     public void addLine(String line) {
         StringBuilder builder = new StringBuilder();
         for (char c : line.toCharArray()) {
-            if (c == '(' || c == '[')
+            if (c == '(' || c == '[' || c == '!')
                 continue;
             else if (c == ')') {
-                url = builder.toString();
+                resource = builder.toString();
                 builder.setLength(0);
                 continue;
             } else if (c == ']') {
@@ -29,17 +29,17 @@ public class ImageBuilder extends SimpleATagBuilder {
 
     @Override
     public SimpleATag build() {
-        return new Image(url, caption);
+        return new Image(resource, caption);
     }
 
     @Override
     public boolean isBuilding() {
-        return url != null;
+        return resource != null;
     }
 
     @Override
     public void reset() {
-        url = null;
+        resource = null;
         caption = null;
     }
 }

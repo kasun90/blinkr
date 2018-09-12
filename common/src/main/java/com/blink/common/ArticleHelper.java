@@ -5,6 +5,7 @@ import com.blink.atag.AtagEngine;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Context;
 import com.blink.shared.admin.article.RawArticle;
+import com.blink.shared.article.ATagType;
 import com.blink.shared.common.Article;
 import com.blink.shared.common.File;
 
@@ -20,6 +21,14 @@ public class ArticleHelper extends CommonHelper<Article> {
 
     @Override
     public Article fillEntity(Article article) throws Exception {
+        article.getTags().stream().filter(aTag -> aTag.getType() == ATagType.IMAGE)
+                .forEach(aTag -> {
+                    try {
+                        aTag.getData().put("url", fileService.getURL(((String) aTag.getData().get("resource"))).toString());
+                    } catch (Exception e) {
+                        logger.exception("", e);
+                    }
+                });
         return article;
     }
 

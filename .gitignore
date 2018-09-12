@@ -16,4 +16,5 @@ buildNumber.properties
 /tmp/
 /static/files/albums/
 /static/files/presets/
+/static/files/articles/
 *.iml
