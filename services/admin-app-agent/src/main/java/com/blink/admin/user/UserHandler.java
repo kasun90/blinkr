@@ -98,6 +98,8 @@ public class UserHandler {
             handleUpdateArticleReq(((UpdateArticleRequestMessage) message));
         } else if (message instanceof ArticleImageUploadMessage) {
             handleArticleImage(((ArticleImageUploadMessage) message));
+        } else if (message instanceof ArticleCoverUploadMessage) {
+            handleArticleCoverUpload(((ArticleCoverUploadMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
