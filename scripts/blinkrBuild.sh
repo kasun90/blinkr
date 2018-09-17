@@ -38,7 +38,7 @@ cd $RELEASE_DIR
 tar -czvf ../$RELEASE_NAME *
 cd ..
 
-result=`curl -X POST -H "Content-Type: application/json" -u "${3}:${4}" -d '{"tag_name":"${TAG_NAME}","name":"${TAG_MESSAGE}","draft":false,"prerelease":false}' https://api.github.com/repos/kasun90/blinkr/releases | grep upload_url`
+result=`curl -X POST -H "Content-Type: application/json" -u "${3}:${4}" -d "{'tag_name':${TAG_NAME},'name':${TAG_MESSAGE},'draft':false,'prerelease':false}" https://api.github.com/repos/kasun90/blinkr/releases | grep upload_url`
 splits=($result)
 url=${splits[1]}
 url=`sed -e 's/^"//' -e 's/"$//' <<< "$url" | awk '{split($url,a,"{"); print a[1]}'`
