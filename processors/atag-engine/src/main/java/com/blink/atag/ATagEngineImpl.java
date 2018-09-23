@@ -61,7 +61,7 @@ public class ATagEngineImpl implements AtagEngine {
         else if (line.startsWith("**"))
             processList(line);
         else if (line.startsWith("*@"))
-            processList(line);
+            processOrderedList(line);
         else
             processGeneralLine(line);
     }
