@@ -108,7 +108,9 @@ blinkrbuild() {
     fi
     cp -r $SOURCE_DIR/$RELEASE_BINARY_DIR/target/blinkr-$BLINKRVERSION.lib $RELEASE_DIR
     cp -r $SOURCE_DIR/static/ $RELEASE_DIR
+    cp -r $SOURCE_DIR/scripts/ $RELEASE_DIR
     cp $SOURCE_DIR/*.conf $RELEASE_DIR
+    echo $BLINKRVERSION > $RELEASE_DIR/version.txt
     rm -rf $SOURCE_DIR
     cd $RELEASE_DIR
     tar -czvf ../$RELEASE_NAME *
