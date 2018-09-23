@@ -154,6 +154,8 @@ blinkrinstall() {
         exit 1
     fi
 
+    rm *.tar.gz
+
     BINARY_FILE=$(getblinkrreleasename $INSTALLVERSION)
     wget https://github.com/kasun90/blinkr/releases/download/v$INSTALLVERSION/blinkr-$INSTALLVERSION.tar.gz
 
@@ -167,6 +169,10 @@ blinkrinstall() {
     cd $SYSTEM_DIR
     rm *.jar
     rm -rf *.lib
+    clientFiles=`cat blink.conf | grep clientRoot | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'`
+    rm -rf $clientFiles
+    adminFiles=`cat blink.conf | grep adminRoot | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'`
+    rm -rf $adminFiles
     cd ..
 
     tar -xzvf $BINARY_FILE -C $SYSTEM_DIR
