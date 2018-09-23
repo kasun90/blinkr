@@ -10,6 +10,7 @@ import com.blink.shared.common.Article;
 import com.blink.shared.common.File;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ArticleHelper extends CommonHelper<Article> {
 
@@ -21,6 +22,8 @@ public class ArticleHelper extends CommonHelper<Article> {
 
     @Override
     public Article fillEntity(Article article) throws Exception {
+        if (article.getTags() == null)
+            return article;
         article.getTags().stream().filter(aTag -> aTag.getType() == ATagType.IMAGE)
                 .forEach(aTag -> {
                     try {
