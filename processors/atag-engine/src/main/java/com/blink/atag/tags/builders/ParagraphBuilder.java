@@ -49,8 +49,14 @@ public class ParagraphBuilder extends SimpleATagBuilder {
                     paragraph.addChild(new Text(ATagType.STRONG_TEXT, builder.toString()));
                     builder.setLength(0);
                     strongText = false;
-                } else
+                } else {
+                    if (builder.length() != 0) {
+                        paragraph.addChild(new Text(builder.toString()));
+                        builder.setLength(0);
+                    }
                     strongText = true;
+                }
+
                 continue;
             }
             builder.append(c);
