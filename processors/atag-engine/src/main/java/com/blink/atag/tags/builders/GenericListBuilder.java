@@ -14,7 +14,11 @@ public class GenericListBuilder<T extends List> extends SimpleATagBuilder {
 
     @Override
     public void addLine(String line) {
-        list.addChild(new Text(line));
+        String[] split = line.split("\\s+", 2);
+        if (split.length != 2)
+            list.addChild(new Text(line));
+        else
+            list.addChild(new Text(split[1]));
     }
 
     @Override
