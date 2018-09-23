@@ -248,7 +248,7 @@ case $COMMAND in
     blinkrstatus
     ;;
     *)    # unknown option
-    echo $"Usage: $0 {start|stop|build|install|status}"
+    echo $"Usage: blinkr (start|stop|build|install|status)"
     exit 1
     ;;
 esac
