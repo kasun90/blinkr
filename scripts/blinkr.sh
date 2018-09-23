@@ -52,7 +52,7 @@ blinkrbuild() {
 
     if [ -z "$BLINKRVERSION" ]
     then
-        echo -e "\e[31mPlease provide version with option -v | --version"
+        echo -e "\e[31mPlease provide version with option -v | --version\e[0m"
         exit 1
     fi
 
@@ -76,7 +76,7 @@ blinkrbuild() {
 
         if [ -z "$result" ]
         then
-            echo -e "\e[31mGitHub authentication failed. Exiting.."
+            echo -e "\e[31mGitHub authentication failed. Exiting..\e[0m"
             exit 1
         fi
     fi
@@ -89,7 +89,7 @@ blinkrbuild() {
     mvn clean install -DskipTests
 
     if [ $? -ne 0 ]; then
-        echo -e "\e[31mMaven build failed. Exiting.."
+        echo -e "\e[31mMaven build failed. Exiting..\e[0m"
         exit 1
     fi
 
@@ -103,7 +103,7 @@ blinkrbuild() {
     cd ..
     cp $SOURCE_DIR/$RELEASE_BINARY_DIR/target/*.jar $RELEASE_DIR
     if [ $? -ne 0 ]; then
-        echo -e "\e[31mCouldn't find release binaries. Exiting.."
+        echo -e "\e[31mCouldn't find release binaries. Exiting..\e[0m"
         exit 1
     fi
     cp -r $SOURCE_DIR/$RELEASE_BINARY_DIR/target/blinkr-$BLINKRVERSION.lib $RELEASE_DIR
@@ -123,25 +123,102 @@ blinkrbuild() {
         url+="?name=$RELEASE_NAME"
         echo Uploading release
         curl -X POST -H "Content-Type: application/gzip" -u "$GITUSERNAME:$GITPASSWORD" --data-binary @$RELEASE_NAME $url
-        echo -e "\e[32mFinished"
+        echo -e "\e[32mFinished\e[0m"
     fi
 }
 
 blinkrinstall() {
-    echo $(getblinkrreleasename $1)
-}
+    INSTALLVERSION=""
 
-blinkrstop() {
-    echo stop
-}
+    while [[ $# -gt 0 ]]
+    do
+    key="$1"
 
-blinkrstart() {
-    echo $"Start $SYSTEM_DIR"
+    case $key in
+        -v|--version)
+        INSTALLVERSION="$2"
+        shift
+        shift
+        ;;
+        *)
+        shift
+        ;;
+    esac
+    done
+
+    if [ -z "$INSTALLVERSION" ]
+    then
+        echo -e "\e[31mPlease provide version with option -v | --version\e[0m"
+        exit 1
+    fi
+
+    BINARY_FILE=$(getblinkrreleasename $INSTALLVERSION)
+    wget https://github.com/kasun90/blinkr/releases/download/v$INSTALLVERSION/blinkr-$INSTALLVERSION.tar.gz
+
+    if [ $? -ne 0 ]; then
+        echo -e "\e[31mCouldn't download the release. Check whether the release exists. Exiting..\e[0m"
+        exit 1
+    fi
+
+    mkdir $SYSTEM_DIR
+
+    cd $SYSTEM_DIR
+    rm *.jar
+    rm -rf *.lib
+    cd ..
+
+    tar -xzvf $BINARY_FILE -C $SYSTEM_DIR
+    echo -e "\e[32mInstallation done\e[0m"
 }
 
 blinkrstatus() {
-    echo status
+    grepresult=`ps -ef | grep java | grep blinkr`
+
+    if [ -z "$grepresult" ]
+    then
+        echo -e "\e[31mBlinkr is not running\e[0m"
+        false
+        return
+    fi
+
+    blinkpid=`awk '/[b]linkr/{print $2}' <<< "$grepresult"`
+    echo -e "\e[32mBlinkr is running. PID=$blinkpid\e[0m"
+    true
+    return
 }
+
+blinkrstop() {
+    blinkpid=`ps -ef | awk '/[b]linkr/{print $2}'`
+    if [ ! -z "$blinkpid" ]
+    then
+        kill -9 $blinkpid
+    fi
+    blinkrstatus
+}
+
+blinkrstart() {
+    if blinkrstatus
+    then
+        echo -e "\nAlready running. Nothing to do."
+        return
+    fi
+    cd $SYSTEM_DIR
+    if [ $? -ne 0 ]; then
+        echo -e "\e[31mPlease install Blinkr first\e[0m"
+        exit 1
+    fi
+    appjarfile=`find . -name "*-app.jar" -type f -printf "%f\n"`
+    if [ -z "$appjarfile" ]
+    then
+        echo -e "\e[31mCouldn't find main jar file\e[0m"
+        exit 1
+    fi
+    nohup java -jar $appjarfile --prod > blinkr.out 2> blinkr.err < /dev/null &
+    cd ..
+    blinkrstatus
+}
+
+
 
 COMMAND=$1
 shift
@@ -151,7 +228,7 @@ case $COMMAND in
     blinkrbuild "$@"
     ;;
     install)
-    blinkrinstall "hello"
+    blinkrinstall "$@"
     ;;
     stop)
     blinkrstop
