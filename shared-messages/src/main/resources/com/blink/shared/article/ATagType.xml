@@ -6,6 +6,7 @@
     <case>LIST</case>
     <case>ORDERED_LIST</case>
     <case>TEXT</case>
+    <case>STRONG_TEXT</case>
     <case>NOTE</case>
     <case>LINK</case>
 </model>

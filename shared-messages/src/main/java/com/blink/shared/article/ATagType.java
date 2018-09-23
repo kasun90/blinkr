@@ -7,6 +7,7 @@ public enum ATagType {
 	LIST,
 	ORDERED_LIST,
 	TEXT,
+	STRONG_TEXT,
 	NOTE,
 	LINK
 }

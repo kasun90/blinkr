@@ -4,12 +4,14 @@ import com.blink.atag.tags.Link;
 import com.blink.atag.tags.Paragraph;
 import com.blink.atag.tags.SimpleATag;
 import com.blink.atag.tags.Text;
+import com.blink.shared.article.ATagType;
 
 public class ParagraphBuilder extends SimpleATagBuilder {
 
     private StringBuilder builder;
     private Paragraph paragraph;
     private boolean expectLink = false;
+    private boolean strongText = false;
     private String currentLink = null;
 
     public ParagraphBuilder() {
@@ -42,6 +44,14 @@ public class ParagraphBuilder extends SimpleATagBuilder {
                     currentLink = null;
                     continue;
                 }
+            } else if (c == '^') {
+                if (strongText) {
+                    paragraph.addChild(new Text(ATagType.STRONG_TEXT, builder.toString()));
+                    builder.setLength(0);
+                    strongText = false;
+                } else
+                    strongText = true;
+                continue;
             }
             builder.append(c);
         }
