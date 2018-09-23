@@ -4,6 +4,7 @@
     <case>IMAGE</case>
     <case>HEADER</case>
     <case>LIST</case>
+    <case>ORDERED_LIST</case>
     <case>TEXT</case>
     <case>NOTE</case>
     <case>LINK</case>

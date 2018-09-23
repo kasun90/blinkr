@@ -1,5 +1,6 @@
 package com.blink.atag;
 
+import com.blink.atag.tags.OrderedList;
 import com.blink.atag.tags.builders.*;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
@@ -16,6 +17,8 @@ public class ATagEngineImpl implements AtagEngine {
     private Logger logger;
     private ParagraphBuilder paragraphBuilder = new ParagraphBuilder();
     private NoteBuilder noteBuilder = new NoteBuilder();
+    private GenericListBuilder<com.blink.atag.tags.List> listBuilder = new GenericListBuilder<>();
+    private GenericListBuilder<OrderedList> orderedListBuilder = new GenericListBuilder<>();
 
     public ATagEngineImpl(Context context) {
         this.logger = context.getLoggerFactory().getLogger("ATAG");
@@ -41,7 +44,7 @@ public class ATagEngineImpl implements AtagEngine {
             }
         }
 
-        breakPara(aTags);
+        breakTag(aTags);
         article.setTags(aTags);
         return article;
     }
@@ -50,11 +53,15 @@ public class ATagEngineImpl implements AtagEngine {
         if (line.startsWith("#"))
             processSingleLineATag(new HeaderBuilder(), line, aTags);
         else if (line.isEmpty())
-            breakPara(aTags);
+            breakTag(aTags);
         else if (line.startsWith("!!"))
             startOrEndNote(aTags);
         else if (line.startsWith("!("))
             processSingleLineATag(new ImageBuilder(), line, aTags);
+        else if (line.startsWith("**"))
+            processList(line);
+        else if (line.startsWith("*@"))
+            processList(line);
         else
             processGeneralLine(line);
     }
@@ -64,8 +71,26 @@ public class ATagEngineImpl implements AtagEngine {
         aTags.add(builder.build());
     }
 
-    private void breakPara(List<ATag> aTags) {
-        if (paragraphBuilder.isBuilding()) {
+    private void processList(String line) {
+        if (!listBuilder.isBuilding())
+            listBuilder.initNew(new com.blink.atag.tags.List());
+        listBuilder.addLine(line);
+    }
+
+    private void processOrderedList(String line) {
+        if (!orderedListBuilder.isBuilding())
+            orderedListBuilder.initNew(new OrderedList());
+        orderedListBuilder.addLine(line);
+    }
+
+    private void breakTag(List<ATag> aTags) {
+        if (listBuilder.isBuilding()) {
+            aTags.add(listBuilder.build());
+            listBuilder.reset();
+        } else if (orderedListBuilder.isBuilding()) {
+            aTags.add(orderedListBuilder.build());
+            orderedListBuilder.reset();
+        } else if (paragraphBuilder.isBuilding()) {
             aTags.add(paragraphBuilder.build());
             paragraphBuilder.reset();
         }
