@@ -7,6 +7,11 @@ import com.blink.atag.tags.Text;
 public class GenericListBuilder<T extends List> extends SimpleATagBuilder {
 
     private T list;
+    private RichTextBuilder builder;
+
+    public GenericListBuilder() {
+        builder = new RichTextBuilder();
+    }
 
     public void initNew(T list) {
         this.list = list;
@@ -17,8 +22,12 @@ public class GenericListBuilder<T extends List> extends SimpleATagBuilder {
         String[] split = line.split("\\s+", 2);
         if (split.length != 2)
             list.addChild(new Text(line));
-        else
-            list.addChild(new Text(split[1]));
+        else {
+            builder.addLine(line);
+            list.addChild(builder.build());
+            builder.reset();
+        }
+
     }
 
     @Override

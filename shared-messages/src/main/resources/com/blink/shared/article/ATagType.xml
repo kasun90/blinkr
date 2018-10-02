@@ -9,4 +9,5 @@
     <case>STRONG_TEXT</case>
     <case>NOTE</case>
     <case>LINK</case>
+    <case>RICH_TEXT</case>
 </model>
