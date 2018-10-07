@@ -53,5 +53,6 @@ public class RichTextBuilder extends SimpleATagBuilder {
     @Override
     public void reset() {
         richText = new RichText();
+        builder.setLength(0);
     }
 }

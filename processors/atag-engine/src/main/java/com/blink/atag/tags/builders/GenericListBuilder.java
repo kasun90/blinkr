@@ -23,7 +23,7 @@ public class GenericListBuilder<T extends List> extends SimpleATagBuilder {
         if (split.length != 2)
             list.addChild(new Text(line));
         else {
-            builder.addLine(line);
+            builder.addLine(split[1]);
             list.addChild(builder.build());
             builder.reset();
         }
