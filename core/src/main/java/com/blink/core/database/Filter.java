@@ -5,7 +5,8 @@ public enum Filter {
     LT("Less Than"),
     LTE("Less Than or Equal"),
     GT("Greater Than"),
-    GTE("Greater Than or Equal");
+    GTE("Greater Than or Equal"),
+    CT_CI("Contains, Case Insensitive");
 
     String description;
 

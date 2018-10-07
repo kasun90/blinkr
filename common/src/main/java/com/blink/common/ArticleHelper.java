@@ -2,6 +2,7 @@ package com.blink.common;
 
 import com.blink.atag.ATagEngineImpl;
 import com.blink.atag.AtagEngine;
+import com.blink.core.database.Filter;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Context;
 import com.blink.shared.admin.article.RawArticle;
@@ -9,6 +10,7 @@ import com.blink.shared.article.ATagType;
 import com.blink.shared.common.Article;
 import com.blink.shared.common.File;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -124,5 +126,9 @@ public class ArticleHelper extends CommonHelper<Article> {
 
         saveEntity(article);
         return null;
+    }
+
+    public List<Article> searchArticles(String keyPhrase) throws Exception {
+        return searchEntities(new SimpleDBObject().append("title", keyPhrase, Filter.CT_CI));
     }
 }

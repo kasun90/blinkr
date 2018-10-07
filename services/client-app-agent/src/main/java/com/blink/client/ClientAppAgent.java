@@ -55,6 +55,8 @@ public class ClientAppAgent extends BaseService {
             onArticleDetails(((ArticleDetailsRequestMessage) enclosedMessage));
         } else if (enclosedMessage instanceof ArticleViewAckMessage) {
             onArticleViewAck(((ArticleViewAckMessage) enclosedMessage));
+        } else if (enclosedMessage instanceof ArticleSearchRequestMessage) {
+            onArticleSearch(((ArticleSearchRequestMessage) enclosedMessage));
         }
     }
 
@@ -92,6 +94,10 @@ public class ClientAppAgent extends BaseService {
         articleHelper.incrementViewCount(message.getKey());
         info("Article views incremented [key={}]", message.getKey());
         sendReply(message);
+    }
+
+    private void onArticleSearch(ArticleSearchRequestMessage message) throws Exception {
+        sendReply(new ArticleSearchResponseMessage(articleHelper.searchArticles(message.getKeyPhrase())));
     }
 
     @Override

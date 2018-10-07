@@ -1,9 +1,6 @@
 package com.blink.common;
 
-import com.blink.core.database.DBService;
-import com.blink.core.database.Filter;
-import com.blink.core.database.SimpleDBObject;
-import com.blink.core.database.SortCriteria;
+import com.blink.core.database.*;
 import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
@@ -25,6 +22,7 @@ public abstract class CommonHelper<T extends Entity> {
     String entityBase;
     Logger logger;
     private Class<T> entityType;
+    private int searchHardLimit = 100;
 
     public CommonHelper(Context context, String entityCollectionName, String entityBaseName, Class<T> entityType) {
         this.context = context;
@@ -80,6 +78,17 @@ public abstract class CommonHelper<T extends Entity> {
             }
         }
 
+        return entities;
+    }
+
+    public List<T> searchEntities(SimpleDBObject toFind) throws Exception {
+        List<T> entities = new LinkedList<>();
+        int current  = 0;
+        Iterator<T> iterator = entityDB.find(toFind, entityType).iterator();
+        while (iterator.hasNext() && current < searchHardLimit) {
+            entities.add(fillEntity(iterator.next()));
+            current++;
+        }
         return entities;
     }
 

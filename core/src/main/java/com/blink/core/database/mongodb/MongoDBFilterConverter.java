@@ -1,6 +1,5 @@
 package com.blink.core.database.mongodb;
 
-import com.blink.core.database.Filter;
 import com.blink.core.database.FilterPair;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.database.SortCriteria;
@@ -9,14 +8,11 @@ import com.mongodb.client.model.Sorts;
 import org.bson.conversions.Bson;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MongoDBFilterConverter {
-    public static Bson toQuery(SimpleDBObject dbObject) {
+class MongoDBFilterConverter {
+    static Bson toQuery(SimpleDBObject dbObject) {
         if (dbObject.getData().size() == 1) {
             Map.Entry<String, FilterPair> entry = dbObject.getData().entrySet().iterator().next();
             return convertSingleFilter(entry.getKey(), entry.getValue());
@@ -43,6 +39,9 @@ public class MongoDBFilterConverter {
             case GTE:
                 bson = Filters.gte(fieldName, pair.getValue());
                 break;
+            case CT_CI:
+                bson = Filters.regex(fieldName, pair.getValue().toString(), "i");
+                break;
             default:
                 bson = Filters.eq(fieldName, pair.getValue());
                 break;
@@ -50,7 +49,7 @@ public class MongoDBFilterConverter {
         return bson;
     }
 
-    public static Bson toSortQuery(SortCriteria... sorts) {
+    static Bson toSortQuery(SortCriteria... sorts) {
         if (sorts.length == 1) {
             return convertSingleSort(sorts[0]);
         } else {
