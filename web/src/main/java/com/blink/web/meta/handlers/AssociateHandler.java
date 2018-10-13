@@ -13,6 +13,7 @@ public class AssociateHandler implements TagHandler {
         tags.put(MetaTag.TITLE, "Nubamin on Blink");
         tags.put(MetaTag.DESCRIPTION, "Nubamin A.K.A Pradeep K. Liyanage");
         tags.put(MetaTag.VIDEO, "https://www.youtube.com/v/ePruRYrY1xY");
+        tags.put(MetaTag.TYPE, "video");
         return tags;
     }
 }
