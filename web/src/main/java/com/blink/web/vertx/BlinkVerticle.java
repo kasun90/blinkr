@@ -115,7 +115,7 @@ public class BlinkVerticle extends AbstractVerticle {
     private void routeAPIRequest(RoutingContext context) {
         MultiMap params = context.request().params();
         MultiMap headers = context.request().headers();
-        String origin = headers.get("Origin");
+        String origin = headers.get("Host");
         String appKey = headers.get("X-App-Key");
         String appSession = headers.get("X-App-Session");
         if (allowedOrigins.isEmpty() || allowedOrigins.contains(origin))
