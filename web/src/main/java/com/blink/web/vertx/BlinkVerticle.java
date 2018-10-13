@@ -50,7 +50,7 @@ public class BlinkVerticle extends AbstractVerticle {
         StringBuilder pathBuilder = new StringBuilder();
         pathBuilder.append("/").append(context.getConfiguration().getValue("staticFilesRoot")).append("*");
         clientRouter.get(pathBuilder.toString())
-                .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(false).setMaxAgeSeconds(0).setFilesReadOnly(false));
+                .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(true).setMaxAgeSeconds(3600).setFilesReadOnly(false));
 
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
         final String faviconPath = new File(context.getConfiguration().getValue("clientRoot") + "/favicon.ico").getPath();
@@ -73,7 +73,7 @@ public class BlinkVerticle extends AbstractVerticle {
             response.sendFile(new File(context.getConfiguration().getValue("clientRoot") + "/manifest.json").getPath());
         });
 
-        clientRouter.get("/static/*").handler(StaticHandler.create(path + "/static").setCachingEnabled(false).setMaxAgeSeconds(1).setFilesReadOnly(false));
+        clientRouter.get("/static/*").handler(StaticHandler.create(path + "/static").setCachingEnabled(true).setMaxAgeSeconds(3600).setFilesReadOnly(false));
         clientRouter.get("/*").handler(routingContext -> {
             try {
                 String response = metaTagResolver.on(routingContext.request().path(), routingContext.request().absoluteURI());
