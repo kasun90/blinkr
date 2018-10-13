@@ -95,6 +95,9 @@ public class MetaTagResolverImpl implements MetaTagResolver {
                 case TITLE:
                     currentIndexFile = currentIndexFile.replace("_OG_TITLE_", entry.getValue());
                     break;
+                case VIDEO:
+                    currentIndexFile = currentIndexFile.replace("_OG_VIDEO_", entry.getValue());
+                    break;
                 default:
                     break;
             }
