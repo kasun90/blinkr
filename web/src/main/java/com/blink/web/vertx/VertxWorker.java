@@ -74,9 +74,10 @@ class VertxWorker {
     }
 
     private void modifyHeaders(String origin, HttpServerResponse response) {
-
-        response.putHeader("Access-Control-Allow-Origin", origin);
-        response.putHeader("Vary", "Origin");
+        if (origin != null) {
+            response.putHeader("Access-Control-Allow-Origin", origin);
+            response.putHeader("Vary", "Origin");
+        }
         response.putHeader("Access-Control-Allow-Headers", "X-App-Key,X-App-Session");
     }
 }
