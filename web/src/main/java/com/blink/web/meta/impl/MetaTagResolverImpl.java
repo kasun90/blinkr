@@ -54,6 +54,7 @@ public class MetaTagResolverImpl implements MetaTagResolver {
 
         Map<MetaTag, String> tags = new HashMap<>();
         tags.put(MetaTag.URL, absoluteURI);
+        tags.put(MetaTag.TYPE, "website");
 
         for (MetaPath metaPath : paths.values()) {
             params.clear();
@@ -97,6 +98,9 @@ public class MetaTagResolverImpl implements MetaTagResolver {
                     break;
                 case VIDEO:
                     currentIndexFile = currentIndexFile.replace("_OG_VIDEO_", entry.getValue());
+                    break;
+                case TYPE:
+                    currentIndexFile = currentIndexFile.replace("_OG_TYPE_", entry.getValue());
                     break;
                 default:
                     break;
