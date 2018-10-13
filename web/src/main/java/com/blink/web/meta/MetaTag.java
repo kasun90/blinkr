@@ -5,5 +5,6 @@ public enum MetaTag {
     DESCRIPTION,
     URL,
     IMAGE,
-    TYPE
+    TYPE,
+    VIDEO
 }

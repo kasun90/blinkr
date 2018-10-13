@@ -5,6 +5,7 @@ import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
 import com.blink.web.meta.MetaTagResolver;
 import com.blink.web.meta.handlers.AlbumTagHandler;
+import com.blink.web.meta.handlers.AssociateHandler;
 import com.blink.web.meta.impl.MetaTagResolverImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -33,6 +34,7 @@ public class BlinkVerticle extends AbstractVerticle {
         this.allowedOrigins = context.getConfiguration().getValues("allowedOrigins");
         this.metaTagResolver = new MetaTagResolverImpl(context);
         this.metaTagResolver.register("/albums/view/:key").handler(new AlbumTagHandler(context));
+        this.metaTagResolver.register("/associate").handler(new AssociateHandler());
     }
 
     @Override
