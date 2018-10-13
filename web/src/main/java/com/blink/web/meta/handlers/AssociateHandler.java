@@ -13,6 +13,11 @@ public class AssociateHandler implements TagHandler {
         tags.put(MetaTag.TITLE, "Nubamin on Blink");
         tags.put(MetaTag.DESCRIPTION, "Nubamin A.K.A Pradeep K. Liyanage");
         tags.put(MetaTag.VIDEO, "https://www.youtube.com/v/ePruRYrY1xY");
+        String image = context.getFileService().newFileURI()
+                .appendResource("media")
+                .appendResource("meta")
+                .appendResource("image.png").build();
+        tags.put(MetaTag.IMAGE, context.getFileService().getURL(image).toString());
         tags.put(MetaTag.TYPE, "video");
         return tags;
     }
