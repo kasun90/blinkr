@@ -16,7 +16,7 @@ public class AssociateHandler implements TagHandler {
         String image = context.getFileService().newFileURI()
                 .appendResource("media")
                 .appendResource("meta")
-                .appendResource("image.png").build();
+                .appendResource("dondra.jpg").build();
         tags.put(MetaTag.IMAGE, context.getFileService().getURL(image).toString());
         tags.put(MetaTag.TYPE, "video.other");
         return tags;
