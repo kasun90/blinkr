@@ -19,6 +19,7 @@ public class ATagEngineImpl implements AtagEngine {
     private NoteBuilder noteBuilder = new NoteBuilder();
     private GenericListBuilder<com.blink.atag.tags.List> listBuilder = new GenericListBuilder<>();
     private GenericListBuilder<OrderedList> orderedListBuilder = new GenericListBuilder<>();
+    private CodeBuilder codeBuilder = new CodeBuilder();
 
     public ATagEngineImpl(Context context) {
         this.logger = context.getLoggerFactory().getLogger("ATAG");
@@ -62,6 +63,8 @@ public class ATagEngineImpl implements AtagEngine {
             processList(line);
         else if (line.startsWith("*@"))
             processOrderedList(line);
+        else if (line.startsWith("``"))
+            startOrEndCode(aTags);
         else
             processGeneralLine(line);
     }
@@ -105,8 +108,19 @@ public class ATagEngineImpl implements AtagEngine {
             noteBuilder.setExpect(true);
     }
 
+    private void startOrEndCode(List<ATag> aTags) {
+        if (codeBuilder.isBuilding()) {
+            aTags.add(codeBuilder.build());
+            codeBuilder.reset();
+            codeBuilder.setExpect(false);
+        } else
+            codeBuilder.setExpect(true);
+    }
+
     private void processGeneralLine(String line) {
-        if (noteBuilder.expect()) {
+        if (codeBuilder.expect()) {
+            codeBuilder.addLine(line);
+        } else if (noteBuilder.expect()) {
             noteBuilder.addLine(line);
         } else {
             paragraphBuilder.addLine(line);

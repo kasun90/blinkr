@@ -10,4 +10,5 @@
     <case>NOTE</case>
     <case>LINK</case>
     <case>RICH_TEXT</case>
+    <case>CODE</case>
 </model>

@@ -11,10 +11,12 @@ public class RichTag extends SimpleATag {
         set("children", new LinkedList<SimpleATag>());
     }
 
+    @SuppressWarnings("unchecked")
     public void addChild(SimpleATag tag) {
         ((java.util.List<SimpleATag>) get("children")).add(tag);
     }
 
+    @SuppressWarnings("unchecked")
     public int getChildrenLength() {
         return ((List<SimpleATag>) get("children")).size();
     }

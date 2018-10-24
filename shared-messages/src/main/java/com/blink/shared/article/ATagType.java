@@ -10,5 +10,6 @@ public enum ATagType {
 	STRONG_TEXT,
 	NOTE,
 	LINK,
-	RICH_TEXT
+	RICH_TEXT,
+	CODE
 }
