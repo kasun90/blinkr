@@ -10,6 +10,7 @@ import com.blink.core.database.SortCriteria;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
+import com.blink.shared.admin.ActionResponseMessage;
 import com.blink.shared.admin.FileUploadResponseMessage;
 import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.album.*;
@@ -102,6 +103,10 @@ public class UserHandler {
             handleArticleImage(((ArticleImageUploadMessage) message));
         } else if (message instanceof ArticleCoverUploadMessage) {
             handleArticleCoverUpload(((ArticleCoverUploadMessage) message));
+        } else if (message instanceof ArticleActivateMessage) {
+            handleArticleActivate(((ArticleActivateMessage) message));
+        } else if (message instanceof ArticleDeactivateMessage) {
+            handleArticleDeactivate(((ArticleDeactivateMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -291,6 +296,7 @@ public class UserHandler {
                 .setTitle(message.getTitle())
                 .setDescription(message.getDescription())
                 .setAuthor(getUser().getUsername())
+                .setActive(false)
                 .setTimestamp(BlinkTime.getCurrentTimeMillis());
         articleHelper.saveEntity(article);
         adminService.sendReply(new CreateArticleResponseMessage(message.getKey(), true, "Success"));
@@ -326,5 +332,17 @@ public class UserHandler {
     private void handleArticleCoverUpload(ArticleCoverUploadMessage message) throws Exception {
         File file = articleHelper.saveArticleCover(message.getKey(), message.getContent(), message.getFileName());
         adminService.sendReply(new FileUploadResponseMessage(file != null, file));
+    }
+
+    private void handleArticleActivate(ArticleActivateMessage message) throws Exception {
+        adminService.sendReply(new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), true),
+                ""));
+        logger.info("Article activated for key: {}", message.getKey());
+    }
+
+    private void handleArticleDeactivate(ArticleDeactivateMessage message) throws Exception {
+        adminService.sendReply(new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), false),
+                ""));
+        logger.info("Article deactivated for key: {}", message.getKey());
     }
 }

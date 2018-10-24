@@ -81,6 +81,30 @@ public abstract class CommonHelper<T extends Entity> {
         return entities;
     }
 
+    public List<T> getEntities(long timestamp, boolean less, int limit, SimpleDBObject filter) throws Exception {
+        List<T> entities = new LinkedList<>();
+        int current = 0;
+        if (timestamp == 0L) {
+            Iterator<T> iterator = entityDB.find(filter, entityType, SortCriteria.descending("timestamp")).iterator();
+            while (iterator.hasNext() && current < limit) {
+                entities.add(fillEntity(iterator.next()));
+                current++;
+            }
+        } else {
+            if (less)
+                filter.append("timestamp", timestamp, Filter.LT);
+            else
+                filter.append("timestamp", timestamp, Filter.GT);
+
+            Iterator<T> iterator = entityDB.find(filter, entityType, SortCriteria.descending("timestamp")).iterator();
+            while (iterator.hasNext() && current < limit) {
+                entities.add(fillEntity(iterator.next()));
+                current++;
+            }
+        }
+        return entities;
+    }
+
     public List<T> searchEntities(SimpleDBObject toFind) throws Exception {
         List<T> entities = new LinkedList<>();
         int current  = 0;

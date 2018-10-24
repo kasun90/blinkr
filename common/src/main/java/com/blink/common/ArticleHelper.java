@@ -78,6 +78,15 @@ public class ArticleHelper extends CommonHelper<Article> {
         saveEntity(entity);
     }
 
+    public boolean toggleArticleState(String key, boolean active) throws Exception {
+        Article entity = getEntity(key);
+        if (entity == null)
+            return false;
+        entity.setActive(active);
+        saveEntity(entity);
+        return true;
+    }
+
     private void saveRawArticle(RawArticle rawArticle) throws Exception {
         entityDB.insertOrUpdate(new SimpleDBObject().append("key", rawArticle.getKey()), rawArticle);
     }

@@ -11,10 +11,11 @@ public class Article extends Entity {
 	private List<ATag> tags;
 	private long updated;
 	private long views;
+	private boolean active;
 
 	public Article() {}
 
-	public Article(String key, long timestamp, String title, String description, String author, List<ATag> tags, long updated, long views) {
+	public Article(String key, long timestamp, String title, String description, String author, List<ATag> tags, long updated, long views, boolean active) {
 		super(key, timestamp);
 		this.title = title;
 		this.description = description;
@@ -22,6 +23,7 @@ public class Article extends Entity {
 		this.tags = tags;
 		this.updated = updated;
 		this.views = views;
+		this.active = active;
 	}
 
 	public String getKey() {
@@ -93,6 +95,15 @@ public class Article extends Entity {
 
 	public Article setViews(long views) {
 		this.views = views;
+		return this;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public Article setActive(boolean active) {
+		this.active = active;
 		return this;
 	}
 

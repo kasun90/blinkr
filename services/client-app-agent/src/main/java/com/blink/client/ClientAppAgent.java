@@ -17,6 +17,7 @@ import com.blink.shared.client.article.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
+import com.blink.shared.common.Article;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
 
@@ -82,12 +83,17 @@ public class ClientAppAgent extends BaseService {
     }
 
     private void onArticlesRequest(ArticlesRequestMessage message) throws Exception {
+        SimpleDBObject filter = new SimpleDBObject();
+        filter.append("active", true);
         sendReply(new ArticlesResponseMessage(articleHelper.getEntities(message.getTimestamp(),
-                message.isLess(), message.getLimit())));
+                message.isLess(), message.getLimit(), filter)));
     }
 
     private void onArticleDetails(ArticleDetailsRequestMessage message) throws Exception {
-        sendReply(new ArticleDetailsResponseMessage(articleHelper.getDetailsEntity(message.getKey())));
+        Article article = articleHelper.getDetailsEntity(message.getKey());
+        if (article != null && !article.isActive())
+            article = null;
+        sendReply(new ArticleDetailsResponseMessage(article));
     }
 
     private void onArticleViewAck(ArticleViewAckMessage message) throws Exception {
