@@ -226,6 +226,21 @@ blinkrstart() {
     blinkrstatus
 }
 
+blinkrconfigure() {
+    cd $SYSTEM_DIR
+    if [ $? -ne 0 ]; then
+        echo -e "\e[31mPlease install Blinkr first\e[0m"
+        exit 1
+    fi
+    consolejarfile=`find . -name "*-console.jar" -type f -printf "%f\n"`
+    if [ -z "$consolejarfile" ]
+    then
+        echo -e "\e[31mCouldn't find main jar file\e[0m"
+        exit 1
+    fi
+    java -jar $consolejarfile
+    cd ..
+}
 
 
 COMMAND=$1
@@ -247,8 +262,11 @@ case $COMMAND in
     status)
     blinkrstatus
     ;;
+    configure)
+    blinkrconfigure
+    ;;
     *)    # unknown option
-    echo $"Usage: blinkr (start|stop|build|install|status)"
+    echo $"Usage: blinkr (start|stop|build|install|status|configure)"
     exit 1
     ;;
 esac
