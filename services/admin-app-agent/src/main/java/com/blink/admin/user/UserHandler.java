@@ -290,7 +290,7 @@ public class UserHandler {
         article.setKey(message.getKey())
                 .setTitle(message.getTitle())
                 .setDescription(message.getDescription())
-                .setAuthor(getUser().getName())
+                .setAuthor(getUser().getUsername())
                 .setTimestamp(BlinkTime.getCurrentTimeMillis());
         articleHelper.saveEntity(article);
         adminService.sendReply(new CreateArticleResponseMessage(message.getKey(), true, "Success"));

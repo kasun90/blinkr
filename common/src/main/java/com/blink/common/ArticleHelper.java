@@ -5,6 +5,7 @@ import com.blink.atag.AtagEngine;
 import com.blink.core.database.Filter;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Context;
+import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.article.RawArticle;
 import com.blink.shared.article.ATagType;
 import com.blink.shared.common.Article;
@@ -34,7 +35,15 @@ public class ArticleHelper extends CommonHelper<Article> {
                         logger.exception("", e);
                     }
                 });
+        UserDetails user = getUser(article.getAuthor());
+        if (user != null)
+            article.setAuthor(user.getName());
         return article;
+    }
+
+    private UserDetails getUser(String username) throws Exception {
+        return context.getDbServiceFactory().ofCollection("adminUser").
+                find(new SimpleDBObject().append("username", username), UserDetails.class).first();
     }
 
     @Override
