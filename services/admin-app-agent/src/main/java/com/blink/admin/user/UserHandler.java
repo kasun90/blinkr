@@ -54,6 +54,8 @@ public class UserHandler {
                 adminService.sendReply(new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
             }
 
+        } else if (message instanceof ChangeNameMessage) {
+            handleChangeName(((ChangeNameMessage) message));
         } else if (message instanceof ChangePasswordMessage) {
             handleChangePassword(((ChangePasswordMessage) message));
         } else if (message instanceof UserMessagesRequestMessage) {
@@ -104,6 +106,21 @@ public class UserHandler {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
         }
+    }
+
+    private void handleChangeName(ChangeNameMessage message) throws Exception {
+        logger.info("Change name request received for user: {}", username);
+        UserDetails user = getUser();
+        ChangeNameResponseMessage response = new ChangeNameResponseMessage();
+        if (user == null)
+            response.setSuccess(false).setDescription("No User Found");
+        else {
+            user.setName(message.getNewName());
+            updateUser(user);
+            response.setSuccess(true).setDescription("Success");
+            logger.info("Name changed for user: {}", username);
+        }
+        adminService.sendReply(response);
     }
 
     private void handleChangePassword(ChangePasswordMessage message) throws Exception {
