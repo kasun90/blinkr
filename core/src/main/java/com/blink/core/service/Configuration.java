@@ -48,17 +48,27 @@ public class Configuration {
     }
 
     public String getValue(String key) {
-        Object o = data.get(key);
-        if (o == null)
-            throw new BlinkRuntimeException(MessageFormat.format("Error reading configuration value: {0}", key));
-        return String.class.cast(o);
+        return getValue(key, String.class);
     }
 
     public String getValue(String key, String defaultVal) {
+        return getValue(key, String.class, defaultVal);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(String key, Class<T> type) {
+        Object o = data.get(key);
+        if (o == null)
+            throw new BlinkRuntimeException(MessageFormat.format("Error reading configuration value: {0}", key));
+        return (T)o;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(String key, Class<T> type, T defaultVal) {
         Object o = data.get(key);
         if (o == null)
             return defaultVal;
-        return String.class.cast(o);
+        return (T)o;
     }
 
     public Set<String> getValues(String key) {

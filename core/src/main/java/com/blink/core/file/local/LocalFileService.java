@@ -21,12 +21,14 @@ public class LocalFileService extends TemporaryFileService {
     private String rootDir;
     private String domain;
     private String clientPort;
+    private boolean secured;
 
     public LocalFileService(String tmpDir, String rootDir) {
         super(tmpDir);
         this.rootDir = rootDir;
         this.domain = "localhost";
         this.clientPort = "5000";
+        this.secured = false;
     }
 
     public LocalFileService(Configuration configuration) {
@@ -34,6 +36,7 @@ public class LocalFileService extends TemporaryFileService {
         this.rootDir = configuration.getValue("staticFilesRoot");
         this.domain = configuration.getValue("domain");
         this.clientPort = configuration.getValue("clientPort");
+        this.secured = configuration.getValue("secured", Boolean.class);
     }
 
     @Override
@@ -87,7 +90,10 @@ public class LocalFileService extends TemporaryFileService {
 
     @Override
     public URL getURL(String path) throws Exception {
-        return new URL("http", domain, Integer.parseInt(clientPort), "/" + rootDir + path);
+        if (secured)
+            return new URL("https", domain, "/" + rootDir + path);
+        else
+            return new URL("http", domain, Integer.parseInt(clientPort), "/" + rootDir + path);
     }
 
     @Override
