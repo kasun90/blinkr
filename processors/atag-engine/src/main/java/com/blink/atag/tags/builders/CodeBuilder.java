@@ -12,7 +12,7 @@ public class CodeBuilder extends SimpleATagBuilder {
     public void addLine(String line) {
         if (code == null)
             code = new Code();
-        code.addCommand(new Text(line));
+        code.addLine(new Text(line));
     }
 
     @Override
@@ -22,7 +22,7 @@ public class CodeBuilder extends SimpleATagBuilder {
 
     @Override
     public boolean isBuilding() {
-        return code != null && code.getCommandsCount() != 0;
+        return code != null && code.getLineCount() != 0;
     }
 
     @Override
