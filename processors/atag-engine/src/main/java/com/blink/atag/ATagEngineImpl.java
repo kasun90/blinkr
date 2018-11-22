@@ -15,6 +15,7 @@ import java.util.List;
 public class ATagEngineImpl implements AtagEngine {
 
     private Logger logger;
+    private SimpleATagBuilder currentBuilder;
     private ParagraphBuilder paragraphBuilder = new ParagraphBuilder();
     private NoteBuilder noteBuilder = new NoteBuilder();
     private GenericListBuilder<com.blink.atag.tags.List> listBuilder = new GenericListBuilder<>();
@@ -24,7 +25,7 @@ public class ATagEngineImpl implements AtagEngine {
 
     public ATagEngineImpl(Context context) {
         this.logger = context.getLoggerFactory().getLogger("ATAG");
-        this.paragraphBuilder.setExpect(true);
+        currentBuilder =  this.paragraphBuilder;
     }
 
     @Override
@@ -57,17 +58,17 @@ public class ATagEngineImpl implements AtagEngine {
         else if (line.isEmpty())
             breakTag(aTags);
         else if (line.startsWith("!!"))
-            startOrEndNote(aTags);
+            startOrEndTag(aTags, noteBuilder);
         else if (line.startsWith("!("))
             processSingleLineATag(new ImageBuilder(), line, aTags);
         else if (line.startsWith("**"))
             processList(line);
         else if (line.startsWith("*@"))
             processOrderedList(line);
-        else if (line.startsWith("``"))
-            startOrEndCode(aTags);
         else if (line.startsWith("```"))
-            startOrEndTerminal(aTags);
+            startOrEndTag(aTags, terminalBuilder);
+        else if (line.startsWith("``"))
+            startOrEndTag(aTags, codeBuilder);
         else
             processGeneralLine(line);
     }
@@ -102,40 +103,16 @@ public class ATagEngineImpl implements AtagEngine {
         }
     }
 
-    private void startOrEndNote(List<ATag> aTags) {
-        if (noteBuilder.isBuilding()) {
-            aTags.add(noteBuilder.build());
-            noteBuilder.reset();
-            noteBuilder.setExpect(false);
+    private void startOrEndTag(List<ATag> aTags, SimpleATagBuilder builder) {
+        if (builder.isBuilding()){
+            aTags.add(builder.build());
+            builder.reset();
+            currentBuilder = paragraphBuilder;
         } else
-            noteBuilder.setExpect(true);
-    }
-
-    private void startOrEndCode(List<ATag> aTags) {
-        if (codeBuilder.isBuilding()) {
-            aTags.add(codeBuilder.build());
-            codeBuilder.reset();
-            codeBuilder.setExpect(false);
-        } else
-            codeBuilder.setExpect(true);
-    }
-
-    private void startOrEndTerminal(List<ATag> aTags) {
-        if (terminalBuilder.isBuilding()) {
-            aTags.add(terminalBuilder.build());
-            terminalBuilder.reset();
-            terminalBuilder.setExpect(false);
-        } else
-            terminalBuilder.setExpect(true);
+            currentBuilder = builder;
     }
 
     private void processGeneralLine(String line) {
-        if (codeBuilder.expect()) {
-            codeBuilder.addLine(line);
-        } else if (noteBuilder.expect()) {
-            noteBuilder.addLine(line);
-        } else {
-            paragraphBuilder.addLine(line);
-        }
+        currentBuilder.addLine(line);
     }
 }

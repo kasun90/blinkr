@@ -36,6 +36,7 @@ public class TerminalBuilder extends SimpleATagBuilder {
 
     @Override
     public void reset() {
+        prompt = null;
         terminal = null;
     }
 }

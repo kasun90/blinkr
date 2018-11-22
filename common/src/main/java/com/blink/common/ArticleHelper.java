@@ -108,6 +108,15 @@ public class ArticleHelper extends CommonHelper<Article> {
         return saveArticleResource(key, fileContent, fileService.newFileURI(coverBase).appendResource(fileName).build());
     }
 
+    public String getCoverURL(String key) throws Exception {
+        String coverBase = fileService.newFileURI(entityBase).appendResource(key).appendResource("cover").build();
+        List<String> covers = fileService.listFilePaths(coverBase);
+        if (covers.isEmpty())
+            return null;
+        else
+            return fileService.getURL(covers.get(0)).toString();
+    }
+
     private File saveArticleResource(String key, String fileContent, String path) throws Exception {
         Article article = getEntity(key);
 
