@@ -6,10 +6,16 @@ getblinkrreleasename() {
     echo "blinkr-${1}.tar.gz"
 }
 
+getblinkrwebroot() {
+    cat ${1} | grep ${2} | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'
+}
+
 blinkrbuild() {
     SOURCE_DIR="source"
+    UISOURCE_DIR="uisource"
     RELEASE_DIR="release"
     NORELEASE=false
+    BUILDUI=false
     RELEASE_BINARY_DIR="office-runner"
     GITUSERNAME=""
     GITPASSWORD=""
@@ -37,6 +43,10 @@ blinkrbuild() {
         ;;
         --norelease)
         NORELEASE=true
+        shift
+        ;;
+        --build-ui)
+        BUILDUI=true
         shift
         ;;
         -d|--dir)
@@ -83,6 +93,8 @@ blinkrbuild() {
 
     mkdir $SOURCE_DIR
     mkdir $RELEASE_DIR
+    mkdir $UISOURCE_DIR
+    rm -rf $RELEASE_DIR
     cd $SOURCE_DIR
     git clone git@github.com:kasun90/blinkr.git .
     mvn versions:set -DnewVersion=$BLINKRVERSION
@@ -93,14 +105,50 @@ blinkrbuild() {
         exit 1
     fi
 
-    TAG_NAME="v${BLINKRVERSION}"
-    TAG_MESSAGE="Blinkr Release ${TAG_NAME}"
-    RELEASE_NAME=$(getblinkrreleasename $BLINKRVERSION)
-    git tag -a $TAG_NAME -m "${TAG_MESSAGE}"
-    git push origin $TAG_NAME
-
-
     cd ..
+
+    if [ "$BUILDUI" = true ]
+    then
+        echo Going to build UIs
+        cd $UISOURCE_DIR
+        git clone git@github.com:kasun90/blink-app.git .
+        npm install
+        npm run build
+        if [ $? -ne 0 ]; then
+            echo -e "\e[31mClient UI build failed. Exiting..\e[0m"
+            exit 1
+        fi
+        cd ..
+        clientFiles=$(getblinkrwebroot $SOURCE_DIR/blink.conf clientRoot)
+        rm -rf $SOURCE_DIR/$clientFiles/*
+        cp -r $UISOURCE_DIR/build/ $SOURCE_DIR/$clientFiles
+        if [ $? -ne 0 ]; then
+            echo -e "\e[31mCouldn't copy client UI files. Exiting..\e[0m"
+            exit 1
+        fi
+
+        cd $UISOURCE_DIR
+        rm -rf *
+        git clone git@github.com:kasun90/blink-admin-app.git .
+        npm install
+        ng build --prod --base-href /blinkr/
+        if [ $? -ne 0 ]; then
+            echo -e "\e[31mAdmin UI build failed. Exiting..\e[0m"
+            exit 1
+        fi
+
+        cd ..
+        adminFiles=$(getblinkrwebroot $SOURCE_DIR/blink.conf adminRoot)
+        rm -rf $SOURCE_DIR/$adminFiles/*
+        cp -r $UISOURCE_DIR/dist/blink-admin-app/ $SOURCE_DIR/$adminFiles
+        if [ $? -ne 0 ]; then
+            echo -e "\e[31mCouldn't copy admin UI files. Exiting..\e[0m"
+            exit 1
+        fi
+        rm -rf $UISOURCE_DIR
+    fi
+
+
     cp $SOURCE_DIR/$RELEASE_BINARY_DIR/target/*.jar $RELEASE_DIR
     if [ $? -ne 0 ]; then
         echo -e "\e[31mCouldn't find release binaries. Exiting..\e[0m"
@@ -111,6 +159,15 @@ blinkrbuild() {
     cp -r $SOURCE_DIR/scripts/ $RELEASE_DIR
     cp $SOURCE_DIR/*.conf $RELEASE_DIR
     echo $BLINKRVERSION > $RELEASE_DIR/version.txt
+
+    cd $SOURCE_DIR
+    TAG_NAME="v${BLINKRVERSION}"
+    TAG_MESSAGE="Blinkr Release ${TAG_NAME}"
+    RELEASE_NAME=$(getblinkrreleasename $BLINKRVERSION)
+    git tag -a $TAG_NAME -m "${TAG_MESSAGE}"
+    git push origin $TAG_NAME
+    cd ..
+
     rm -rf $SOURCE_DIR
     cd $RELEASE_DIR
     tar -czvf ../$RELEASE_NAME *
@@ -169,9 +226,9 @@ blinkrinstall() {
     cd $SYSTEM_DIR
     rm *.jar
     rm -rf *.lib
-    clientFiles=`cat blink.conf | grep clientRoot | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'`
+    clientFiles=$(getblinkrwebroot blink.conf clientRoot)
     rm -rf $clientFiles
-    adminFiles=`cat blink.conf | grep adminRoot | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'`
+    adminFiles=$(getblinkrwebroot blink.conf adminRoot)
     rm -rf $adminFiles
     cd ..
 
