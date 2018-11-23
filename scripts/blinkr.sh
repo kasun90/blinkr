@@ -121,14 +121,14 @@ blinkrbuild() {
         cd ..
         clientFiles=$(getblinkrwebroot $SOURCE_DIR/blink.conf clientRoot)
         rm -rf $SOURCE_DIR/$clientFiles/*
-        cp -r $UISOURCE_DIR/build/ $SOURCE_DIR/$clientFiles
+        cp -r $UISOURCE_DIR/build/* $SOURCE_DIR/$clientFiles
         if [ $? -ne 0 ]; then
             echo -e "\e[31mCouldn't copy client UI files. Exiting..\e[0m"
             exit 1
         fi
 
         cd $UISOURCE_DIR
-        rm -rf *
+        rm -Rrf *
         git clone git@github.com:kasun90/blink-admin-app.git .
         npm install
         ng build --prod --base-href /blinkr/
@@ -140,7 +140,7 @@ blinkrbuild() {
         cd ..
         adminFiles=$(getblinkrwebroot $SOURCE_DIR/blink.conf adminRoot)
         rm -rf $SOURCE_DIR/$adminFiles/*
-        cp -r $UISOURCE_DIR/dist/blink-admin-app/ $SOURCE_DIR/$adminFiles
+        cp -r $UISOURCE_DIR/dist/blink-admin-app/* $SOURCE_DIR/$adminFiles
         if [ $? -ne 0 ]; then
             echo -e "\e[31mCouldn't copy admin UI files. Exiting..\e[0m"
             exit 1
