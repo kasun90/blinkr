@@ -94,7 +94,7 @@ blinkrbuild() {
     mkdir $SOURCE_DIR
     mkdir $RELEASE_DIR
     mkdir $UISOURCE_DIR
-    rm -rf $RELEASE_DIR
+    rm -rf $RELEASE_DIR/*
     cd $SOURCE_DIR
     git clone git@github.com:kasun90/blinkr.git .
     mvn versions:set -DnewVersion=$BLINKRVERSION
