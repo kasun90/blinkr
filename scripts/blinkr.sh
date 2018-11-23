@@ -127,8 +127,9 @@ blinkrbuild() {
             exit 1
         fi
 
+        rm -rf $UISOURCE_DIR
+        mkdir $UISOURCE_DIR
         cd $UISOURCE_DIR
-        rm -Rrf *
         git clone git@github.com:kasun90/blink-admin-app.git .
         npm install
         ng build --prod --base-href /blinkr/
