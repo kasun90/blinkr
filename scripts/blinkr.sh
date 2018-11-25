@@ -94,6 +94,7 @@ blinkrbuild() {
     mkdir $SOURCE_DIR
     mkdir $RELEASE_DIR
     mkdir $UISOURCE_DIR
+    rm *.tar.gz
     rm -rf $RELEASE_DIR/*
     cd $SOURCE_DIR
     git clone git@github.com:kasun90/blinkr.git .
@@ -147,6 +148,12 @@ blinkrbuild() {
             exit 1
         fi
         rm -rf $UISOURCE_DIR
+
+        cd $SOURCE_DIR
+        git add -A
+        git commit -m "Web files for v${BLINKRVERSION}"
+        git push
+        cd ..
     fi
 
 
