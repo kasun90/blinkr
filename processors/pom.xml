@@ -5,7 +5,7 @@
     <parent>
         <artifactId>office-app</artifactId>
         <groupId>com.blink</groupId>
-        <version>1.0</version>
+        <version>1.5.2</version>
     </parent>
 
     <modules>
@@ -21,12 +21,12 @@
         <dependency>
             <groupId>com.blink</groupId>
             <artifactId>core</artifactId>
-            <version>1.0</version>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>com.blink</groupId>
             <artifactId>shared-messages</artifactId>
-            <version>1.0</version>
+            <version>1.5.2</version>
         </dependency>
     </dependencies>
 </project>

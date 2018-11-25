@@ -7,7 +7,7 @@
     <groupId>com.blink</groupId>
     <artifactId>office-app</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.5.2</version>
     <modules>
         <module>core</module>
         <module>web</module>
