@@ -288,7 +288,7 @@ blinkrstart() {
         echo -e "\e[31mCouldn't find main jar file\e[0m"
         exit 1
     fi
-    nohup java -jar $appjarfile --prod > blinkr.out 2> blinkr.err < /dev/null &
+    nohup java -Xms256m -Xmx512m -jar $appjarfile --prod > blinkr.out 2> blinkr.err < /dev/null &
     cd ..
     blinkrstatus
 }
