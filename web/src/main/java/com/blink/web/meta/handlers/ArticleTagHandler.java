@@ -27,7 +27,9 @@ public class ArticleTagHandler implements TagHandler {
 
         tags.put(MetaTag.TITLE, article.getTitle());
         tags.put(MetaTag.DESCRIPTION, article.getDescription());
-        tags.put(MetaTag.IMAGE, helper.getCoverURL(key));
+        String coverURL = helper.getCoverURL(key);
+        if (coverURL != null)
+            tags.put(MetaTag.IMAGE, coverURL);
         return tags;
     }
 }
