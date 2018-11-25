@@ -150,7 +150,8 @@ blinkrbuild() {
         rm -rf $UISOURCE_DIR
 
         cd $SOURCE_DIR
-        git add -A
+        git add -A $clientFiles
+        git add -A $adminFiles
         git commit -m "Web files for v${BLINKRVERSION}"
         git push
         cd ..
