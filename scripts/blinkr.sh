@@ -98,6 +98,7 @@ blinkrbuild() {
     rm -rf $RELEASE_DIR/*
     cd $SOURCE_DIR
     git clone git@github.com:kasun90/blinkr.git .
+    git config user.email kpiyumal90@gmail.com
     mvn versions:set -DnewVersion=$BLINKRVERSION
     mvn clean install -DskipTests
 
