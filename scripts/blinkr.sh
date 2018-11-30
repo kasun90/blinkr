@@ -134,7 +134,7 @@ blinkrbuild() {
         cd $UISOURCE_DIR
         git clone git@github.com:kasun90/blink-admin-app.git .
         npm install
-        ng build --prod --base-href /blinkr/
+        ng build --prod
         if [ $? -ne 0 ]; then
             echo -e "\e[31mAdmin UI build failed. Exiting..\e[0m"
             exit 1
