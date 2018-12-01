@@ -42,19 +42,25 @@ public class BlinkVerticle extends AbstractVerticle {
     @Override
     public void start(Future<Void> startFuture) throws Exception {
 
-        Router clientRouter = Router.router(vertx);
-
-        clientRouter.route("/client").handler(BodyHandler.create());
-        clientRouter.post("/client").handler(this::routeAPIRequest);
-        clientRouter.options("/client").handler(this::respondToOption);
-
+        // static router
+        Router staticRouter = Router.router(vertx);
         File staticFiles = new File(context.getConfiguration().getValue("staticFilesRoot"));
         staticFiles.mkdirs();
         final String staticFilesPath = staticFiles.getPath();
         StringBuilder pathBuilder = new StringBuilder();
         pathBuilder.append("/").append(context.getConfiguration().getValue("staticFilesRoot")).append("*");
-        clientRouter.get(pathBuilder.toString())
+        staticRouter.get(pathBuilder.toString())
                 .handler(StaticHandler.create(staticFilesPath).setCachingEnabled(true).setMaxAgeSeconds(3600).setFilesReadOnly(false));
+
+        vertx.createHttpServer().requestHandler(staticRouter::accept).listen(context.getConfiguration().getStaticPort());
+        logger.info("Static file server started on port {}", context.getConfiguration().getStaticPort());
+
+        // client router
+        Router clientRouter = Router.router(vertx);
+
+        clientRouter.route("/client").handler(BodyHandler.create());
+        clientRouter.post("/client").handler(this::routeAPIRequest);
+        clientRouter.options("/client").handler(this::respondToOption);
 
         final String path = new File(context.getConfiguration().getValue("clientRoot")).getPath();
         final String faviconPath = new File(context.getConfiguration().getValue("clientRoot") + "/favicon.ico").getPath();

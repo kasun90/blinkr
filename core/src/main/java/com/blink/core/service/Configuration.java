@@ -20,27 +20,29 @@ public class Configuration {
     }
 
     public String getDBDriver() {
-        return String.class.cast(data.get("dbDriver"));
+        return (String) data.get("dbDriver");
     }
 
     public int getClientPort() {
-        return Integer.parseInt(String.class.cast(data.get("clientPort")));
+        return Integer.parseInt((String) data.get("clientPort"));
     }
 
     public int getAdminPort() {
-        return Integer.parseInt(String.class.cast(data.get("adminPort")));
+        return Integer.parseInt((String) data.get("adminPort"));
     }
 
+    public int getStaticPort(){ return Integer.parseInt((String) data.get("staticPort"));}
+
     public String getDBHost() {
-        return String.class.cast(data.get("dbHost"));
+        return (String) data.get("dbHost");
     }
 
     public int getDBPort() {
-        return Integer.parseInt(String.class.cast(data.get("dbPort")));
+        return Integer.parseInt((String) data.get("dbPort"));
     }
 
     public String getDBName() {
-        return String.class.cast(data.get("dbName"));
+        return (String) data.get("dbName");
     }
 
     public Map<String, Object> getData() {

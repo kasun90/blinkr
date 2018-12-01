@@ -6,36 +6,33 @@ import com.blink.core.file.TemporaryFileService;
 import com.blink.core.service.Configuration;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class LocalFileService extends TemporaryFileService {
 
     private String rootDir;
-    private String domain;
-    private String clientPort;
+    private String staticDomain;
+    private String staticPort;
     private boolean secured;
 
     public LocalFileService(String tmpDir, String rootDir) {
         super(tmpDir);
         this.rootDir = rootDir;
-        this.domain = "localhost";
-        this.clientPort = "5000";
+        this.staticDomain = "localhost";
+        this.staticPort = "5000";
         this.secured = false;
     }
 
     public LocalFileService(Configuration configuration) {
         super(configuration);
         this.rootDir = configuration.getValue("staticFilesRoot");
-        this.domain = configuration.getValue("domain");
-        this.clientPort = configuration.getValue("clientPort");
+        this.staticDomain = configuration.getValue("staticDomain");
+        this.staticPort = configuration.getValue("staticPort");
         this.secured = configuration.getValue("secured", Boolean.class);
     }
 
@@ -91,9 +88,9 @@ public class LocalFileService extends TemporaryFileService {
     @Override
     public URL getURL(String path) throws Exception {
         if (secured)
-            return new URL("https", domain, "/" + rootDir + path);
+            return new URL("https", staticDomain, "/" + rootDir + path);
         else
-            return new URL("http", domain, Integer.parseInt(clientPort), "/" + rootDir + path);
+            return new URL("http", staticDomain, Integer.parseInt(staticPort), "/" + rootDir + path);
     }
 
     @Override
