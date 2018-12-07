@@ -8,7 +8,7 @@ import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.BaseService;
 import com.blink.core.service.Context;
 import com.blink.shared.client.ClientRequestMessage;
-import com.blink.shared.client.GenericReplyMessage;
+import com.blink.shared.client.GenericStatusReplyMessage;
 import com.blink.shared.client.album.AlbumDetailsRequestMessage;
 import com.blink.shared.client.album.AlbumDetailsResponseMessage;
 import com.blink.shared.client.album.AlbumsRequestMessage;
@@ -18,8 +18,22 @@ import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
 import com.blink.shared.common.Article;
+import com.blink.utilities.BlinkJSON;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
+import com.google.gson.JsonObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientAppAgent extends BaseService {
 
@@ -43,7 +57,7 @@ public class ClientAppAgent extends BaseService {
         setRequestID(requestMessage.getRequestID());
 
         if (enclosedMessage instanceof UserMessage) {
-            onUserMessage((UserMessage) enclosedMessage);
+            onUserMessage((UserMessage) enclosedMessage, requestMessage.getRemoteAddress());
         } else if (enclosedMessage instanceof AlbumsRequestMessage) {
             onAlbumsRequest((AlbumsRequestMessage) enclosedMessage);
         } else if (enclosedMessage instanceof AlbumDetailsRequestMessage) {
@@ -61,11 +75,43 @@ public class ClientAppAgent extends BaseService {
         }
     }
 
-    private void onUserMessage(UserMessage message) throws Exception {
-        message.setTimestamp(BlinkTime.getCurrentTimeMillis());
-        userMessageDB.insertOrUpdate(new SimpleDBObject().append("timestamp", message.getTimestamp()),
-                message);
-        sendReply(new GenericReplyMessage("Message recorded"));
+    private void onUserMessage(UserMessage message, String remoteAddress) throws Exception {
+        if (validateMessage(message.getRecaptchaToken(), remoteAddress)) {
+            message.setTimestamp(BlinkTime.getCurrentTimeMillis());
+            userMessageDB.insertOrUpdate(new SimpleDBObject().append("timestamp", message.getTimestamp()),
+                    message);
+            sendReply(new GenericStatusReplyMessage(true, "Message has been recorded"));
+        } else {
+            sendReply(new GenericStatusReplyMessage(false, "Message has not been accepted"));
+            error("reCaptcha validation failed for message: {}", message);
+        }
+    }
+
+    private boolean validateMessage(String token, String remoteAddress) throws Exception {
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("secret", "6LdQV38UAAAAACs9GvVg14o3KmJ0f3OH68whbHPS"));
+        params.add(new BasicNameValuePair("response", token));
+        params.add(new BasicNameValuePair("remoteip", remoteAddress));
+
+        CloseableHttpResponse response = null;
+
+        try {
+            HttpPost httpPost = new HttpPost("https://www.google.com/recaptcha/api/siteverify");
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            response = client.execute(httpPost);
+            HttpEntity responseEntity = response.getEntity();
+            String resStre = EntityUtils.toString(responseEntity);
+            JsonObject jsonObject = BlinkJSON.fromJson(resStre);
+            return jsonObject.get("success").getAsBoolean();
+        } catch (Exception e) {
+            exception("While validating user message", e);
+            return false;
+        } finally {
+            if (response != null)
+                response.close();
+        }
     }
 
     private void onAlbumsRequest(AlbumsRequestMessage message) throws Exception {
