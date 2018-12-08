@@ -88,6 +88,9 @@ public class ClientAppAgent extends BaseService {
     }
 
     private boolean validateMessage(String token, String remoteAddress) throws Exception {
+        if (token == null)
+            return false;
+
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
         List<NameValuePair> params = new ArrayList<>();
@@ -102,8 +105,8 @@ public class ClientAppAgent extends BaseService {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             response = client.execute(httpPost);
             HttpEntity responseEntity = response.getEntity();
-            String resStre = EntityUtils.toString(responseEntity);
-            JsonObject jsonObject = BlinkJSON.fromJson(resStre);
+            String resStr = EntityUtils.toString(responseEntity);
+            JsonObject jsonObject = BlinkJSON.fromJson(resStr);
             return jsonObject.get("success").getAsBoolean();
         } catch (Exception e) {
             exception("While validating user message", e);
