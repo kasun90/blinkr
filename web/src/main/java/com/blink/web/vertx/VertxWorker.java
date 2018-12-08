@@ -29,7 +29,7 @@ class VertxWorker {
         context.getBus().register(this);
     }
 
-    void publishRequest(String target, String targetUser, String appKey, String appSession, String message, String origin, HttpServerResponse response) {
+    void publishRequest(String target, String targetUser, String appKey, String appSession, String message, String origin, String remoteAddress, HttpServerResponse response) {
         String reqID = UUID.randomUUID().toString();
         requestMap.put(reqID, new ServerResponse(origin, response));
 
@@ -39,7 +39,7 @@ class VertxWorker {
         }
 
         try {
-            context.getBus().post(new WebInMessage(reqID, target, targetUser, appKey, appSession, translator.fromPayload(message)));
+            context.getBus().post(new WebInMessage(reqID, target, targetUser, appKey, appSession, remoteAddress, translator.fromPayload(message)));
         } catch (Exception e) {
             logger.exception("Web Request Exception", e);
             onWebOut(new WebOutMessage(reqID, new InvalidRequest(e.getMessage())));

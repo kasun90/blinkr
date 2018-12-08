@@ -6,14 +6,16 @@ public class WebInMessage {
     private String targetUser;
     private String appKey;
     private String appSession;
+    private String remoteAddress;
     private Object data;
 
-    public WebInMessage(String requestID, String target, String targetUser, String appKey, String appSession, Object data) {
+    public WebInMessage(String requestID, String target, String targetUser, String appKey, String appSession, String remoteAddress, Object data) {
         this.requestID = requestID;
         this.target = target;
         this.targetUser = targetUser;
         this.appKey = appKey;
         this.appSession = appSession;
+        this.remoteAddress = remoteAddress;
         this.data = data;
     }
 
@@ -39,5 +41,9 @@ public class WebInMessage {
 
     public String getAppSession() {
         return appSession;
+    }
+
+    public String getRemoteAddress() {
+        return remoteAddress;
     }
 }

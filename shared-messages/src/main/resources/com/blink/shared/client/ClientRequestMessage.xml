@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
     <field type="String">requestID</field>
+    <field type="String">remoteAddress</field>
     <field type="Object">enclosedMessage</field>
 </model>

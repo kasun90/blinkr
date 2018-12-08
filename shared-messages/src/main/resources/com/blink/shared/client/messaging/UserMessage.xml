@@ -5,4 +5,5 @@
     <field type="String">email</field>
     <field type="String">phone</field>
     <field type="long">timestamp</field>
+    <field type="String">recaptchaToken</field>
 </model>

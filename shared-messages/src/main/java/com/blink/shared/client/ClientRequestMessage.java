@@ -4,12 +4,14 @@ import com.blink.utilities.BlinkJSON;
 
 public class ClientRequestMessage {
 	private String requestID;
+	private String remoteAddress;
 	private Object enclosedMessage;
 
 	public ClientRequestMessage() {}
 
-	public ClientRequestMessage(String requestID, Object enclosedMessage) {
+	public ClientRequestMessage(String requestID, String remoteAddress, Object enclosedMessage) {
 		this.requestID = requestID;
+		this.remoteAddress = remoteAddress;
 		this.enclosedMessage = enclosedMessage;
 	}
 
@@ -19,6 +21,15 @@ public class ClientRequestMessage {
 
 	public ClientRequestMessage setRequestID(String requestID) {
 		this.requestID = requestID;
+		return this;
+	}
+
+	public String getRemoteAddress() {
+		return remoteAddress;
+	}
+
+	public ClientRequestMessage setRemoteAddress(String remoteAddress) {
+		this.remoteAddress = remoteAddress;
 		return this;
 	}
 

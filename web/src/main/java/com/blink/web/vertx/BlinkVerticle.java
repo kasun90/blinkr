@@ -128,7 +128,7 @@ public class BlinkVerticle extends AbstractVerticle {
         String appKey = headers.get("X-App-Key");
         String appSession = headers.get("X-App-Session");
         if (allowedOrigins.isEmpty() || allowedOrigins.contains(host))
-            worker.publishRequest(params.get("target"), params.get("targetUser"), appKey, appSession, params.get("message"), origin, context.response());
+            worker.publishRequest(params.get("target"), params.get("targetUser"), appKey, appSession, params.get("message"), origin, context.request().remoteAddress().host(), context.response());
         else {
             logger.error("Request from unauthorized origin [origin={}]", host);
             worker.respondToInvalidOrigin(context.response());

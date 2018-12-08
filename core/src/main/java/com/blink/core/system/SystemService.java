@@ -24,7 +24,7 @@ public class SystemService extends BaseService {
 
         switch (target) {
             case "CLIENT":
-                onTargetClient(message.getRequestID(), message.getData());
+                onTargetClient(message.getRequestID(), message.getRemoteAddress(), message.getData());
                 break;
             case "ADMIN":
                 onTargetAdmin(message.getRequestID(), message.getTargetUser(), message.getAppSession(), message.getData());
@@ -35,8 +35,8 @@ public class SystemService extends BaseService {
         }
     }
 
-    private void onTargetClient(String requestID, Object data) {
-        getContext().getBus().post(new ClientRequestMessage(requestID, data));
+    private void onTargetClient(String requestID, String remoteAddress, Object data) {
+        getContext().getBus().post(new ClientRequestMessage(requestID, remoteAddress, data));
     }
 
     private void onTargetAdmin(String requestID, String targetUser, String sessionID, Object data) {

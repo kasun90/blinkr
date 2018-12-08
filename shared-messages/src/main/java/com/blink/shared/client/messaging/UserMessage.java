@@ -8,15 +8,17 @@ public class UserMessage {
 	private String email;
 	private String phone;
 	private long timestamp;
+	private String recaptchaToken;
 
 	public UserMessage() {}
 
-	public UserMessage(String name, String message, String email, String phone, long timestamp) {
+	public UserMessage(String name, String message, String email, String phone, long timestamp, String recaptchaToken) {
 		this.name = name;
 		this.message = message;
 		this.email = email;
 		this.phone = phone;
 		this.timestamp = timestamp;
+		this.recaptchaToken = recaptchaToken;
 	}
 
 	public String getName() {
@@ -61,6 +63,15 @@ public class UserMessage {
 
 	public UserMessage setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+		return this;
+	}
+
+	public String getRecaptchaToken() {
+		return recaptchaToken;
+	}
+
+	public UserMessage setRecaptchaToken(String recaptchaToken) {
+		this.recaptchaToken = recaptchaToken;
 		return this;
 	}
 
