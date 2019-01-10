@@ -16,6 +16,7 @@ blinkrbuild() {
     RELEASE_DIR="release"
     NORELEASE=false
     BUILDUI=false
+    BUILDDOCKER=false
     RELEASE_BINARY_DIR="office-runner"
     GITUSERNAME=""
     GITPASSWORD=""
@@ -47,6 +48,10 @@ blinkrbuild() {
         ;;
         --build-ui)
         BUILDUI=true
+        shift
+        ;;
+        --build-docker)
+        BUILDDOCKER=true
         shift
         ;;
         -d|--dir)
@@ -170,6 +175,17 @@ blinkrbuild() {
     cp $SOURCE_DIR/*.conf $RELEASE_DIR
     echo $BLINKRVERSION > $RELEASE_DIR/version.txt
 
+    if [ "$BUILDDOCKER" = true ]
+    then
+        docker build --build-arg release_dir=$RELEASE_DIR --build-arg system_dir=$SYSTEM_DIR -f $SOURCE_DIR/docker/Dockerfile -t kpiyumal/blinkr .
+        if [ $? -ne 0 ]; then
+            echo -e "\e[31mDocker build failed. Exiting..\e[0m"
+            exit 1
+        fi
+        docker login
+        docker push kpiyumal/blinkr
+    fi
+
     cd $SOURCE_DIR
     TAG_NAME="v${BLINKRVERSION}"
     TAG_MESSAGE="Blinkr Release ${TAG_NAME}"
@@ -272,6 +288,23 @@ blinkrstop() {
 }
 
 blinkrstart() {
+    INTERACTIVE=false
+
+    while [[ $# -gt 0 ]]
+    do
+    key="$1"
+
+    case $key in
+        -i|--interactive)
+        INTERACTIVE=true
+        shift
+        ;;
+        *)
+        shift
+        ;;
+    esac
+    done
+
     if blinkrstatus
     then
         echo -e "\nAlready running. Nothing to do."
@@ -288,7 +321,13 @@ blinkrstart() {
         echo -e "\e[31mCouldn't find main jar file\e[0m"
         exit 1
     fi
-    nohup java -Xms256m -Xmx512m -jar $appjarfile --prod > blinkr.out 2> blinkr.err < /dev/null &
+    if [ "$INTERACTIVE" = false ]
+    then
+        nohup java -Xms256m -Xmx512m -jar $appjarfile --prod > blinkr.out 2> blinkr.err < /dev/null &
+    else
+        java -Xms256m -Xmx512m -jar $appjarfile
+    fi
+
     cd ..
     blinkrstatus
 }
@@ -324,7 +363,7 @@ case $COMMAND in
     blinkrstop
     ;;
     start)
-    blinkrstart
+    blinkrstart "$@"
     ;;
     status)
     blinkrstatus
