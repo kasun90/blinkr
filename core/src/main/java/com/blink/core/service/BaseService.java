@@ -2,6 +2,7 @@ package com.blink.core.service;
 
 import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.log.Logger;
+import com.blink.core.setting.SettingReader;
 import com.blink.shared.system.InvalidRequest;
 import com.blink.shared.system.ReplyMessage;
 
@@ -11,10 +12,20 @@ public abstract class BaseService implements Logger {
 
     private Context context;
     private Logger logger;
+    private SettingReader settingReader;
 
     public BaseService(Context context) {
         this.context = context;
         this.logger = context.getLoggerFactory().getLogger(getServiceName());
+        this.settingReader = context.getDerivedService(SettingReader.class);
+    }
+
+    protected String getSetting(String key) throws Exception {
+        return settingReader.getSetting(key);
+    }
+
+    protected String getSetting(String key, String defaultValue) throws Exception {
+        return settingReader.getSetting(key, defaultValue);
     }
 
     protected void setRequestID(String requestID) {

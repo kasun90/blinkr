@@ -1,8 +1,8 @@
 package com.blink.core.setting;
 
-public interface SettingReader {
+import com.blink.core.service.DerivedService;
+
+public interface SettingReader extends DerivedService {
     String getSetting(String key) throws Exception;
-    String getSetting(String key, String defaultValue);
-    <T> T getSetting(String key, Class<T> clazz);
-    <T> T getSetting(String key, T defaultValue, Class<T> clazz);
+    String getSetting(String key, String defaultValue) throws Exception;
 }

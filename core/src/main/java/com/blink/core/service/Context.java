@@ -1,11 +1,16 @@
 package com.blink.core.service;
 
-import com.blink.core.database.DBService;
 import com.blink.core.database.DBServiceFactory;
+import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.file.FileService;
-import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
+import com.blink.core.setting.SettingReader;
 import com.blink.core.transport.Bus;
+
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Context {
     private Configuration configuration;
@@ -13,6 +18,7 @@ public final class Context {
     private LoggerFactory loggerFactory;
     private DBServiceFactory dbServiceFactory;
     private FileService fileService;
+    private Map<String, DerivedService> derivedServiceMap;
 
     private Context(ContextBuilder builder) {
         this.configuration = builder.configuration;
@@ -20,6 +26,7 @@ public final class Context {
         this.loggerFactory = builder.loggerFactory;
         this.dbServiceFactory = builder.dbServiceFactory;
         this.fileService = builder.fileService;
+        derivedServiceMap = new HashMap<>();
     }
 
     public Bus getBus() {
@@ -40,6 +47,18 @@ public final class Context {
 
     public FileService getFileService() {
         return fileService;
+    }
+
+    public void registerDerivedService(Class<? extends DerivedService> clazz, DerivedService service) {
+        if (derivedServiceMap.containsKey(clazz.getName()))
+            throw new BlinkRuntimeException(MessageFormat.format("Derived service already defined: {0}", clazz.getName()));
+        else
+            derivedServiceMap.put(clazz.getName(), service);
+    }
+
+    public <T extends DerivedService> T getDerivedService(Class<T> clazz) {
+        DerivedService derivedService = derivedServiceMap.get(clazz.getName());
+        return clazz.cast(derivedService);
     }
 
     public static class ContextBuilder {

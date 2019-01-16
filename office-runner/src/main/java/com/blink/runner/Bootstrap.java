@@ -16,6 +16,10 @@ import com.blink.core.service.Configuration;
 import com.blink.core.service.ConfigurationFactory;
 import com.blink.core.service.Context;
 import com.blink.core.service.impl.FileConfigurationFactory;
+import com.blink.core.setting.SettingReader;
+import com.blink.core.setting.SettingWriter;
+import com.blink.core.setting.simpledb.SimpleDBSettingReader;
+import com.blink.core.setting.simpledb.SimpleDBSettingWriter;
 import com.blink.core.system.SystemService;
 import com.blink.core.transport.Bus;
 import com.blink.core.transport.google.GoogleEventBus;
@@ -53,6 +57,9 @@ public class Bootstrap {
                 .setDbServiceFactory(dbServiceFactory)
                 .setFileService(fileService)
                 .build();
+
+        context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));
+        context.registerDerivedService(SettingWriter.class, new SimpleDBSettingWriter(context.getDbServiceFactory()));
 
         bootLogger.info("Registering services");
         BaseService system = new SystemService(context);
