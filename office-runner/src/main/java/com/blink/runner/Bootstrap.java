@@ -2,9 +2,7 @@ package com.blink.runner;
 
 import com.blink.admin.AdminAppAgent;
 import com.blink.client.ClientAppAgent;
-import com.blink.core.database.DBService;
 import com.blink.core.database.DBServiceFactory;
-import com.blink.core.database.mongodb.MongoDBService;
 import com.blink.core.database.mongodb.MongoDBServiceFactory;
 import com.blink.core.file.FileService;
 import com.blink.core.file.local.LocalFileService;
@@ -17,16 +15,14 @@ import com.blink.core.service.ConfigurationFactory;
 import com.blink.core.service.Context;
 import com.blink.core.service.impl.FileConfigurationFactory;
 import com.blink.core.setting.SettingReader;
-import com.blink.core.setting.SettingWriter;
+import com.blink.core.setting.SettingHelper;
 import com.blink.core.setting.simpledb.SimpleDBSettingReader;
-import com.blink.core.setting.simpledb.SimpleDBSettingWriter;
+import com.blink.core.setting.simpledb.SimpleDBSettingHelper;
 import com.blink.core.system.SystemService;
 import com.blink.core.transport.Bus;
 import com.blink.core.transport.google.GoogleEventBus;
 import com.blink.web.WebServer;
 import com.blink.web.vertx.VertxWebServer;
-
-import java.util.Set;
 
 public class Bootstrap {
 
@@ -59,7 +55,7 @@ public class Bootstrap {
                 .build();
 
         context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));
-        context.registerDerivedService(SettingWriter.class, new SimpleDBSettingWriter(context.getDbServiceFactory()));
+        context.registerDerivedService(SettingHelper.class, new SimpleDBSettingHelper(context.getDbServiceFactory()));
 
         bootLogger.info("Registering services");
         BaseService system = new SystemService(context);

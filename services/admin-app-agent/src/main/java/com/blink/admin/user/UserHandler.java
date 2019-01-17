@@ -10,6 +10,8 @@ import com.blink.core.database.SortCriteria;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.service.BaseService;
+import com.blink.core.setting.Setting;
+import com.blink.core.setting.SettingHelper;
 import com.blink.shared.admin.ActionResponseMessage;
 import com.blink.shared.admin.FileUploadResponseMessage;
 import com.blink.shared.admin.UserDetails;
@@ -17,6 +19,8 @@ import com.blink.shared.admin.album.*;
 import com.blink.shared.admin.article.*;
 import com.blink.shared.admin.portal.*;
 import com.blink.shared.admin.preset.*;
+import com.blink.shared.admin.setting.*;
+import com.blink.shared.client.GenericStatusReplyMessage;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.common.Album;
 import com.blink.shared.common.Article;
@@ -36,6 +40,7 @@ public class UserHandler {
     private AlbumHelper albumHelper;
     private PresetHelper presetHelper;
     private ArticleHelper articleHelper;
+    private SettingHelper settingHelper;
 
     public UserHandler(String username, BaseService adminService) {
         this.adminService = adminService;
@@ -44,6 +49,7 @@ public class UserHandler {
         this.albumHelper = new AlbumHelper(adminService.getContext());
         this.presetHelper = new PresetHelper(adminService.getContext());
         this.articleHelper = new ArticleHelper(adminService.getContext());
+        this.settingHelper = adminService.getContext().getDerivedService(SettingHelper.class);
     }
 
     public void handleMessage(Object message) throws Exception {
@@ -107,6 +113,14 @@ public class UserHandler {
             handleArticleActivate(((ArticleActivateMessage) message));
         } else if (message instanceof ArticleDeactivateMessage) {
             handleArticleDeactivate(((ArticleDeactivateMessage) message));
+        } else if (message instanceof SettingRequestMessage) {
+            handleSettingRequest();
+        } else if (message instanceof NewSettingMessage) {
+            handleNewSetting(((NewSettingMessage) message));
+        } else if (message instanceof UpdateSettingMessage) {
+            handleUpdateSetting(((UpdateSettingMessage) message));
+        } else if (message instanceof DeleteSettingMessage) {
+            handleDeleteSetting(((DeleteSettingMessage) message));
         } else {
             logger.error("Unhandled message received {}", message);
             adminService.sendReply(new InvalidRequest("Unhandled Message received"));
@@ -344,5 +358,59 @@ public class UserHandler {
         adminService.sendReply(new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), false),
                 ""));
         logger.info("Article deactivated for key: {}", message.getKey());
+    }
+
+    private void handleSettingRequest() throws Exception {
+        List<SettingExp> settings = new LinkedList<>();
+        settingHelper.getSettings().forEach(setting -> {
+            SettingExp settingExp = new SettingExp();
+            settingExp.setKey(setting.getKey());
+            settingExp.setValue(setting.getValue());
+            settings.add(settingExp);
+        });
+        adminService.sendReply(new SettingResponseMessage(settings));
+    }
+
+    private void handleNewSetting(NewSettingMessage message) throws Exception {
+        if (message.getKey() == null || message.getValue() == null) {
+            adminService.sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+            return;
+        }
+
+        Setting setting = settingHelper.getSetting(message.getKey());
+        if (setting != null)
+            adminService.sendReply(new GenericStatusReplyMessage(false, "Setting already available"));
+        else {
+            settingHelper.store(message.getKey(), message.getValue());
+            adminService.sendReply(new GenericStatusReplyMessage(true, "Success"));
+            logger.info("New setting added [key={}]", message.getKey());
+        }
+    }
+
+    private void handleUpdateSetting(UpdateSettingMessage message) throws Exception {
+        if (message.getKey() == null || message.getValue() == null) {
+            adminService.sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+            return;
+        }
+
+        Setting setting = settingHelper.getSetting(message.getKey());
+        if (setting == null)
+            adminService.sendReply(new GenericStatusReplyMessage(false, "Setting not available"));
+        else {
+            settingHelper.store(message.getKey(), message.getValue());
+            adminService.sendReply(new GenericStatusReplyMessage(true, "Success"));
+            logger.info("Setting updated [key={}]", message.getKey());
+        }
+    }
+
+    private void handleDeleteSetting(DeleteSettingMessage message) throws Exception {
+        if (message.getKey() == null) {
+            adminService.sendReply(new GenericStatusReplyMessage(false, "Invalid value"));
+            return;
+        }
+
+        settingHelper.deleteSetting(message.getKey());
+        adminService.sendReply(new DeleteSettingResponseMessage(message.getKey()));
+        logger.info("Setting deleted [key={}]", message.getKey());
     }
 }
