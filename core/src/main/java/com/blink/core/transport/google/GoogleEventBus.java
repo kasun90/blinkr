@@ -14,6 +14,11 @@ public class GoogleEventBus implements Bus {
     }
 
     @Override
+    public Bus createNew() {
+        return new GoogleEventBus();
+    }
+
+    @Override
     public void register(Object object) {
         eventBus.register(object);
     }

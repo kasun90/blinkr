@@ -58,8 +58,7 @@ public class Bootstrap {
         context.registerDerivedService(SettingHelper.class, new SimpleDBSettingHelper(context.getDbServiceFactory()));
 
         bootLogger.info("Registering services");
-        BaseService system = new SystemService(context);
-        context.getBus().register(system);
+        context.getBus().register(new SystemService(context));
 
         //register Services
         context.getBus().register(new ClientAppAgent(context));
