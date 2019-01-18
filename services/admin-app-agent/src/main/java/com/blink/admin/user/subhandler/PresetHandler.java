@@ -41,23 +41,23 @@ public class PresetHandler extends SubHandler {
                 true, "Success"));
     }
 
-    @Subscribe
-    public void handlePresetTemplateUpload(PresetTemplateUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getContent(), message.getFileName());
-        adminService.sendReply(new PresetTemplateUploadResponseMessage(message.getKey(), success));
-    }
+//    @Subscribe
+//    public void handlePresetTemplateUpload(PresetTemplateUploadMessage message) throws Exception {
+//        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getContent(), message.getFileName());
+//        adminService.sendReply(new PresetTemplateUploadResponseMessage(message.getKey(), success));
+//    }
 
-    @Subscribe
-    public void handlePresetBeforePhotoUpload(PresetBeforePhotoUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getContent());
-        adminService.sendReply(new PresetBeforePhotoUploadResponseMessage(message.getKey(), success));
-    }
+//    @Subscribe
+//    public void handlePresetBeforePhotoUpload(PresetBeforePhotoUploadMessage message) throws Exception {
+//        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getContent());
+//        adminService.sendReply(new PresetBeforePhotoUploadResponseMessage(message.getKey(), success));
+//    }
 
-    @Subscribe
-    public void handlePresetAfterPhotoUpload(PresetAfterPhotoUploadMessage message) throws Exception {
-        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getContent());
-        adminService.sendReply(new PresetAfterPhotoUploadResponseMessage(message.getKey(), success));
-    }
+//    @Subscribe
+//    public void handlePresetAfterPhotoUpload(PresetAfterPhotoUploadMessage message) throws Exception {
+//        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getContent());
+//        adminService.sendReply(new PresetAfterPhotoUploadResponseMessage(message.getKey(), success));
+//    }
 
     @Subscribe
     public void handlePresetDelete(PresetDeleteMessage message) throws Exception {

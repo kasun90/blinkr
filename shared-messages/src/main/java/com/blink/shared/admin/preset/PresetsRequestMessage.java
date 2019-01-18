@@ -1,18 +1,29 @@
 package com.blink.shared.admin.preset;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class PresetsRequestMessage {
+public class PresetsRequestMessage extends WebRequestMessage {
 	private long timestamp;
 	private boolean less;
 	private int limit;
 
 	public PresetsRequestMessage() {}
 
-	public PresetsRequestMessage(long timestamp, boolean less, int limit) {
+	public PresetsRequestMessage(String requestID, long timestamp, boolean less, int limit) {
+		super(requestID);
 		this.timestamp = timestamp;
 		this.less = less;
 		this.limit = limit;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public PresetsRequestMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public long getTimestamp() {

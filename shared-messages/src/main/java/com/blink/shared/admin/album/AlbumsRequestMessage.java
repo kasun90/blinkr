@@ -1,18 +1,29 @@
 package com.blink.shared.admin.album;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class AlbumsRequestMessage {
+public class AlbumsRequestMessage extends WebRequestMessage {
 	private long timestamp;
 	private boolean less;
 	private int limit;
 
 	public AlbumsRequestMessage() {}
 
-	public AlbumsRequestMessage(long timestamp, boolean less, int limit) {
+	public AlbumsRequestMessage(String requestID, long timestamp, boolean less, int limit) {
+		super(requestID);
 		this.timestamp = timestamp;
 		this.less = less;
 		this.limit = limit;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public AlbumsRequestMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public long getTimestamp() {

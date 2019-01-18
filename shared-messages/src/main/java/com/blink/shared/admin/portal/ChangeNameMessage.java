@@ -1,14 +1,25 @@
 package com.blink.shared.admin.portal;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class ChangeNameMessage {
+public class ChangeNameMessage extends WebRequestMessage {
 	private String newName;
 
 	public ChangeNameMessage() {}
 
-	public ChangeNameMessage(String newName) {
+	public ChangeNameMessage(String requestID, String newName) {
+		super(requestID);
 		this.newName = newName;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public ChangeNameMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getNewName() {
