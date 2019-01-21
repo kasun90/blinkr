@@ -1,13 +1,10 @@
-package com.blink.core.system;
+package com.blink.systemagent;
 
 import com.blink.core.service.BaseService;
 import com.blink.core.service.Context;
 import com.blink.shared.admin.AdminRequestMessage;
 import com.blink.shared.client.ClientRequestMessage;
-import com.blink.shared.system.InvalidRequest;
-import com.blink.shared.system.ReplyMessage;
-import com.blink.shared.system.WebInMessage;
-import com.blink.shared.system.WebOutMessage;
+import com.blink.shared.system.*;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.Subscribe;
 
@@ -22,12 +19,17 @@ public class SystemService extends BaseService {
     public void onWebIn(WebInMessage message) {
         String target = message.getTarget();
 
+        Object data = message.getData();
+
+        if (data instanceof WebRequestMessage)
+            ((WebRequestMessage) data).setRequestID(message.getRequestID());
+
         switch (target) {
             case "CLIENT":
-                onTargetClient(message.getRequestID(), message.getRemoteAddress(), message.getData());
+                onTargetClient(message.getRequestID(), message.getRemoteAddress(), data);
                 break;
             case "ADMIN":
-                onTargetAdmin(message.getRequestID(), message.getTargetUser(), message.getAppSession(), message.getData());
+                onTargetAdmin(message.getRequestID(), message.getTargetUser(), message.getAppSession(), data);
                 break;
             default:
                 onReply(new ReplyMessage(message.getRequestID(), new InvalidRequest("Invalid target")));

@@ -18,14 +18,14 @@ public class AlbumHandler extends SubHandler {
 
     @Subscribe
     public void handleAlbumsReq(AlbumsRequestMessage message) throws Exception {
-        adminService.sendReply(new AlbumsResponseMessage(albumHelper.getEntities(message.getTimestamp(),
+        adminService.sendReply(message.getRequestID(), new AlbumsResponseMessage(albumHelper.getEntities(message.getTimestamp(),
                 message.isLess(), message.getLimit()), albumHelper.getEntityCount()));
     }
 
     @Subscribe
     public void handleAlbumKeyCheck(AlbumKeyCheckRequestMessage message) throws Exception {
         logger.info("Key Check {}", message);
-        adminService.sendReply(new AlbumKeyCheckResponseMessage(albumHelper.isKeyAvailable(message.getKey())));
+        adminService.sendReply(message.getRequestID(), new AlbumKeyCheckResponseMessage(albumHelper.isKeyAvailable(message.getKey())));
     }
 
     @Subscribe
@@ -38,27 +38,27 @@ public class AlbumHandler extends SubHandler {
                 .setTimestamp(BlinkTime.getCurrentTimeMillis())
                 .build();
         albumHelper.saveEntity(album);
-        adminService.sendReply(new CreateAlbumResponseMessage(message.getKey(),
+        adminService.sendReply(message.getRequestID(), new CreateAlbumResponseMessage(message.getKey(),
                 true, "Success"));
     }
 
     @Subscribe
     public void handleAlbumPhotoUpload(AlbumPhotoUploadMessage uploadMessage) throws Exception {
         boolean success = albumHelper.savePhoto(uploadMessage.getKey(), uploadMessage.getFileContent());
-        adminService.sendReply(new AlbumPhotoUploadResponseMessage(uploadMessage.getKey(), success));
+        adminService.sendReply(uploadMessage.getRequestID(), new AlbumPhotoUploadResponseMessage(uploadMessage.getKey(), success));
     }
 
     @Subscribe
     public void handleAlbumCoverUpload(AlbumCoverUploadMessage message) throws Exception {
         boolean success = albumHelper.saveCover(message.getKey(), message.getFileContent());
-        adminService.sendReply(new AlbumCoverUploadResponseMessage(message.getKey(), success));
+        adminService.sendReply(message.getRequestID(), new AlbumCoverUploadResponseMessage(message.getKey(), success));
         logger.info("Cover photo uploaded [key={}]", message.getKey());
     }
 
     @Subscribe
     public void handleAlbumDelete(AlbumDeleteMessage message) throws Exception {
         boolean success = albumHelper.deleteEntity(message.getKey());
-        adminService.sendReply(new AlbumDeleteResponeMessage(message.getKey(),
+        adminService.sendReply(message.getRequestID(), new AlbumDeleteResponeMessage(message.getKey(),
                 success));
         logger.info("Album delete status [success={} key={}]", success, message.getKey());
     }

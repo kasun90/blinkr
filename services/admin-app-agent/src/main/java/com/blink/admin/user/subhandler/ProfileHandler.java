@@ -18,9 +18,9 @@ public class ProfileHandler extends SubHandler {
     public void handleUserDetails(UserDetailsRequestMessage message) throws Exception {
         UserDetails user = getUser();
         if (user == null)
-            adminService.sendReply(new InvalidRequest("No user found"));
+            adminService.sendReply(message.getRequestID(), new InvalidRequest("No user found"));
         else {
-            adminService.sendReply(new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
+            adminService.sendReply(message.getRequestID(), new UserDetailsResponseMessage(user.getName(), user.getType().toString(), user.getEmail(), getProfilePicture()));
         }
     }
 
@@ -37,7 +37,7 @@ public class ProfileHandler extends SubHandler {
             response.setSuccess(true).setDescription("Success");
             logger.info("Name changed for user: {}", username);
         }
-        adminService.sendReply(response);
+        adminService.sendReply(message.getRequestID(), response);
     }
 
     @Subscribe
@@ -57,7 +57,7 @@ public class ProfileHandler extends SubHandler {
             updateUser(user);
             response.setSuccess(true).setDescription("Password changed Successfully");
         }
-        adminService.sendReply(response);
+        adminService.sendReply(message.getRequestID(), response);
     }
 
     private String getProfilePicture() throws Exception {

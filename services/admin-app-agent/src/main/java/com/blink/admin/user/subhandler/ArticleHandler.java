@@ -22,14 +22,14 @@ public class ArticleHandler extends SubHandler {
 
     @Subscribe
     public void handleArticlesReq(ArticlesRequestMessage message) throws Exception {
-        adminService.sendReply(new ArticlesResponseMessage(articleHelper.getEntities(message.getTimestamp(),
+        adminService.sendReply(message.getRequestID(), new ArticlesResponseMessage(articleHelper.getEntities(message.getTimestamp(),
                 message.isLess(), message.getLimit()), articleHelper.getEntityCount()));
     }
 
     @Subscribe
     public void handleArticleKeyCheck(ArticleKeyCheckRequestMessage message) throws Exception {
         logger.info("Article key check: {}", message);
-        adminService.sendReply(new ArticleKeyCheckResponseMessage(articleHelper.isKeyAvailable(message.getKey())));
+        adminService.sendReply(message.getRequestID(), new ArticleKeyCheckResponseMessage(articleHelper.isKeyAvailable(message.getKey())));
     }
 
     @Subscribe
@@ -43,13 +43,13 @@ public class ArticleHandler extends SubHandler {
                 .setActive(false)
                 .setTimestamp(BlinkTime.getCurrentTimeMillis());
         articleHelper.saveEntity(article);
-        adminService.sendReply(new CreateArticleResponseMessage(message.getKey(), true, "Success"));
+        adminService.sendReply(message.getRequestID(), new CreateArticleResponseMessage(message.getKey(), true, "Success"));
     }
 
     @Subscribe
     public void handleArticleDelete(ArticleDeleteMessage message) throws Exception {
         boolean success = articleHelper.deleteEntity(message.getKey());
-        adminService.sendReply(new ArticleDeleteResponeMessage(message.getKey(), success));
+        adminService.sendReply(message.getRequestID(), new ArticleDeleteResponeMessage(message.getKey(), success));
         logger.info("Article delete status [sucess={} key={}]", success, message.getKey());
     }
 
@@ -62,37 +62,37 @@ public class ArticleHandler extends SubHandler {
         else
             reply = new RawArticleResponseMessage(rawArticle.getKey(), rawArticle.getTitle(),
                     rawArticle.getContent());
-        adminService.sendReply(reply);
+        adminService.sendReply(message.getRequestID(), reply);
     }
 
     @Subscribe
     public void handleUpdateArticleReq(UpdateArticleRequestMessage message) throws Exception {
         String desc = articleHelper.updateArticle(message.getKey(), message.getContent());
-        adminService.sendReply(new UpdateArticleResponseMessage(desc == null, desc));
+        adminService.sendReply(message.getRequestID(), new UpdateArticleResponseMessage(desc == null, desc));
     }
 
     @Subscribe
     public void handleArticleImage(ArticleImageUploadMessage message) throws Exception {
         File file = articleHelper.saveArticleImage(message.getKey(), message.getContent(), message.getFileName());
-        adminService.sendReply(new FileUploadResponseMessage(file != null, file));
+        adminService.sendReply(message.getRequestID(), new FileUploadResponseMessage(file != null, file));
     }
 
     @Subscribe
     public void handleArticleCoverUpload(ArticleCoverUploadMessage message) throws Exception {
         File file = articleHelper.saveArticleCover(message.getKey(), message.getContent(), message.getFileName());
-        adminService.sendReply(new FileUploadResponseMessage(file != null, file));
+        adminService.sendReply(message.getRequestID(), new FileUploadResponseMessage(file != null, file));
     }
 
     @Subscribe
     public void handleArticleActivate(ArticleActivateMessage message) throws Exception {
-        adminService.sendReply(new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), true),
+        adminService.sendReply(message.getRequestID(), new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), true),
                 ""));
         logger.info("Article activated for key: {}", message.getKey());
     }
 
     @Subscribe
     public void handleArticleDeactivate(ArticleDeactivateMessage message) throws Exception {
-        adminService.sendReply(new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), false),
+        adminService.sendReply(message.getRequestID(), new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), false),
                 ""));
         logger.info("Article deactivated for key: {}", message.getKey());
     }

@@ -47,6 +47,6 @@ public class UserMessageHandler extends SubHandler {
             }
 
         }
-        adminService.sendReply(new UserMessagesResponseMessage(messages, userMsgDB.count(UserMessage.class)));
+        adminService.sendReply(req.getRequestID(), new UserMessagesResponseMessage(messages, userMsgDB.count(UserMessage.class)));
     }
 }

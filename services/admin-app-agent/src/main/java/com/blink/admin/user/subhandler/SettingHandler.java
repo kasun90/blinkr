@@ -28,7 +28,7 @@ public class SettingHandler extends SubHandler {
             settingExp.setValue(setting.getValue());
             settings.add(settingExp);
         });
-        adminService.sendReply(new SettingResponseMessage(settings));
+        adminService.sendReply(message.getRequestID(), new SettingResponseMessage(settings));
     }
 
     @Subscribe
@@ -40,10 +40,10 @@ public class SettingHandler extends SubHandler {
 
         Setting setting = settingHelper.getSetting(message.getKey());
         if (setting != null)
-            adminService.sendReply(new GenericStatusReplyMessage(false, "Setting already available"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(false, "Setting already available"));
         else {
             settingHelper.store(message.getKey(), message.getValue());
-            adminService.sendReply(new GenericStatusReplyMessage(true, "Success"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(true, "Success"));
             logger.info("New setting added [key={}]", message.getKey());
         }
     }
@@ -51,16 +51,16 @@ public class SettingHandler extends SubHandler {
     @Subscribe
     public void handleUpdateSetting(UpdateSettingMessage message) throws Exception {
         if (message.getKey() == null || message.getValue() == null) {
-            adminService.sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(false, "Invalid values"));
             return;
         }
 
         Setting setting = settingHelper.getSetting(message.getKey());
         if (setting == null)
-            adminService.sendReply(new GenericStatusReplyMessage(false, "Setting not available"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(false, "Setting not available"));
         else {
             settingHelper.store(message.getKey(), message.getValue());
-            adminService.sendReply(new GenericStatusReplyMessage(true, "Success"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(true, "Success"));
             logger.info("Setting updated [key={}]", message.getKey());
         }
     }
@@ -68,12 +68,12 @@ public class SettingHandler extends SubHandler {
     @Subscribe
     public void handleDeleteSetting(DeleteSettingMessage message) throws Exception {
         if (message.getKey() == null) {
-            adminService.sendReply(new GenericStatusReplyMessage(false, "Invalid value"));
+            adminService.sendReply(message.getRequestID(), new GenericStatusReplyMessage(false, "Invalid value"));
             return;
         }
 
         settingHelper.deleteSetting(message.getKey());
-        adminService.sendReply(new DeleteSettingResponseMessage(message.getKey()));
+        adminService.sendReply(message.getRequestID(), new DeleteSettingResponseMessage(message.getKey()));
         logger.info("Setting deleted [key={}]", message.getKey());
     }
 }

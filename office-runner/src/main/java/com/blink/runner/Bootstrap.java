@@ -9,24 +9,23 @@ import com.blink.core.file.local.LocalFileService;
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.log.apache.ApacheLog4jLoggerFactory;
-import com.blink.core.service.BaseService;
 import com.blink.core.service.Configuration;
 import com.blink.core.service.ConfigurationFactory;
 import com.blink.core.service.Context;
 import com.blink.core.service.impl.FileConfigurationFactory;
-import com.blink.core.setting.SettingReader;
 import com.blink.core.setting.SettingHelper;
-import com.blink.core.setting.simpledb.SimpleDBSettingReader;
+import com.blink.core.setting.SettingReader;
 import com.blink.core.setting.simpledb.SimpleDBSettingHelper;
-import com.blink.core.system.SystemService;
+import com.blink.core.setting.simpledb.SimpleDBSettingReader;
 import com.blink.core.transport.Bus;
 import com.blink.core.transport.google.GoogleEventBus;
+import com.blink.systemagent.SystemService;
 import com.blink.web.WebServer;
 import com.blink.web.vertx.VertxWebServer;
 
 public class Bootstrap {
 
-    public void start(String[] args) throws Exception {
+    void start(String[] args) throws Exception {
 
         LoggerFactory loggerFactory = new ApacheLog4jLoggerFactory();
         Logger bootLogger = loggerFactory.getLogger();

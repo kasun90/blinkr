@@ -18,14 +18,14 @@ public class PresetHandler extends SubHandler {
 
     @Subscribe
     public void handlePresetsReq(PresetsRequestMessage message) throws Exception {
-        adminService.sendReply(new PresetsResponseMessage(presetHelper.getEntities(message.getTimestamp(),
+        adminService.sendReply(message.getRequestID(), new PresetsResponseMessage(presetHelper.getEntities(message.getTimestamp(),
                 message.isLess(), message.getLimit()), presetHelper.getEntityCount()));
     }
 
     @Subscribe
     public void handlePresetKeyCheck(PresetKeyCheckRequestMessage message) throws Exception {
         logger.info("Preset key check {}", message);
-        adminService.sendReply(new PresetKeyCheckResponseMessage(presetHelper.isKeyAvailable(message.getKey())));
+        adminService.sendReply(message.getRequestID(), new PresetKeyCheckResponseMessage(presetHelper.isKeyAvailable(message.getKey())));
     }
 
     @Subscribe
@@ -37,32 +37,32 @@ public class PresetHandler extends SubHandler {
                 .setDescription(message.getDescription())
                 .setTimestamp(BlinkTime.getCurrentTimeMillis());
         presetHelper.saveEntity(newPreset);
-        adminService.sendReply(new CreatePresetResponseMessage(message.getKey(),
+        adminService.sendReply(message.getRequestID(), new CreatePresetResponseMessage(message.getKey(),
                 true, "Success"));
     }
 
-//    @Subscribe
-//    public void handlePresetTemplateUpload(PresetTemplateUploadMessage message) throws Exception {
-//        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getContent(), message.getFileName());
-//        adminService.sendReply(new PresetTemplateUploadResponseMessage(message.getKey(), success));
-//    }
+    @Subscribe
+    public void handlePresetTemplateUpload(PresetTemplateUploadMessage message) throws Exception {
+        boolean success = presetHelper.saveTemplateFile(message.getKey(), message.getContent(), message.getFileName());
+        adminService.sendReply(message.getRequestID(), new PresetTemplateUploadResponseMessage(message.getKey(), success));
+    }
 
-//    @Subscribe
-//    public void handlePresetBeforePhotoUpload(PresetBeforePhotoUploadMessage message) throws Exception {
-//        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getContent());
-//        adminService.sendReply(new PresetBeforePhotoUploadResponseMessage(message.getKey(), success));
-//    }
+    @Subscribe
+    public void handlePresetBeforePhotoUpload(PresetBeforePhotoUploadMessage message) throws Exception {
+        boolean success = presetHelper.saveBeforeImage(message.getKey(), message.getContent());
+        adminService.sendReply(message.getRequestID(), new PresetBeforePhotoUploadResponseMessage(message.getKey(), success));
+    }
 
-//    @Subscribe
-//    public void handlePresetAfterPhotoUpload(PresetAfterPhotoUploadMessage message) throws Exception {
-//        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getContent());
-//        adminService.sendReply(new PresetAfterPhotoUploadResponseMessage(message.getKey(), success));
-//    }
+    @Subscribe
+    public void handlePresetAfterPhotoUpload(PresetAfterPhotoUploadMessage message) throws Exception {
+        boolean success = presetHelper.saveAfterImage(message.getKey(), message.getContent());
+        adminService.sendReply(message.getRequestID(), new PresetAfterPhotoUploadResponseMessage(message.getKey(), success));
+    }
 
     @Subscribe
     public void handlePresetDelete(PresetDeleteMessage message) throws Exception {
         boolean success = presetHelper.deleteEntity(message.getKey());
-        adminService.sendReply(new PresetDeleteResponeMessage(message.getKey(), success));
+        adminService.sendReply(message.getRequestID(), new PresetDeleteResponeMessage(message.getKey(), success));
         logger.info("Preset delete status [sucess={} key={}]", success, message.getKey());
     }
 }

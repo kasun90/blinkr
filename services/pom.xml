@@ -15,6 +15,7 @@
         <module>client-app-agent</module>
         <module>admin-app-agent</module>
         <module>static-file-handler</module>
+        <module>system-agent</module>
     </modules>
 
     <dependencies>
