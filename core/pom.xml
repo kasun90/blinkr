@@ -23,10 +23,5 @@
             <artifactId>shared-messages</artifactId>
             <version>1.5.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.blink</groupId>
-            <artifactId>utilities</artifactId>
-            <version>1.5.2</version>
-        </dependency>
     </dependencies>
 </project>
