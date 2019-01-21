@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model>
+<model extends="WebRequestMessage">
+    <import>com.blink.shared.system.WebRequestMessage</import>
     <field type="String">key</field>
 </model>

@@ -8,9 +8,18 @@ public class ArticleImageUploadMessage extends FileUploadMessage {
 
 	public ArticleImageUploadMessage() {}
 
-	public ArticleImageUploadMessage(String fileName, String content, String key) {
-		super(fileName, content);
+	public ArticleImageUploadMessage(String requestID, String fileName, String content, String key) {
+		super(requestID, fileName, content);
 		this.key = key;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public ArticleImageUploadMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getFileName() {

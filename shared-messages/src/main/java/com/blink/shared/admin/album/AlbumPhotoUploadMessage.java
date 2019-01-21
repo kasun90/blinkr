@@ -1,16 +1,27 @@
 package com.blink.shared.admin.album;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class AlbumPhotoUploadMessage {
+public class AlbumPhotoUploadMessage extends WebRequestMessage {
 	private String key;
 	private String fileContent;
 
 	public AlbumPhotoUploadMessage() {}
 
-	public AlbumPhotoUploadMessage(String key, String fileContent) {
+	public AlbumPhotoUploadMessage(String requestID, String key, String fileContent) {
+		super(requestID);
 		this.key = key;
 		this.fileContent = fileContent;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public AlbumPhotoUploadMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getKey() {

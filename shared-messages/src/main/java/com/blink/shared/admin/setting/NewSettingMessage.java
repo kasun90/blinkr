@@ -1,16 +1,27 @@
 package com.blink.shared.admin.setting;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class NewSettingMessage {
+public class NewSettingMessage extends WebRequestMessage {
 	private String key;
 	private String value;
 
 	public NewSettingMessage() {}
 
-	public NewSettingMessage(String key, String value) {
+	public NewSettingMessage(String requestID, String key, String value) {
+		super(requestID);
 		this.key = key;
 		this.value = value;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public NewSettingMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getKey() {

@@ -1,18 +1,29 @@
 package com.blink.shared.admin.article;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class ArticlesRequestMessage {
+public class ArticlesRequestMessage extends WebRequestMessage {
 	private long timestamp;
 	private boolean less;
 	private int limit;
 
 	public ArticlesRequestMessage() {}
 
-	public ArticlesRequestMessage(long timestamp, boolean less, int limit) {
+	public ArticlesRequestMessage(String requestID, long timestamp, boolean less, int limit) {
+		super(requestID);
 		this.timestamp = timestamp;
 		this.less = less;
 		this.limit = limit;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public ArticlesRequestMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public long getTimestamp() {

@@ -1,18 +1,29 @@
 package com.blink.shared.admin.album;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class CreateAlbumRequestMessage {
+public class CreateAlbumRequestMessage extends WebRequestMessage {
 	private String title;
 	private String key;
 	private String description;
 
 	public CreateAlbumRequestMessage() {}
 
-	public CreateAlbumRequestMessage(String title, String key, String description) {
+	public CreateAlbumRequestMessage(String requestID, String title, String key, String description) {
+		super(requestID);
 		this.title = title;
 		this.key = key;
 		this.description = description;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public CreateAlbumRequestMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getTitle() {

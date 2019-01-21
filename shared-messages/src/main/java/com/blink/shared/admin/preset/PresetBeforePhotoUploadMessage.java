@@ -8,9 +8,18 @@ public class PresetBeforePhotoUploadMessage extends FileUploadMessage {
 
 	public PresetBeforePhotoUploadMessage() {}
 
-	public PresetBeforePhotoUploadMessage(String fileName, String content, String key) {
-		super(fileName, content);
+	public PresetBeforePhotoUploadMessage(String requestID, String fileName, String content, String key) {
+		super(requestID, fileName, content);
 		this.key = key;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public PresetBeforePhotoUploadMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getFileName() {

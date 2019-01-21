@@ -1,14 +1,25 @@
 package com.blink.shared.admin.article;
 
+import com.blink.shared.system.WebRequestMessage;
 import com.blink.utilities.BlinkJSON;
 
-public class RawArticleRequestMessage {
+public class RawArticleRequestMessage extends WebRequestMessage {
 	private String key;
 
 	public RawArticleRequestMessage() {}
 
-	public RawArticleRequestMessage(String key) {
+	public RawArticleRequestMessage(String requestID, String key) {
+		super(requestID);
 		this.key = key;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public RawArticleRequestMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getKey() {

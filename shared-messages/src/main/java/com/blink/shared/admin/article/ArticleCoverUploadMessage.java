@@ -8,9 +8,18 @@ public class ArticleCoverUploadMessage extends FileUploadMessage {
 
 	public ArticleCoverUploadMessage() {}
 
-	public ArticleCoverUploadMessage(String fileName, String content, String key) {
-		super(fileName, content);
+	public ArticleCoverUploadMessage(String requestID, String fileName, String content, String key) {
+		super(requestID, fileName, content);
 		this.key = key;
+	}
+
+	public String getRequestID() {
+		return super.getRequestID();
+	}
+
+	public ArticleCoverUploadMessage setRequestID(String requestID) {
+		super.setRequestID(requestID);
+		return this;
 	}
 
 	public String getFileName() {
