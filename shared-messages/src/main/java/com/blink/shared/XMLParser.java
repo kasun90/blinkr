@@ -8,6 +8,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 public class XMLParser {
 
@@ -98,6 +100,13 @@ public class XMLParser {
             extendFullClassName = builder.getPackageName() + "." + builder.getExtendClassName();
 
         Class<?> aClass = Class.forName(extendFullClassName);
+        fillExtendedFields(aClass, builder);
+    }
+
+    private void fillExtendedFields(Class<?> aClass, Context.ContextBuilder builder) {
+        if (aClass.getSuperclass() != null)
+            fillExtendedFields(aClass.getSuperclass(), builder);
+
         for (Field field : aClass.getDeclaredFields()) {
             String name = field.getName();
             String type = convertExtendField(field.getType().getSimpleName(), field.getGenericType().getTypeName());
@@ -139,21 +148,23 @@ public class XMLParser {
     public static void main(String[] args) throws ClassNotFoundException {
         //com.blink.shared.client.ClientRequestMessage
         //com.blink.shared.client.album.AlbumsResponseMessage
-        Class<?> aClass = Class.forName("com.blink.shared.client.album.AlbumsResponseMessage");
+        Class<?> aClass = Class.forName("com.blink.shared.SubSample");
+
+        XMLParser parser = new XMLParser(null, null);
+        List<String> fields = new LinkedList<>();
+        parser.listFields(aClass, fields);
+
+        for (String field : fields) {
+            System.out.println(field);
+        }
+    }
+
+    private void listFields(Class<?> aClass, List<String> fields) {
+        if (aClass.getSuperclass() != null)
+            listFields(aClass.getSuperclass(), fields);
 
         for (Field field : aClass.getDeclaredFields()) {
-            String genericType = field.getGenericType().getTypeName();
-            String simpleName = field.getType().getSimpleName();
-
-            System.out.println(field.getName());
-            System.out.println(field.getType().getSimpleName());
-
-            if (simpleName.equals("List")) {
-                String fullName = genericType.substring(genericType.indexOf('<'), genericType.indexOf('>'));
-                System.out.println("List<" + fullName.substring(fullName.lastIndexOf('.') + 1) + ">");
-            }
-
-            System.out.println("--------------------------------------");
+            fields.add(field.getName());
         }
     }
 }
