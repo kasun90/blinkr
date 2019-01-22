@@ -4,11 +4,10 @@ import com.blink.core.database.DBServiceFactory;
 import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.file.FileService;
 import com.blink.core.log.LoggerFactory;
-import com.blink.core.setting.SettingReader;
+import com.blink.core.messaging.MessagingService;
 import com.blink.core.transport.Bus;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +17,7 @@ public final class Context {
     private LoggerFactory loggerFactory;
     private DBServiceFactory dbServiceFactory;
     private FileService fileService;
+    private MessagingService messagingService;
     private Map<String, DerivedService> derivedServiceMap;
 
     private Context(ContextBuilder builder) {
@@ -26,6 +26,7 @@ public final class Context {
         this.loggerFactory = builder.loggerFactory;
         this.dbServiceFactory = builder.dbServiceFactory;
         this.fileService = builder.fileService;
+        this.messagingService = builder.messagingService;
         derivedServiceMap = new HashMap<>();
     }
 
@@ -49,6 +50,10 @@ public final class Context {
         return fileService;
     }
 
+    public MessagingService getMessagingService() {
+        return messagingService;
+    }
+
     public void registerDerivedService(Class<? extends DerivedService> clazz, DerivedService service) {
         if (derivedServiceMap.containsKey(clazz.getName()))
             throw new BlinkRuntimeException(MessageFormat.format("Derived service already defined: {0}", clazz.getName()));
@@ -67,6 +72,7 @@ public final class Context {
         private LoggerFactory loggerFactory;
         private DBServiceFactory dbServiceFactory;
         private FileService fileService;
+        private MessagingService messagingService;
 
         public ContextBuilder setBus(Bus bus) {
             this.bus = bus;
@@ -90,6 +96,11 @@ public final class Context {
 
         public ContextBuilder setFileService(FileService fileService) {
             this.fileService = fileService;
+            return this;
+        }
+
+        public ContextBuilder setMessagingService(MessagingService messagingService) {
+            this.messagingService = messagingService;
             return this;
         }
 

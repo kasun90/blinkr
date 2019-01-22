@@ -2,10 +2,10 @@ package com.blink.client;
 
 import com.blink.common.AlbumHelper;
 import com.blink.common.ArticleHelper;
+import com.blink.common.BlinkService;
 import com.blink.common.PresetHelper;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
-import com.blink.core.service.BaseService;
 import com.blink.core.service.Context;
 import com.blink.shared.client.ClientRequestMessage;
 import com.blink.shared.client.GenericStatusReplyMessage;
@@ -35,7 +35,7 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientAppAgent extends BaseService {
+public class ClientAppAgent extends BlinkService {
 
     private DBService userMessageDB;
     private AlbumHelper albumHelper;

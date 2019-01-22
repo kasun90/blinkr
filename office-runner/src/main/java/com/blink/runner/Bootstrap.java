@@ -2,13 +2,12 @@ package com.blink.runner;
 
 import com.blink.admin.AdminAppAgent;
 import com.blink.client.ClientAppAgent;
-import com.blink.core.database.DBServiceFactory;
 import com.blink.core.database.mongodb.MongoDBServiceFactory;
-import com.blink.core.file.FileService;
 import com.blink.core.file.local.LocalFileService;
 import com.blink.core.log.Logger;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.log.apache.ApacheLog4jLoggerFactory;
+import com.blink.core.messaging.embed.EmbeddedMessageService;
 import com.blink.core.service.Configuration;
 import com.blink.core.service.ConfigurationFactory;
 import com.blink.core.service.Context;
@@ -17,9 +16,9 @@ import com.blink.core.setting.SettingHelper;
 import com.blink.core.setting.SettingReader;
 import com.blink.core.setting.simpledb.SimpleDBSettingHelper;
 import com.blink.core.setting.simpledb.SimpleDBSettingReader;
-import com.blink.core.transport.Bus;
 import com.blink.core.transport.google.GoogleEventBus;
 import com.blink.systemagent.SystemService;
+import com.blink.web.ClassTranslator;
 import com.blink.web.WebServer;
 import com.blink.web.vertx.VertxWebServer;
 
@@ -41,16 +40,13 @@ public class Bootstrap {
         Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
         bootLogger.info("Building configuration complete");
 
-        Bus bus = new GoogleEventBus();
-        DBServiceFactory dbServiceFactory = new MongoDBServiceFactory(configuration);
-        FileService fileService = new LocalFileService(configuration);
-
         Context.ContextBuilder builder = new Context.ContextBuilder();
         Context context = builder.setConfiguration(configuration)
-                .setBus(bus)
+                .setBus(new GoogleEventBus())
                 .setLoggerFactory(loggerFactory)
-                .setDbServiceFactory(dbServiceFactory)
-                .setFileService(fileService)
+                .setDbServiceFactory(new MongoDBServiceFactory(configuration))
+                .setFileService(new LocalFileService(configuration))
+                .setMessagingService(new EmbeddedMessageService(new ClassTranslator()))
                 .build();
 
         context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));

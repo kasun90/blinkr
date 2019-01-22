@@ -2,7 +2,7 @@ package com.blink.admin;
 
 import com.blink.admin.auth.AuthHelper;
 import com.blink.admin.user.UserHandler;
-import com.blink.core.service.BaseService;
+import com.blink.common.BlinkService;
 import com.blink.core.service.Context;
 import com.blink.shared.admin.AdminRequestMessage;
 import com.blink.shared.admin.portal.LoginMessage;
@@ -12,9 +12,8 @@ import com.google.common.eventbus.Subscribe;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
-public class AdminAppAgent extends BaseService {
+public class AdminAppAgent extends BlinkService {
 
     private AuthHelper authHelper;
     private Map<String, UserHandler> userCache = new ConcurrentHashMap<>();

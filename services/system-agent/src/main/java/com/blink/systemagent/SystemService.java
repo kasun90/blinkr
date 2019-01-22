@@ -1,6 +1,6 @@
 package com.blink.systemagent;
 
-import com.blink.core.service.BaseService;
+import com.blink.common.BlinkService;
 import com.blink.core.service.Context;
 import com.blink.shared.admin.AdminRequestMessage;
 import com.blink.shared.client.ClientRequestMessage;
@@ -8,7 +8,7 @@ import com.blink.shared.system.*;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.Subscribe;
 
-public class SystemService extends BaseService {
+public class SystemService extends BlinkService {
 
 
     public SystemService(Context context) {
