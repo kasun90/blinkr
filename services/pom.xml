@@ -16,6 +16,7 @@
         <module>admin-app-agent</module>
         <module>static-file-handler</module>
         <module>system-agent</module>
+        <module>email-agent</module>
     </modules>
 
     <dependencies>
