@@ -18,3 +18,4 @@ buildNumber.properties
 /static/files/presets/
 /static/files/articles/
 *.iml
+/activemq-data/

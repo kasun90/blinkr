@@ -9,6 +9,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.command.ActiveMQQueue;
 
+import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -33,7 +34,8 @@ public class EmbeddedMessageService implements MessagingService {
 
     @Override
     public void createReceiver(String channel, Receiver receiver) throws Exception {
-        Session session = connectionFactory.createConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Connection connection = connectionFactory.createConnection();
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         session.createConsumer(new ActiveMQQueue(channel)).setMessageListener(message -> {
             if (message instanceof TextMessage) {
                 TextMessage content = (TextMessage) message;
@@ -44,5 +46,6 @@ public class EmbeddedMessageService implements MessagingService {
                 }
             }
         });
+        connection.start();
     }
 }
