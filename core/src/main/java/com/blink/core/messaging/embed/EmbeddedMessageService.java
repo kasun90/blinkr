@@ -14,12 +14,11 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 public class EmbeddedMessageService implements MessagingService {
-
-    private final String url = "tcp://localhost:61616";
     private ConnectionFactory connectionFactory;
     private ObjectCodec codec;
 
     public EmbeddedMessageService(ObjectCodec codec) throws Exception {
+        final String url = "tcp://localhost:61616";
         BrokerService broker = new BrokerService();
         broker.addConnector(url);
         broker.start();
