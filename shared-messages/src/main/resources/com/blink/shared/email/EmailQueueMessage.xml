@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+    <field type="EmailType">type</field>
+    <field type="String">subject</field>
+    <field type="String">recipient</field>
+    <field type="Map::String">data</field>
+</model>

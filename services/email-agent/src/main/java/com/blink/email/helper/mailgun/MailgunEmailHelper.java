@@ -33,7 +33,6 @@ public class MailgunEmailHelper implements EmailHelper {
 
     @Override
     public void send(String body, String subject, String from, String to) throws Exception {
-        System.out.println("sending");
         Multipart multipart = new MimeMultipart();
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(body, "text/html");
