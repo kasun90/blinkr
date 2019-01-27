@@ -1,17 +1,13 @@
 package com.blink.email.helper;
 
 import com.blink.core.exception.BlinkRuntimeException;
-import com.blink.core.file.FileService;
-import com.blink.core.service.Context;
 import com.blink.shared.email.EmailType;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +16,7 @@ public class FileTemplateResolver implements EmailTemplateResolver {
     private Map<EmailType, String> templateMap = new HashMap<>();
 
     {
-        templateMap.put(EmailType.NEW_SUSBRIBE, "templates/new_subscribe.html");
+        templateMap.put(EmailType.NEW_SUSBRIBE, "/templates/new_subscribe.html");
     }
 
     @Override
@@ -32,12 +28,13 @@ public class FileTemplateResolver implements EmailTemplateResolver {
 
         StringBuilder builder = new StringBuilder();
         String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(Paths.get("src/main/resources", template).toString()))) {
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(template)))) {
             while ((line = br.readLine()) != null)
                 builder.append(line);
         }
 
-        String body =  builder.toString();
+        String body = builder.toString();
         Map<String, String> dataMap = provider.get();
 
         Pattern pattern = Pattern.compile("\\{\\{(.*?)}}");

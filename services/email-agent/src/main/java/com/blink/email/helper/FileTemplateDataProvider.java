@@ -47,7 +47,6 @@ public class FileTemplateDataProvider implements EmailTemplateDataProvider {
     }
 
 
-
     @Override
     public Map<String, String> get() {
         currentData.putAll(defaultData);
