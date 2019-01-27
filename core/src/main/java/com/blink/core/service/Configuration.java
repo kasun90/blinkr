@@ -45,6 +45,8 @@ public class Configuration {
         return (String) data.get("dbName");
     }
 
+    public String getDomain() { return (String) data.get("domain");}
+
     public Map<String, Object> getData() {
         return data;
     }

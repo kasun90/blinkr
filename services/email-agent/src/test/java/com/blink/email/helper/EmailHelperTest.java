@@ -1,9 +1,12 @@
 package com.blink.email.helper;
 
 import com.blink.email.helper.mailgun.MailgunEmailHelperFactory;
+import com.blink.shared.email.EmailType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -29,5 +32,17 @@ public class EmailHelperTest {
         EmailHelper emailHelper = factory.create();
         emailHelper.send("Hello 2", "Sample 2", "kpiyumal90@gmail.com");
         emailHelper.send("Hello 3", "Sample 3", "kpiyumal90@gmail.com");
+    }
+
+    @Test
+    public void templateTest() throws Exception {
+        Map<String, String> data = new HashMap<>();
+        data.put("blink_logo", "logoPath");
+        data.put("instagram_icon", "instagramPath");
+        data.put("facebook_icon", "facebookPath");
+        data.put("unsub_link", "unsubPath");
+        EmailTemplateDataProvider provider = new FileTemplateDataProvider(data, "http://localhost:5000").with(null);
+        EmailTemplateResolver resolver = new FileTemplateResolver();
+        System.out.println(resolver.getBody(EmailType.NEW_SUSBRIBE, provider));
     }
 }

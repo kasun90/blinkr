@@ -17,7 +17,7 @@ public class MailgunEmailHelper implements EmailHelper {
     private Properties properties;
     private Transport transport;
 
-    public MailgunEmailHelper(Properties properties) throws Exception {
+    MailgunEmailHelper(Properties properties) throws Exception {
         this.properties = properties;
         this.session = Session.getInstance(properties);
         transport = session.getTransport("smtp");
