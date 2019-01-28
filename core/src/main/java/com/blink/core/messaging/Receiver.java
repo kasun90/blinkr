@@ -1,5 +1,5 @@
 package com.blink.core.messaging;
 
 public interface Receiver {
-    void onMessage(Object message) throws Exception;
+    void onMessage(Message message) throws Exception;
 }

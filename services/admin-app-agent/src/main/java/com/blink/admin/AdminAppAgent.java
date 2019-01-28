@@ -18,7 +18,7 @@ public class AdminAppAgent extends BlinkService {
     private AuthHelper authHelper;
     private Map<String, UserHandler> userCache = new ConcurrentHashMap<>();
 
-    public AdminAppAgent(Context context) {
+    public AdminAppAgent(Context context) throws Exception {
         super(context);
         authHelper = new AuthHelper(this);
     }

@@ -6,7 +6,7 @@ import com.blink.core.service.Context;
 import com.blink.shared.system.ReplyMessage;
 
 public abstract class BlinkService extends BaseService {
-    public BlinkService(Context context) {
+    public BlinkService(Context context) throws Exception {
         super(context);
     }
 

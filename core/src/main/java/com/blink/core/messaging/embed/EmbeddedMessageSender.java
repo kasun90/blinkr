@@ -15,7 +15,7 @@ public class EmbeddedMessageSender implements Sender {
     private ObjectCodec codec;
 
     public EmbeddedMessageSender(ConnectionFactory connectionFactory, String channel, ObjectCodec codec) throws Exception {
-        session = connectionFactory.createConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+        session = connectionFactory.createConnection().createSession(false, Session.CLIENT_ACKNOWLEDGE);
         producer = session.createProducer(new ActiveMQQueue(channel));
         this.codec = codec;
     }

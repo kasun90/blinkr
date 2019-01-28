@@ -17,6 +17,7 @@ import com.blink.core.setting.SettingReader;
 import com.blink.core.setting.simpledb.SimpleDBSettingHelper;
 import com.blink.core.setting.simpledb.SimpleDBSettingReader;
 import com.blink.core.transport.google.GoogleEventBus;
+import com.blink.email.EmailAgent;
 import com.blink.systemagent.SystemService;
 import com.blink.web.ClassTranslator;
 import com.blink.web.WebServer;
@@ -58,6 +59,7 @@ public class Bootstrap {
         //register Services
         context.getBus().register(new ClientAppAgent(context));
         context.getBus().register(new AdminAppAgent(context));
+        context.getBus().register(new EmailAgent(context));
 
         WebServer server = new VertxWebServer(context);
         server.initialize();

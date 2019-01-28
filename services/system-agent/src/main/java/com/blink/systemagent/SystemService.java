@@ -11,7 +11,7 @@ import com.google.common.eventbus.Subscribe;
 public class SystemService extends BlinkService {
 
 
-    public SystemService(Context context) {
+    public SystemService(Context context) throws Exception {
         super(context);
     }
 
