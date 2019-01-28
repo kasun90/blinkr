@@ -1,11 +1,13 @@
 package com.blink.core.messaging.embed;
 
 import com.blink.core.exception.BlinkRuntimeException;
+import com.blink.core.messaging.Message;
 import com.blink.core.messaging.MessagingService;
 import com.blink.core.messaging.Receiver;
 import com.blink.core.messaging.Sender;
 import com.blink.core.system.ObjectCodec;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.command.ActiveMQQueue;
 
@@ -35,12 +37,22 @@ public class EmbeddedMessageService implements MessagingService {
     @Override
     public void createReceiver(String channel, Receiver receiver) throws Exception {
         Connection connection = connectionFactory.createConnection();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         session.createConsumer(new ActiveMQQueue(channel)).setMessageListener(message -> {
             if (message instanceof TextMessage) {
-                TextMessage content = (TextMessage) message;
+                final TextMessage content = (TextMessage) message;
                 try {
-                    receiver.onMessage(codec.fromPayload(content.getText()));
+                    receiver.onMessage(new Message() {
+                        @Override
+                        public Object getContent() throws Exception {
+                            return codec.fromPayload(content.getText());
+                        }
+
+                        @Override
+                        public void acknowledge() throws Exception {
+                            content.acknowledge();
+                        }
+                    });
                 } catch (Exception e) {
                     throw new BlinkRuntimeException(e);
                 }

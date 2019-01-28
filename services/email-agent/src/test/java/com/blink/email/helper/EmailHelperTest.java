@@ -19,8 +19,8 @@ public class EmailHelperTest {
     public void init() {
         Properties properties = new Properties();
         properties.put("mail.smtps.host","smtp.mailgun.org");
-        properties.put("mail.smtp.user", "postmaster@mail.justblink.xyz");
-        properties.put("mail.smtp.password", "c96696c0a7b0672084293a2ac7f9bf25-060550c6-81f56f25");
+        properties.put("mail.smtp.user", "default");
+        properties.put("mail.smtp.password", "default");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtps.auth","true");
         properties.put("mail.default", "hello@justblink.xyz");
@@ -37,12 +37,15 @@ public class EmailHelperTest {
     @Test
     public void templateTest() throws Exception {
         Map<String, String> data = new HashMap<>();
-        data.put("blink_logo", "logoPath");
-        data.put("instagram_icon", "instagramPath");
-        data.put("facebook_icon", "facebookPath");
-        data.put("unsub_link", "unsubPath");
+        data.put("blink_logo", "http://localhost:5001/static/files/media/email/logo.svg");
+        data.put("instagram_icon", "http://localhost:5001/static/files/media/email/icons/instagram.svg");
+        data.put("facebook_icon", "http://localhost:5001/static/files/media/email/icons/facebook.svg");
+        data.put("name", "Kasun");
         EmailTemplateDataProvider provider = new FileTemplateDataProvider(data, "http://localhost:5000").with(null);
+        provider.setEmail("kpiyumal90@gmail.com");
         EmailTemplateResolver resolver = new FileTemplateResolver();
         System.out.println(resolver.getBody(EmailType.NEW_SUSBRIBE, provider));
+        EmailHelper emailHelper = factory.create();
+        emailHelper.send(resolver.getBody(EmailType.NEW_SUSBRIBE, provider), "New Sub Test", "kpiyumal90@gmail.com");
     }
 }
