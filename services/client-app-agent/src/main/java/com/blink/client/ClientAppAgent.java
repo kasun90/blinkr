@@ -1,9 +1,6 @@
 package com.blink.client;
 
-import com.blink.common.AlbumHelper;
-import com.blink.common.ArticleHelper;
-import com.blink.common.BlinkService;
-import com.blink.common.PresetHelper;
+import com.blink.common.*;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
 import com.blink.core.service.Context;
@@ -17,7 +14,9 @@ import com.blink.shared.client.article.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
+import com.blink.shared.client.subscription.NewSubscribeRequestMessage;
 import com.blink.shared.common.Article;
+import com.blink.shared.common.Subscription;
 import com.blink.utilities.BlinkJSON;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
@@ -41,6 +40,7 @@ public class ClientAppAgent extends BlinkService {
     private AlbumHelper albumHelper;
     private PresetHelper presetHelper;
     private ArticleHelper articleHelper;
+    private SubscriptionHelper subscriptionHelper;
 
     public ClientAppAgent(Context context) throws Exception {
         super(context);
@@ -49,6 +49,7 @@ public class ClientAppAgent extends BlinkService {
         albumHelper = new AlbumHelper(this.getContext());
         presetHelper = new PresetHelper(this.getContext());
         articleHelper = new ArticleHelper(this.getContext());
+        subscriptionHelper = new SubscriptionHelper(this.getContext());
     }
 
     @Subscribe
@@ -72,6 +73,8 @@ public class ClientAppAgent extends BlinkService {
             onArticleViewAck(((ArticleViewAckMessage) enclosedMessage));
         } else if (enclosedMessage instanceof ArticleSearchRequestMessage) {
             onArticleSearch(((ArticleSearchRequestMessage) enclosedMessage));
+        } else if (enclosedMessage instanceof NewSubscribeRequestMessage) {
+            onNewSubscription(((NewSubscribeRequestMessage) enclosedMessage), requestMessage.getRemoteAddress());
         }
     }
 
@@ -153,6 +156,31 @@ public class ClientAppAgent extends BlinkService {
 
     private void onArticleSearch(ArticleSearchRequestMessage message) throws Exception {
         sendReply(new ArticleSearchResponseMessage(articleHelper.searchArticles(message.getKeyPhrase())));
+    }
+
+    private void onNewSubscription(NewSubscribeRequestMessage message, String remoteAddress) throws Exception {
+        if (validateMessage(message.getRecaptchaToken(), remoteAddress)) {
+            if (message.getEmail() == null || message.getEmail().isEmpty() || message.getFirstName() == null
+            || message.getFirstName().isEmpty() || message.getLastName() == null || message.getLastName().isEmpty()) {
+                sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+                error("Invalid subscription request: {}", message);
+            } else if (!subscriptionHelper.isKeyAvailable(message.getEmail())) {
+                sendReply(new GenericStatusReplyMessage(false, "This email already has a subscription"));
+            } else {
+                Subscription newSubscription = new Subscription();
+                newSubscription.setFirstName(message.getFirstName())
+                        .setLastName(message.getLastName())
+                        .setEmail(message.getEmail())
+                        .setKey(message.getEmail())
+                        .setTimestamp(BlinkTime.getCurrentTimeMillis());
+                subscriptionHelper.saveEntity(newSubscription);
+                sendReply(new GenericStatusReplyMessage(true, "Subscription confirmed!"));
+                info("Subscription recorded: {}", message);
+            }
+        } else {
+            sendReply(new GenericStatusReplyMessage(false, "Subscription has not been accepted"));
+            error("reCaptcha validation failed for message: {}", message);
+        }
     }
 
     @Override

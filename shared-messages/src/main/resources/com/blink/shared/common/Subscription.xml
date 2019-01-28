@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model extends="Entity">
+    <field type="String">firstName</field>
+    <field type="String">lastName</field>
+    <field type="String">email</field>
+</model>
