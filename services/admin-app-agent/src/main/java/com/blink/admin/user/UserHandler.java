@@ -59,6 +59,7 @@ public class UserHandler {
         this.bus.register(new ProfileHandler(this));
         this.bus.register(new SettingHandler(this));
         this.bus.register(new UserMessageHandler(this));
+        this.bus.register(new SubscriptionHandler(this));
     }
 
     String getUsername() {
