@@ -283,7 +283,8 @@ blinkrstop() {
     blinkpid=`ps -ef | awk '/[b]linkr/{print $2}'`
     if [ ! -z "$blinkpid" ]
     then
-        kill -9 $blinkpid
+        echo -e "\nGoing to kill $blinkpid"
+        kill -15 $blinkpid
     fi
     blinkrstatus
 }
