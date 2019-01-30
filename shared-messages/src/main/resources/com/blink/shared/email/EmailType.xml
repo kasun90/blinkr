@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model type="enum">
-    <case>NEW_SUSBRIBE</case>
+    <case>NEW_SUBSCRIBE</case>
     <case>UNSUBSCRIBE</case>
     <case>NEW_ALBUM</case>
 </model>

@@ -47,7 +47,7 @@ public class Bootstrap {
                 .setLoggerFactory(loggerFactory)
                 .setDbServiceFactory(new MongoDBServiceFactory(configuration))
                 .setFileService(new LocalFileService(configuration))
-                .setMessagingService(new EmbeddedMessageService(new ClassTranslator()))
+                .setMessagingService(new EmbeddedMessageService(new ClassTranslator(), "hawtio/hawtio.war"))
                 .build();
 
         context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));

@@ -1,11 +1,9 @@
 package com.blink.client;
 
-import com.blink.common.AlbumHelper;
-import com.blink.common.ArticleHelper;
-import com.blink.common.BlinkService;
-import com.blink.common.PresetHelper;
+import com.blink.common.*;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
+import com.blink.core.messaging.Sender;
 import com.blink.core.service.Context;
 import com.blink.shared.client.ClientRequestMessage;
 import com.blink.shared.client.GenericStatusReplyMessage;
@@ -17,11 +15,16 @@ import com.blink.shared.client.article.*;
 import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
+import com.blink.shared.client.subscription.NewSubscribeRequestMessage;
 import com.blink.shared.common.Article;
+import com.blink.shared.common.Subscription;
+import com.blink.shared.email.EmailQueueMessage;
+import com.blink.shared.email.EmailType;
 import com.blink.utilities.BlinkJSON;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonObject;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -33,7 +36,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientAppAgent extends BlinkService {
 
@@ -41,6 +46,8 @@ public class ClientAppAgent extends BlinkService {
     private AlbumHelper albumHelper;
     private PresetHelper presetHelper;
     private ArticleHelper articleHelper;
+    private SubscriptionHelper subscriptionHelper;
+    private Sender emailSender;
 
     public ClientAppAgent(Context context) throws Exception {
         super(context);
@@ -49,6 +56,8 @@ public class ClientAppAgent extends BlinkService {
         albumHelper = new AlbumHelper(this.getContext());
         presetHelper = new PresetHelper(this.getContext());
         articleHelper = new ArticleHelper(this.getContext());
+        subscriptionHelper = new SubscriptionHelper(this.getContext());
+        emailSender = getContext().getMessagingService().createSender("email");
     }
 
     @Subscribe
@@ -72,6 +81,8 @@ public class ClientAppAgent extends BlinkService {
             onArticleViewAck(((ArticleViewAckMessage) enclosedMessage));
         } else if (enclosedMessage instanceof ArticleSearchRequestMessage) {
             onArticleSearch(((ArticleSearchRequestMessage) enclosedMessage));
+        } else if (enclosedMessage instanceof NewSubscribeRequestMessage) {
+            onNewSubscription(((NewSubscribeRequestMessage) enclosedMessage), requestMessage.getRemoteAddress());
         }
     }
 
@@ -153,6 +164,37 @@ public class ClientAppAgent extends BlinkService {
 
     private void onArticleSearch(ArticleSearchRequestMessage message) throws Exception {
         sendReply(new ArticleSearchResponseMessage(articleHelper.searchArticles(message.getKeyPhrase())));
+    }
+
+    private void onNewSubscription(NewSubscribeRequestMessage message, String remoteAddress) throws Exception {
+        if (validateMessage(message.getRecaptchaToken(), remoteAddress)) {
+            if (message.getEmail() == null || message.getEmail().isEmpty() || message.getFirstName() == null
+            || message.getFirstName().isEmpty() || message.getLastName() == null || message.getLastName().isEmpty()) {
+                sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+                error("Invalid subscription request: {}", message);
+            } else if (!subscriptionHelper.isKeyAvailable(message.getEmail())) {
+                sendReply(new GenericStatusReplyMessage(false, "This email already has a subscription"));
+            } else if (!EmailValidator.getInstance(true).isValid(message.getEmail())) {
+                sendReply(new GenericStatusReplyMessage(false, "This email appears not valid"));
+            } else {
+                Subscription newSubscription = new Subscription();
+                newSubscription.setFirstName(message.getFirstName())
+                        .setLastName(message.getLastName())
+                        .setEmail(message.getEmail())
+                        .setKey(message.getEmail())
+                        .setTimestamp(BlinkTime.getCurrentTimeMillis());
+                subscriptionHelper.saveEntity(newSubscription);
+                sendReply(new GenericStatusReplyMessage(true, "Subscription confirmed!"));
+                info("Subscription recorded: {}", message);
+                Map<String, String> data = new HashMap<>();
+                data.put("name", message.getFirstName());
+                emailSender.send(new EmailQueueMessage(EmailType.NEW_SUBSCRIBE, "Welcome To Blink", message.getEmail(), data));
+                info("Email queued for new subscription [email={}]", message.getEmail());
+            }
+        } else {
+            sendReply(new GenericStatusReplyMessage(false, "Subscription has not been accepted"));
+            error("reCaptcha validation failed for message: {}", message);
+        }
     }
 
     @Override
