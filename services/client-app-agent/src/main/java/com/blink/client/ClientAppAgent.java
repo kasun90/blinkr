@@ -3,6 +3,7 @@ package com.blink.client;
 import com.blink.common.*;
 import com.blink.core.database.DBService;
 import com.blink.core.database.SimpleDBObject;
+import com.blink.core.messaging.Sender;
 import com.blink.core.service.Context;
 import com.blink.shared.client.ClientRequestMessage;
 import com.blink.shared.client.GenericStatusReplyMessage;
@@ -17,10 +18,13 @@ import com.blink.shared.client.preset.PresetsResponseMessage;
 import com.blink.shared.client.subscription.NewSubscribeRequestMessage;
 import com.blink.shared.common.Article;
 import com.blink.shared.common.Subscription;
+import com.blink.shared.email.EmailQueueMessage;
+import com.blink.shared.email.EmailType;
 import com.blink.utilities.BlinkJSON;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonObject;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -32,7 +36,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientAppAgent extends BlinkService {
 
@@ -41,6 +47,7 @@ public class ClientAppAgent extends BlinkService {
     private PresetHelper presetHelper;
     private ArticleHelper articleHelper;
     private SubscriptionHelper subscriptionHelper;
+    private Sender emailSender;
 
     public ClientAppAgent(Context context) throws Exception {
         super(context);
@@ -50,6 +57,7 @@ public class ClientAppAgent extends BlinkService {
         presetHelper = new PresetHelper(this.getContext());
         articleHelper = new ArticleHelper(this.getContext());
         subscriptionHelper = new SubscriptionHelper(this.getContext());
+        emailSender = getContext().getMessagingService().createSender("email");
     }
 
     @Subscribe
@@ -166,6 +174,8 @@ public class ClientAppAgent extends BlinkService {
                 error("Invalid subscription request: {}", message);
             } else if (!subscriptionHelper.isKeyAvailable(message.getEmail())) {
                 sendReply(new GenericStatusReplyMessage(false, "This email already has a subscription"));
+            } else if (!EmailValidator.getInstance(true).isValid(message.getEmail())) {
+                sendReply(new GenericStatusReplyMessage(false, "This email appears not valid"));
             } else {
                 Subscription newSubscription = new Subscription();
                 newSubscription.setFirstName(message.getFirstName())
@@ -176,6 +186,10 @@ public class ClientAppAgent extends BlinkService {
                 subscriptionHelper.saveEntity(newSubscription);
                 sendReply(new GenericStatusReplyMessage(true, "Subscription confirmed!"));
                 info("Subscription recorded: {}", message);
+                Map<String, String> data = new HashMap<>();
+                data.put("name", message.getFirstName());
+                emailSender.send(new EmailQueueMessage(EmailType.NEW_SUBSCRIBE, "Welcome To Blink", message.getEmail(), data));
+                info("Email queued for new subscription [email={}]", message.getEmail());
             }
         } else {
             sendReply(new GenericStatusReplyMessage(false, "Subscription has not been accepted"));

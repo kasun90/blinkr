@@ -6,8 +6,8 @@ import com.blink.core.messaging.MessagingService;
 import com.blink.core.messaging.Receiver;
 import com.blink.core.messaging.Sender;
 import com.blink.core.system.ObjectCodec;
+import io.hawt.embedded.Main;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.command.ActiveMQQueue;
 
@@ -20,11 +20,17 @@ public class EmbeddedMessageService implements MessagingService {
     private ConnectionFactory connectionFactory;
     private ObjectCodec codec;
 
-    public EmbeddedMessageService(ObjectCodec codec) throws Exception {
+    public EmbeddedMessageService(ObjectCodec codec, String hawtioWar) throws Exception {
         final String url = "tcp://localhost:61616";
         BrokerService broker = new BrokerService();
         broker.addConnector(url);
         broker.start();
+        System.setProperty("hawtio.authenticationEnabled", "false");
+        Main main = new Main();
+        main.setWar(hawtioWar);
+        main.setPort(5002);
+        main.setContextPath("/");
+        main.run();
         this.connectionFactory = new ActiveMQConnectionFactory(url);
         this.codec = codec;
     }
