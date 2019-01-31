@@ -31,39 +31,46 @@ public class Bootstrap {
         Logger bootLogger = loggerFactory.getLogger();
         bootLogger.info("Starting system");
 
-        String environment = "";
-        if (args.length == 0)
-            bootLogger.info("System is running on development mode. Please use '--prod' argument to enable production mode");
-        else
-            environment = args[0].replaceAll("--", "");
+        try {
+            String environment = "";
+            if (args.length == 0)
+                bootLogger.info("System is running on development mode. Please use '--prod' argument to enable production mode");
+            else
+                environment = args[0].replaceAll("--", "");
 
-        ConfigurationFactory.setFactory(new FileConfigurationFactory(environment));
-        Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
-        bootLogger.info("Building configuration complete");
+            ConfigurationFactory.setFactory(new FileConfigurationFactory(environment));
+            Configuration configuration = ConfigurationFactory.getFactory().getConfiguration();
+            bootLogger.info("Building configuration complete");
 
-        Context.ContextBuilder builder = new Context.ContextBuilder();
-        Context context = builder.setConfiguration(configuration)
-                .setBus(new GoogleEventBus())
-                .setLoggerFactory(loggerFactory)
-                .setDbServiceFactory(new MongoDBServiceFactory(configuration))
-                .setFileService(new LocalFileService(configuration))
-                .setMessagingService(new EmbeddedMessageService(new ClassTranslator(), "hawtio/hawtio.war"))
-                .build();
+            Context.ContextBuilder builder = new Context.ContextBuilder();
+            Context context = builder.setConfiguration(configuration)
+                    .setBus(new GoogleEventBus())
+                    .setLoggerFactory(loggerFactory)
+                    .setDbServiceFactory(new MongoDBServiceFactory(configuration))
+                    .setFileService(new LocalFileService(configuration))
+                    .setMessagingService(new EmbeddedMessageService(new ClassTranslator(), "hawtio/hawtio.war"))
+                    .build();
 
-        context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));
-        context.registerDerivedService(SettingHelper.class, new SimpleDBSettingHelper(context.getDbServiceFactory()));
+            context.registerDerivedService(SettingReader.class, new SimpleDBSettingReader(context.getDbServiceFactory()));
+            context.registerDerivedService(SettingHelper.class, new SimpleDBSettingHelper(context.getDbServiceFactory()));
 
-        bootLogger.info("Registering services");
-        context.getBus().register(new SystemService(context));
+            bootLogger.info("Registering mandatory services");
+            context.getBus().register(new SystemService(context));
 
-        //register Services
-        context.getBus().register(new ClientAppAgent(context));
-        context.getBus().register(new AdminAppAgent(context));
-        context.getBus().register(new EmailAgent(context));
+            //register Services
+            context.getBus().register(new ClientAppAgent(context));
+            context.getBus().register(new AdminAppAgent(context));
 
-        WebServer server = new VertxWebServer(context);
-        server.initialize();
-        server.start();
-        bootLogger.info("System is ready");
+            bootLogger.info("Starting web server");
+            WebServer server = new VertxWebServer(context);
+            server.initialize();
+            server.start();
+
+            bootLogger.info("Registering complimentary services");
+            context.getBus().register(new EmailAgent(context));
+            bootLogger.info("System is ready");
+        } catch (Exception e) {
+            bootLogger.exception("Exception while starting the system", e);
+        }
     }
 }

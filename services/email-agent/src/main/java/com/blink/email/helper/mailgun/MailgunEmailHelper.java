@@ -3,7 +3,10 @@ package com.blink.email.helper.mailgun;
 import com.blink.core.log.Logger;
 import com.blink.email.helper.EmailHelper;
 
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.event.ConnectionEvent;
 import javax.mail.event.ConnectionListener;
 import javax.mail.internet.InternetAddress;
