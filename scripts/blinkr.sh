@@ -280,12 +280,13 @@ blinkrstatus() {
 }
 
 blinkrstop() {
-    blinkpid=`ps -ef | awk '/[b]linkr/{print $2}'`
-    if [ ! -z "$blinkpid" ]
+    blinkpidstop=`pgrep -f "jar blinkr"`
+    if [ ! -z "$blinkpidstop" ]
     then
-        echo -e "\nGoing to kill $blinkpid"
-        kill -15 $blinkpid
+        echo -e "Going to kill $blinkpidstop"
+        kill -15 $blinkpidstop
     fi
+    sleep 5
     blinkrstatus
 }
 
