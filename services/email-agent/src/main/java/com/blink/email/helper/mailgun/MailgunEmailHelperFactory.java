@@ -21,6 +21,8 @@ public class MailgunEmailHelperFactory implements EmailHelperFactory {
         properties.put("mail.smtp.user", settingReader.getSetting("smtp_user", "default"));
         properties.put("mail.smtp.password", settingReader.getSetting("smtp_password", "default"));
         properties.put("mail.smtps.auth","true");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.default", settingReader.getSetting("default_from_mail", "hello@justblink.xyz"));
     }
 
