@@ -1,1 +1,34 @@
-"use strict";var precacheConfig=[["/index.html","5ede83728f12225a684a8896996781a1"],["/static/css/main.fa379512.css","9007974bab238feeeb3182135bcd851e"],["/static/js/main.862d34b0.js","547672fd7038b26d833afc492af9da2c"],["/static/media/1.48b892d2.jpg","48b892d27dd08ec82e992c3797d5ccfa"],["/static/media/2.87b2e9b8.jpg","87b2e9b8aa2a4dd7677e1605a99d54ac"],["/static/media/3.655ec6b0.jpg","655ec6b071cee7a3631cc4ed94a2f295"],["/static/media/4.1042bbde.jpg","1042bbde6277be7a23c2c000ce55f18b"],["/static/media/6.76821126.jpg","76821126edcef0ffd98192533ba797bb"],["/static/media/aero.78e751b4.jpg","78e751b44e9a59d49491777ac675e993"],["/static/media/bash.2ab06a96.jpg","2ab06a96bf8915d3ad5641de8fba0788"],["/static/media/beach.c3cc8074.jpg","c3cc80741858f12563066cd79468eb10"],["/static/media/blinkr.0a148740.svg","0a14874051d291a7121884d5d1ae14d3"],["/static/media/chitral.d7112cee.jpg","d7112ceefb850af8b8628532827732f5"],["/static/media/dondra.b9b5226a.jpg","b9b5226a14e73ddbeb24449e10e70ace"],["/static/media/fashion2.75ea98b9.jpg","75ea98b963906a7a1c16edc7616992a1"],["/static/media/fashion3.2a081f5b.jpg","2a081f5b8614cfa1d91323387067b3b9"],["/static/media/final.0c04c711.jpg","0c04c711df14e00b1a39084ac5b28daf"],["/static/media/getintouch.6f78b880.jpg","6f78b8805e8a53abafac5db1beef1fb6"],["/static/media/lightroom.cdacf498.jpg","cdacf4984c152022805521354425b69f"],["/static/media/logo.eb08d154.svg","eb08d154db56ffefe51d1e24119adcc7"],["/static/media/malwed.5ea0491b.jpg","5ea0491bb78fbcd418e7ea7240bdf8b1"],["/static/media/nature2.ecf3ecf5.jpg","ecf3ecf58582a121a93c3ce75e0ea76b"],["/static/media/original.f773a52d.jpg","f773a52db7c65a52cbf984c78449d42e"],["/static/media/paddy.df67b3a7.jpg","df67b3a710a30ceaf9844edd3444bdb0"],["/static/media/profile.13ff6e75.jpg","13ff6e758f02243c9fd39ddc7a3afe71"],["/static/media/profile.5f6d31a0.jpg","5f6d31a055a2151bf370b9a886b3e66f"],["/static/media/ranga.d3cbbdc8.jpg","d3cbbdc8f8f83d8ee8be37e9fe3ae4d7"],["/static/media/sajana.94ee52be.jpg","94ee52bece6aca9cffb003985f2beb44"],["/static/media/samith.75f82fc5.jpg","75f82fc5cc8317954bc20e2f459128f4"],["/static/media/samitha.67c70afe.jpg","67c70afe2baae097d28046be78d05929"],["/static/media/thanu.ff3989b5.jpg","ff3989b570286477425f74e6176d342a"]],cacheName="sw-precache-v3-sw-precache-webpack-plugin-"+(self.registration?self.registration.scope:""),ignoreUrlParametersMatching=[/^utm_/],addDirectoryIndex=function(e,a){var t=new URL(e);return"/"===t.pathname.slice(-1)&&(t.pathname+=a),t.toString()},cleanResponse=function(a){return a.redirected?("body"in a?Promise.resolve(a.body):a.blob()).then(function(e){return new Response(e,{headers:a.headers,status:a.status,statusText:a.statusText})}):Promise.resolve(a)},createCacheKey=function(e,a,t,c){var n=new URL(e);return c&&n.pathname.match(c)||(n.search+=(n.search?"&":"")+encodeURIComponent(a)+"="+encodeURIComponent(t)),n.toString()},isPathWhitelisted=function(e,a){if(0===e.length)return!0;var t=new URL(a).pathname;return e.some(function(e){return t.match(e)})},stripIgnoredUrlParameters=function(e,t){var a=new URL(e);return a.hash="",a.search=a.search.slice(1).split("&").map(function(e){return e.split("=")}).filter(function(a){return t.every(function(e){return!e.test(a[0])})}).map(function(e){return e.join("=")}).join("&"),a.toString()},hashParamName="_sw-precache",urlsToCacheKeys=new Map(precacheConfig.map(function(e){var a=e[0],t=e[1],c=new URL(a,self.location),n=createCacheKey(c,hashParamName,t,/\.\w{8}\./);return[c.toString(),n]}));function setOfCachedUrls(e){return e.keys().then(function(e){return e.map(function(e){return e.url})}).then(function(e){return new Set(e)})}self.addEventListener("install",function(e){e.waitUntil(caches.open(cacheName).then(function(c){return setOfCachedUrls(c).then(function(t){return Promise.all(Array.from(urlsToCacheKeys.values()).map(function(a){if(!t.has(a)){var e=new Request(a,{credentials:"same-origin"});return fetch(e).then(function(e){if(!e.ok)throw new Error("Request for "+a+" returned a response with status "+e.status);return cleanResponse(e).then(function(e){return c.put(a,e)})})}}))})}).then(function(){return self.skipWaiting()}))}),self.addEventListener("activate",function(e){var t=new Set(urlsToCacheKeys.values());e.waitUntil(caches.open(cacheName).then(function(a){return a.keys().then(function(e){return Promise.all(e.map(function(e){if(!t.has(e.url))return a.delete(e)}))})}).then(function(){return self.clients.claim()}))}),self.addEventListener("fetch",function(a){if("GET"===a.request.method){var e,t=stripIgnoredUrlParameters(a.request.url,ignoreUrlParametersMatching),c="index.html";(e=urlsToCacheKeys.has(t))||(t=addDirectoryIndex(t,c),e=urlsToCacheKeys.has(t));var n="/index.html";!e&&"navigate"===a.request.mode&&isPathWhitelisted(["^(?!\\/__).*"],a.request.url)&&(t=new URL(n,self.location).toString(),e=urlsToCacheKeys.has(t)),e&&a.respondWith(caches.open(cacheName).then(function(e){return e.match(urlsToCacheKeys.get(t)).then(function(e){if(e)return e;throw Error("The cached response that was expected is missing.")})}).catch(function(e){return console.warn('Couldn\'t serve response for "%s" from cache: %O',a.request.url,e),fetch(a.request)}))}});
+/**
+ * Welcome to your Workbox-powered service worker!
+ *
+ * You'll need to register this file in your web app and you should
+ * disable HTTP caching for this file too.
+ * See https://goo.gl/nhQhGp
+ *
+ * The rest of the code is auto-generated. Please don't update this file
+ * directly; instead, make changes to your Workbox build configuration
+ * and re-run your build process.
+ * See https://goo.gl/2aRDsh
+ */
+
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+
+importScripts(
+  "/precache-manifest.1927ba137ecd5c09f8e987133a88c5b6.js"
+);
+
+workbox.clientsClaim();
+
+/**
+ * The workboxSW.precacheAndRoute() method efficiently caches and responds to
+ * requests for URLs in the manifest.
+ * See https://goo.gl/S9QRab
+ */
+self.__precacheManifest = [].concat(self.__precacheManifest || []);
+workbox.precaching.suppressWarnings();
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+workbox.routing.registerNavigationRoute("/index.html", {
+  
+  blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
+});
