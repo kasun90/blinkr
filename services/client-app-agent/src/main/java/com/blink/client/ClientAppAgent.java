@@ -16,6 +16,7 @@ import com.blink.shared.client.messaging.UserMessage;
 import com.blink.shared.client.preset.PresetsRequestMessage;
 import com.blink.shared.client.preset.PresetsResponseMessage;
 import com.blink.shared.client.subscription.NewSubscribeRequestMessage;
+import com.blink.shared.client.subscription.UnsubscribeRequestMessage;
 import com.blink.shared.common.Article;
 import com.blink.shared.common.Subscription;
 import com.blink.shared.email.EmailQueueMessage;
@@ -83,6 +84,8 @@ public class ClientAppAgent extends BlinkService {
             onArticleSearch(((ArticleSearchRequestMessage) enclosedMessage));
         } else if (enclosedMessage instanceof NewSubscribeRequestMessage) {
             onNewSubscription(((NewSubscribeRequestMessage) enclosedMessage), requestMessage.getRemoteAddress());
+        } else if (enclosedMessage instanceof UnsubscribeRequestMessage) {
+            onUnsubscribeRequest(((UnsubscribeRequestMessage) enclosedMessage), requestMessage.getRemoteAddress());
         }
     }
 
@@ -193,6 +196,24 @@ public class ClientAppAgent extends BlinkService {
             }
         } else {
             sendReply(new GenericStatusReplyMessage(false, "Subscription has not been accepted"));
+            error("reCaptcha validation failed for message: {}", message);
+        }
+    }
+
+    private void onUnsubscribeRequest(UnsubscribeRequestMessage message, String remoteAddress) throws Exception {
+        if (validateMessage(message.getRecaptchaToken(), remoteAddress)) {
+            if (message.getEmail() == null || message.getEmail().isEmpty()) {
+                sendReply(new GenericStatusReplyMessage(false, "Invalid values"));
+                error("Invalid unsubscribe request: {}", message);
+            } else if (subscriptionHelper.isKeyAvailable(message.getEmail())) {
+                sendReply(new GenericStatusReplyMessage(false, "You currently don't have a subscription"));
+            } else {
+                subscriptionHelper.deleteEntity(message.getEmail());
+                sendReply(new GenericStatusReplyMessage(true, "You have unsubscribed to updates"));
+                info("User unsubscribed: {}", message);
+            }
+        } else {
+            sendReply(new GenericStatusReplyMessage(false, "Unsubscribe request has not been accepted"));
             error("reCaptcha validation failed for message: {}", message);
         }
     }
