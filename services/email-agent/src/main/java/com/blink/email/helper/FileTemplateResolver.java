@@ -17,6 +17,9 @@ public class FileTemplateResolver implements EmailTemplateResolver {
 
     {
         templateMap.put(EmailType.NEW_SUBSCRIBE, "/templates/new_subscribe.html");
+        templateMap.put(EmailType.NEW_ALBUM, "/templates/new_album.html");
+        templateMap.put(EmailType.NEW_PRESET, "/templates/new_preset.html");
+        templateMap.put(EmailType.NEW_ARTICLE, "/templates/new_article.html");
     }
 
     @Override

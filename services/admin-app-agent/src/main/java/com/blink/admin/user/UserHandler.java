@@ -10,6 +10,7 @@ import com.blink.core.database.SimpleDBObject;
 import com.blink.core.database.SortCriteria;
 import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
+import com.blink.core.messaging.Sender;
 import com.blink.core.service.BaseService;
 import com.blink.core.setting.Setting;
 import com.blink.core.setting.SettingHelper;
@@ -42,11 +43,13 @@ public class UserHandler {
     private String username;
     private Logger logger;
     private Bus bus;
+    private Sender emailSender;
 
-    public UserHandler(String username, BaseService adminService) {
+    public UserHandler(String username, BaseService adminService) throws Exception {
         this.adminService = adminService;
         this.username = username;
         this.logger = adminService.getContext().getLoggerFactory().getLogger(String.format("%s-%s", "User", username));
+        this.emailSender = adminService.getContext().getMessagingService().createSender("email");
         registerHandlers();
     }
 
@@ -72,6 +75,10 @@ public class UserHandler {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    Sender getEmailSender() {
+        return emailSender;
     }
 
     public void handleMessage(Object message) throws Exception {

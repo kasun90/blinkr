@@ -48,7 +48,7 @@ public class EmbeddedMessageService implements MessagingService {
             if (message instanceof TextMessage) {
                 final TextMessage content = (TextMessage) message;
                 try {
-                    receiver.onMessage(new Message() {
+                    final Message wrapper = new Message() {
                         @Override
                         public Object getContent() throws Exception {
                             return codec.fromPayload(content.getText());
@@ -58,7 +58,8 @@ public class EmbeddedMessageService implements MessagingService {
                         public void acknowledge() throws Exception {
                             content.acknowledge();
                         }
-                    });
+                    };
+                    receiver.onMessage(wrapper);
                 } catch (Exception e) {
                     throw new BlinkRuntimeException(e);
                 }

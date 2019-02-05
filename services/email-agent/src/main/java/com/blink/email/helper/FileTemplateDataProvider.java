@@ -5,6 +5,7 @@ import com.blink.core.service.Configuration;
 import com.blink.core.service.Context;
 import org.apache.http.client.utils.URIBuilder;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,15 @@ public class FileTemplateDataProvider implements EmailTemplateDataProvider {
         currentData.putAll(defaultData);
         return currentData;
     }
+
+    @Override
+    public String getSiteURL(String format, Object... args) throws Exception {
+        String path = MessageFormat.format(format, args);
+        URIBuilder builder = new URIBuilder(baseURL);
+        builder.setPath(path);
+        return builder.build().toString();
+    }
+
 
     @Override
     public EmailTemplateDataProvider with(Map<String, String> data) {
