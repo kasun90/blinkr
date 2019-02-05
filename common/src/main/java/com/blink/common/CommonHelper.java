@@ -55,6 +55,12 @@ public abstract class CommonHelper<T extends Entity> {
         entityDB.insertOrUpdate(new SimpleDBObject().append("key", entity.getKey()), entity);
     }
 
+    public List<T> getEntities() throws Exception {
+        List<T> entities = new LinkedList<>();
+        entityDB.findAll(entityType).forEach(entities::add);
+        return entities;
+    }
+
     public List<T> getEntities(long timestamp, boolean less, int limit) throws Exception {
         List<T> entities = new LinkedList<>();
         int current = 0;

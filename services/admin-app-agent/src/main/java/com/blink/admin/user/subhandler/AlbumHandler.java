@@ -5,8 +5,14 @@ import com.blink.admin.user.UserHandler;
 import com.blink.common.AlbumHelper;
 import com.blink.shared.admin.album.*;
 import com.blink.shared.common.Album;
+import com.blink.shared.email.BulkEmailQueueMessage;
+import com.blink.shared.email.EmailType;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
+
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlbumHandler extends SubHandler {
     private AlbumHelper albumHelper;
@@ -53,7 +59,16 @@ public class AlbumHandler extends SubHandler {
         boolean success = albumHelper.saveCover(message.getKey(), message.getFileContent());
         adminService.sendReply(message.getRequestID(), new AlbumCoverUploadResponseMessage(message.getKey(), success));
         logger.info("Cover photo uploaded [key={}]", message.getKey());
+
+        Album album = albumHelper.getDetailsEntity(message.getKey());
+        Map<String, String> data = new HashMap<>();
+        data.put("cover_url", album.getCover().getUrl());
+        data.put("album_name", album.getTitle());
+        data.put("key", album.getKey());
+        emailSender.send(new BulkEmailQueueMessage(EmailType.NEW_ALBUM, MessageFormat.format("New Album: {0}", album.getTitle()), data));
+        logger.info("New album email notification queued [key={}]", message.getKey());
     }
+
 
     @Subscribe
     public void handleAlbumDelete(AlbumDeleteMessage message) throws Exception {

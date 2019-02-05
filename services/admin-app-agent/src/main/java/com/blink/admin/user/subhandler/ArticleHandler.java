@@ -8,9 +8,15 @@ import com.blink.shared.admin.FileUploadResponseMessage;
 import com.blink.shared.admin.article.*;
 import com.blink.shared.common.Article;
 import com.blink.shared.common.File;
+import com.blink.shared.email.BulkEmailQueueMessage;
+import com.blink.shared.email.EmailType;
 import com.blink.shared.system.InvalidRequest;
 import com.blink.utilities.BlinkTime;
 import com.google.common.eventbus.Subscribe;
+
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ArticleHandler extends SubHandler {
     private ArticleHelper articleHelper;
@@ -88,6 +94,13 @@ public class ArticleHandler extends SubHandler {
         adminService.sendReply(message.getRequestID(), new ActionResponseMessage(articleHelper.toggleArticleState(message.getKey(), true),
                 ""));
         logger.info("Article activated for key: {}", message.getKey());
+
+        Article article = articleHelper.getDetailsEntity(message.getKey());
+        Map<String, String> data = new HashMap<>();
+        data.put("key", article.getKey());
+        data.put("article_name", article.getTitle());
+        emailSender.send(new BulkEmailQueueMessage(EmailType.NEW_ARTICLE, MessageFormat.format("New Article: {0}", article.getTitle()), data));
+        logger.info("Email bulk notification initiated upon activation [key={}]", message.getKey());
     }
 
     @Subscribe

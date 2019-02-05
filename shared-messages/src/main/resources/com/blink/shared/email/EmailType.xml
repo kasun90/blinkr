@@ -3,4 +3,6 @@
     <case>NEW_SUBSCRIBE</case>
     <case>UNSUBSCRIBE</case>
     <case>NEW_ALBUM</case>
+    <case>NEW_PRESET</case>
+    <case>NEW_ARTICLE</case>
 </model>
