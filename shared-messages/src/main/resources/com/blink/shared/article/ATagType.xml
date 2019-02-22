@@ -12,4 +12,5 @@
     <case>RICH_TEXT</case>
     <case>CODE</case>
     <case>TERMINAL</case>
+    <case>GIST</case>
 </model>

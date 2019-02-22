@@ -12,5 +12,6 @@ public enum ATagType {
 	LINK,
 	RICH_TEXT,
 	CODE,
-	TERMINAL
+	TERMINAL,
+	GIST
 }
