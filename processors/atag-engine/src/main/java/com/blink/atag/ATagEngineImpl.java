@@ -69,6 +69,8 @@ public class ATagEngineImpl implements AtagEngine {
             startOrEndTag(aTags, terminalBuilder);
         else if (line.startsWith("``"))
             startOrEndTag(aTags, codeBuilder);
+        else if (line.startsWith("[gist]"))
+            processSingleLineATag(new GistBuilder(), line, aTags);
         else
             processGeneralLine(line);
     }
