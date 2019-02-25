@@ -10,9 +10,17 @@ getblinkrwebroot() {
     cat ${1} | grep ${2} | awk '{split($0,a,":"); print a[2]}' | tr -d '[:space:],"'
 }
 
+cloneorpull() {
+    git pull
+    if [[ $? -ne 0 ]]; then
+        git clone ${1} .
+    fi
+}
+
 blinkrbuild() {
     SOURCE_DIR="source"
     UISOURCE_DIR="uisource"
+    ADMINUISOURCE_DIR="adminuisource"
     RELEASE_DIR="release"
     NORELEASE=false
     BUILDUI=false
@@ -99,10 +107,11 @@ blinkrbuild() {
     mkdir $SOURCE_DIR
     mkdir $RELEASE_DIR
     mkdir $UISOURCE_DIR
+    mkdir $ADMINUISOURCE_DIR
     rm *.tar.gz
     rm -rf $RELEASE_DIR/*
     cd $SOURCE_DIR
-    git clone git@github.com:kasun90/blinkr.git .
+    cloneorpull "git@github.com:kasun90/blinkr.git"
     git config user.email kpiyumal90@gmail.com
     mvn versions:set -DnewVersion=$BLINKRVERSION
     mvn clean install -DskipTests
@@ -118,7 +127,7 @@ blinkrbuild() {
     then
         echo Going to build UIs
         cd $UISOURCE_DIR
-        git clone git@github.com:kasun90/blink-app.git .
+        cloneorpull "git@github.com:kasun90/blink-app.git"
         npm install
         npm run build
         if [ $? -ne 0 ]; then
@@ -134,10 +143,8 @@ blinkrbuild() {
             exit 1
         fi
 
-        rm -rf $UISOURCE_DIR
-        mkdir $UISOURCE_DIR
-        cd $UISOURCE_DIR
-        git clone git@github.com:kasun90/blink-admin-app.git .
+        cd $ADMINUISOURCE_DIR
+        cloneorpull "git@github.com:kasun90/blink-admin-app.git"
         npm install
         ng build --prod
         if [ $? -ne 0 ]; then
@@ -148,12 +155,11 @@ blinkrbuild() {
         cd ..
         adminFiles=$(getblinkrwebroot $SOURCE_DIR/blink.conf adminRoot)
         rm -rf $SOURCE_DIR/$adminFiles/*
-        cp -r $UISOURCE_DIR/dist/blink-admin-app/* $SOURCE_DIR/$adminFiles
+        cp -r $ADMINUISOURCE_DIR/dist/blink-admin-app/* $SOURCE_DIR/$adminFiles
         if [ $? -ne 0 ]; then
             echo -e "\e[31mCouldn't copy admin UI files. Exiting..\e[0m"
             exit 1
         fi
-        rm -rf $UISOURCE_DIR
 
         cd $SOURCE_DIR
         git add -A $clientFiles
@@ -195,7 +201,6 @@ blinkrbuild() {
     git push origin $TAG_NAME
     cd ..
 
-    rm -rf $SOURCE_DIR
     cd $RELEASE_DIR
     tar -czvf ../$RELEASE_NAME *
     cd ..
