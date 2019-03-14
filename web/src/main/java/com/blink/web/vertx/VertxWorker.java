@@ -6,8 +6,8 @@ import com.blink.shared.system.InvalidRequest;
 import com.blink.shared.system.WebInMessage;
 import com.blink.shared.system.WebOutMessage;
 import com.blink.web.ClassTranslator;
-import com.google.common.eventbus.Subscribe;
 import io.vertx.core.http.HttpServerResponse;
+import xyz.justblink.eventbus.Subscribe;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +23,7 @@ class VertxWorker {
     VertxWorker(Context context) {
         this.context = context;
         this.logger = context.getLoggerFactory().getLogger("VertxWorker");
-        context.getBus().register(this);
+        context.getBusService().getDefault().register(this);
     }
 
     void publishRequest(String target, String targetUser, String appKey, String appSession, String message, String origin, String remoteAddress, HttpServerResponse response) {
@@ -36,7 +36,7 @@ class VertxWorker {
         }
 
         try {
-            context.getBus().post(new WebInMessage(reqID, target, targetUser, appKey, appSession, remoteAddress, translator.fromPayload(message)));
+            context.getBusService().getDefault().post(new WebInMessage(reqID, target, targetUser, appKey, appSession, remoteAddress, translator.fromPayload(message)));
         } catch (Exception e) {
             logger.exception("Web Request Exception", e);
             onWebOut(new WebOutMessage(reqID, new InvalidRequest(e.getMessage())));

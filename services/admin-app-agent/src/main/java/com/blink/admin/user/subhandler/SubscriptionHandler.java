@@ -7,7 +7,7 @@ import com.blink.shared.admin.subcription.SubscriptionDeleteMessage;
 import com.blink.shared.admin.subcription.SubscriptionDeleteResponeMessage;
 import com.blink.shared.admin.subcription.SubscriptionsRequestMessage;
 import com.blink.shared.admin.subcription.SubscriptionsResponseMessage;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 public class SubscriptionHandler extends SubHandler {
 

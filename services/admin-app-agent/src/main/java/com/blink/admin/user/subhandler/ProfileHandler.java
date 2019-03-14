@@ -7,7 +7,7 @@ import com.blink.core.file.FileService;
 import com.blink.shared.admin.UserDetails;
 import com.blink.shared.admin.portal.*;
 import com.blink.shared.system.InvalidRequest;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 public class ProfileHandler extends SubHandler {
     public ProfileHandler(UserHandler handler) {

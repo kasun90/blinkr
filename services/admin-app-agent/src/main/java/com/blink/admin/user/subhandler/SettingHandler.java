@@ -6,7 +6,7 @@ import com.blink.core.setting.Setting;
 import com.blink.core.setting.SettingHelper;
 import com.blink.shared.admin.setting.*;
 import com.blink.shared.client.GenericStatusReplyMessage;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 import java.util.LinkedList;
 import java.util.List;

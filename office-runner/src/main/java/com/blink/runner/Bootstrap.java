@@ -16,7 +16,8 @@ import com.blink.core.setting.SettingHelper;
 import com.blink.core.setting.SettingReader;
 import com.blink.core.setting.simpledb.SimpleDBSettingHelper;
 import com.blink.core.setting.simpledb.SimpleDBSettingReader;
-import com.blink.core.transport.google.GoogleEventBus;
+import com.blink.core.transport.blinkr.BlinkrBusFactory;
+import com.blink.core.transport.blinkr.BlinkrBusService;
 import com.blink.email.EmailAgent;
 import com.blink.systemagent.SystemService;
 import com.blink.web.ClassTranslator;
@@ -44,7 +45,7 @@ public class Bootstrap {
 
             Context.ContextBuilder builder = new Context.ContextBuilder();
             Context context = builder.setConfiguration(configuration)
-                    .setBus(new GoogleEventBus())
+                    .setBusService(new BlinkrBusService(new BlinkrBusFactory()))
                     .setLoggerFactory(loggerFactory)
                     .setDbServiceFactory(new MongoDBServiceFactory(configuration))
                     .setFileService(new LocalFileService(configuration))
@@ -55,11 +56,11 @@ public class Bootstrap {
             context.registerDerivedService(SettingHelper.class, new SimpleDBSettingHelper(context.getDbServiceFactory()));
 
             bootLogger.info("Registering mandatory services");
-            context.getBus().register(new SystemService(context));
+            context.getBusService().getDefault().register(new SystemService(context));
 
             //register Services
-            context.getBus().register(new ClientAppAgent(context));
-            context.getBus().register(new AdminAppAgent(context));
+            context.getBusService().getDefault().register(new ClientAppAgent(context));
+            context.getBusService().getDefault().register(new AdminAppAgent(context));
 
             bootLogger.info("Starting web server");
             WebServer server = new VertxWebServer(context);
@@ -67,7 +68,7 @@ public class Bootstrap {
             server.start();
 
             bootLogger.info("Registering complimentary services");
-            context.getBus().register(new EmailAgent(context));
+            context.getBusService().getDefault().register(new EmailAgent(context));
             bootLogger.info("System is ready");
         } catch (Exception e) {
             bootLogger.exception("Exception while starting the system", e);

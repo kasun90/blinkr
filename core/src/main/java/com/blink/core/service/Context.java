@@ -6,6 +6,7 @@ import com.blink.core.file.FileService;
 import com.blink.core.log.LoggerFactory;
 import com.blink.core.messaging.MessagingService;
 import com.blink.core.transport.Bus;
+import com.blink.core.transport.BusService;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public final class Context {
     private Configuration configuration;
-    private Bus bus;
+    private BusService busService;
     private LoggerFactory loggerFactory;
     private DBServiceFactory dbServiceFactory;
     private FileService fileService;
@@ -22,7 +23,7 @@ public final class Context {
 
     private Context(ContextBuilder builder) {
         this.configuration = builder.configuration;
-        this.bus = builder.bus;
+        this.busService = builder.busService;
         this.loggerFactory = builder.loggerFactory;
         this.dbServiceFactory = builder.dbServiceFactory;
         this.fileService = builder.fileService;
@@ -30,8 +31,8 @@ public final class Context {
         derivedServiceMap = new HashMap<>();
     }
 
-    public Bus getBus() {
-        return bus;
+    public BusService getBusService() {
+        return busService;
     }
 
     public Configuration getConfiguration() {
@@ -68,14 +69,14 @@ public final class Context {
 
     public static class ContextBuilder {
         private Configuration configuration;
-        private Bus bus;
+        private BusService busService;
         private LoggerFactory loggerFactory;
         private DBServiceFactory dbServiceFactory;
         private FileService fileService;
         private MessagingService messagingService;
 
-        public ContextBuilder setBus(Bus bus) {
-            this.bus = bus;
+        public ContextBuilder setBusService(BusService busService) {
+            this.busService = busService;
             return this;
         }
 

@@ -63,9 +63,9 @@
             <version>3.5.2</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>27.0.1-jre</version>
+            <groupId>xyz.justblink</groupId>
+            <artifactId>eventbus</artifactId>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
