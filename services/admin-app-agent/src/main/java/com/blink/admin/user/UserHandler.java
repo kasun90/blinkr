@@ -1,42 +1,12 @@
 package com.blink.admin.user;
 
 import com.blink.admin.user.subhandler.*;
-import com.blink.common.AlbumHelper;
-import com.blink.common.ArticleHelper;
-import com.blink.common.PresetHelper;
-import com.blink.core.database.DBService;
-import com.blink.core.database.Filter;
-import com.blink.core.database.SimpleDBObject;
-import com.blink.core.database.SortCriteria;
-import com.blink.core.file.FileService;
 import com.blink.core.log.Logger;
 import com.blink.core.messaging.Sender;
 import com.blink.core.service.BaseService;
-import com.blink.core.setting.Setting;
-import com.blink.core.setting.SettingHelper;
 import com.blink.core.transport.Bus;
-import com.blink.shared.admin.ActionResponseMessage;
-import com.blink.shared.admin.FileUploadResponseMessage;
-import com.blink.shared.admin.UserDetails;
-import com.blink.shared.admin.album.*;
-import com.blink.shared.admin.article.*;
-import com.blink.shared.admin.portal.*;
-import com.blink.shared.admin.preset.*;
-import com.blink.shared.admin.setting.*;
-import com.blink.shared.client.GenericStatusReplyMessage;
-import com.blink.shared.client.messaging.UserMessage;
-import com.blink.shared.common.Album;
-import com.blink.shared.common.Article;
-import com.blink.shared.common.File;
-import com.blink.shared.common.Preset;
-import com.blink.shared.system.InvalidRequest;
-import com.blink.utilities.BlinkTime;
-import com.google.common.eventbus.DeadEvent;
-import com.google.common.eventbus.Subscribe;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import xyz.justblink.eventbus.DeadEvent;
+import xyz.justblink.eventbus.Subscribe;
 
 public class UserHandler {
     private BaseService adminService;
@@ -54,7 +24,7 @@ public class UserHandler {
     }
 
     private void registerHandlers() {
-        this.bus = adminService.getContext().getBus().createNew();
+        this.bus = adminService.getContext().getBusService().createNew();
         this.bus.register(this);
         this.bus.register(new AlbumHandler(this));
         this.bus.register(new ArticleHandler(this));

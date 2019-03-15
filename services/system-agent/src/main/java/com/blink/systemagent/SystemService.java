@@ -5,8 +5,8 @@ import com.blink.core.service.Context;
 import com.blink.shared.admin.AdminRequestMessage;
 import com.blink.shared.client.ClientRequestMessage;
 import com.blink.shared.system.*;
-import com.google.common.eventbus.DeadEvent;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.DeadEvent;
+import xyz.justblink.eventbus.Subscribe;
 
 public class SystemService extends BlinkService {
 
@@ -38,16 +38,16 @@ public class SystemService extends BlinkService {
     }
 
     private void onTargetClient(String requestID, String remoteAddress, Object data) {
-        getContext().getBus().post(new ClientRequestMessage(requestID, remoteAddress, data));
+        getContext().getBusService().getDefault().post(new ClientRequestMessage(requestID, remoteAddress, data));
     }
 
     private void onTargetAdmin(String requestID, String targetUser, String sessionID, Object data) {
-        getContext().getBus().post(new AdminRequestMessage(requestID, targetUser, sessionID, data));
+        getContext().getBusService().getDefault().post(new AdminRequestMessage(requestID, targetUser, sessionID, data));
     }
 
     @Subscribe
     void onReply(ReplyMessage replyMessage) {
-        getContext().getBus().post(new WebOutMessage(replyMessage.getRequestID(), replyMessage.getData()));
+        getContext().getBusService().getDefault().post(new WebOutMessage(replyMessage.getRequestID(), replyMessage.getData()));
     }
 
     @Subscribe

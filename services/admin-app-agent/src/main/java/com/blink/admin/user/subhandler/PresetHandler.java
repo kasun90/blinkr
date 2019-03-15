@@ -8,7 +8,7 @@ import com.blink.shared.common.Preset;
 import com.blink.shared.email.BulkEmailQueueMessage;
 import com.blink.shared.email.EmailType;
 import com.blink.utilities.BlinkTime;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

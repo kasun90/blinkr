@@ -9,7 +9,7 @@ import com.blink.core.database.SortCriteria;
 import com.blink.shared.admin.portal.UserMessagesRequestMessage;
 import com.blink.shared.admin.portal.UserMessagesResponseMessage;
 import com.blink.shared.client.messaging.UserMessage;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 import java.util.Iterator;
 import java.util.LinkedList;

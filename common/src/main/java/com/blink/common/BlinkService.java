@@ -14,6 +14,6 @@ public abstract class BlinkService extends BaseService {
     public void sendReply(String requestID, Object message) {
         if (requestID == null)
             throw new BlinkRuntimeException("Request ID cannot be null. Please set the request ID first");
-        getContext().getBus().post(new ReplyMessage(requestID, message));
+        getContext().getBusService().getDefault().post(new ReplyMessage(requestID, message));
     }
 }

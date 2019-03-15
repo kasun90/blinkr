@@ -8,7 +8,7 @@ import com.blink.shared.admin.AdminRequestMessage;
 import com.blink.shared.admin.portal.LoginMessage;
 import com.blink.shared.admin.portal.LoginReplyMessage;
 import com.blink.shared.system.InvalidRequest;
-import com.google.common.eventbus.Subscribe;
+import xyz.justblink.eventbus.Subscribe;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
