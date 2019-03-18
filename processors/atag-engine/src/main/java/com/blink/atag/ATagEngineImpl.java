@@ -1,6 +1,5 @@
 package com.blink.atag;
 
-import com.blink.atag.tags.OrderedList;
 import com.blink.atag.tags.builders.*;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
@@ -12,20 +11,20 @@ import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ATagEngineImpl implements AtagEngine {
+public final class ATagEngineImpl implements AtagEngine {
 
     private Logger logger;
     private SimpleATagBuilder currentBuilder;
     private ParagraphBuilder paragraphBuilder = new ParagraphBuilder();
     private NoteBuilder noteBuilder = new NoteBuilder();
-    private GenericListBuilder<com.blink.atag.tags.List> listBuilder = new GenericListBuilder<>();
-    private GenericListBuilder<OrderedList> orderedListBuilder = new GenericListBuilder<>();
+    private GenericListBuilder listBuilder = new UnorderedListBuilder();
+    private GenericListBuilder orderedListBuilder = new OrderedListBuilder();
     private CodeBuilder codeBuilder = new CodeBuilder();
     private TerminalBuilder terminalBuilder = new TerminalBuilder();
 
     public ATagEngineImpl(Context context) {
         this.logger = context.getLoggerFactory().getLogger("ATAG");
-        currentBuilder =  this.paragraphBuilder;
+        currentBuilder = this.paragraphBuilder;
     }
 
     @Override
@@ -81,15 +80,15 @@ public class ATagEngineImpl implements AtagEngine {
     }
 
     private void processList(String line) {
-        if (!listBuilder.isBuilding())
-            listBuilder.initNew(new com.blink.atag.tags.List());
-        listBuilder.addLine(line);
+//        if (!listBuilder.isBuilding())
+//            listBuilder.initNew(new com.blink.atag.tags.List());
+//        listBuilder.addLine(line);
     }
 
     private void processOrderedList(String line) {
-        if (!orderedListBuilder.isBuilding())
-            orderedListBuilder.initNew(new OrderedList());
-        orderedListBuilder.addLine(line);
+//        if (!orderedListBuilder.isBuilding())
+//            orderedListBuilder.initNew(new OrderedList());
+//        orderedListBuilder.addLine(line);
     }
 
     private void breakTag(List<ATag> aTags) {
@@ -106,7 +105,7 @@ public class ATagEngineImpl implements AtagEngine {
     }
 
     private void startOrEndTag(List<ATag> aTags, SimpleATagBuilder builder) {
-        if (builder.isBuilding()){
+        if (builder.isBuilding()) {
             aTags.add(builder.build());
             builder.reset();
             currentBuilder = paragraphBuilder;
