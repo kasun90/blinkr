@@ -1,16 +1,17 @@
 package com.blink.atag;
 
 import com.blink.atag.tags.*;
+import com.blink.atag.tags.List;
 import com.blink.atag.tags.builders.*;
 import com.blink.core.exception.BlinkRuntimeException;
 
+import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 final class BuilderRegistry {
     private static Map<Class<? extends SimpleATag>, Class<? extends SimpleATagBuilder>> builderMap = new HashMap<>();
+    private final Map<Class<? extends SimpleATag>, SimpleATagBuilder> builderCache = new HashMap<>();
 
     static {
         builderMap.put(Code.class, CodeBuilder.class);
@@ -26,15 +27,28 @@ final class BuilderRegistry {
     }
 
     SimpleATagBuilder get(Class<? extends SimpleATag> tag) throws Exception {
+        SimpleATagBuilder simpleATagBuilder = builderCache.get(tag);
+
+        if (simpleATagBuilder != null)
+            return simpleATagBuilder;
+
         Class<? extends SimpleATagBuilder> aClass = builderMap.get(tag);
         if (aClass == null)
             throw new BlinkRuntimeException(MessageFormat.format("No builder found for this tag: {0}",
                     tag.getName()));
-        return (SimpleATagBuilder) aClass.getDeclaredConstructors()[0].newInstance();
+        SimpleATagBuilder newBuilder = createBuilderInstance(aClass);
+        builderCache.put(tag, newBuilder);
+        return newBuilder;
     }
 
-    @SafeVarargs
-    final java.util.List<SimpleATagBuilder> get(Class<? extends SimpleATag>... tags) throws Exception {
+    private SimpleATagBuilder createBuilderInstance(Class<? extends SimpleATagBuilder> builderClass) throws Exception {
+        return (SimpleATagBuilder) Arrays.stream(builderClass.getConstructors())
+                .filter(constructor1 -> constructor1.getParameterCount() == 0)
+                .findFirst().orElseThrow(() -> new BlinkRuntimeException("No valid constructor found")).newInstance();
+
+    }
+
+    final java.util.List<SimpleATagBuilder> get(java.util.List<Class<? extends SimpleATag>> tags) throws Exception {
         java.util.List<SimpleATagBuilder> builders = new ArrayList<>();
         for (Class<? extends SimpleATag> tag : tags) {
             builders.add(get(tag));
