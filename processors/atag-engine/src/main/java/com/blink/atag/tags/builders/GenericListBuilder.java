@@ -4,17 +4,21 @@ import com.blink.atag.tags.List;
 import com.blink.atag.tags.SimpleATag;
 import com.blink.atag.tags.Text;
 
-public class GenericListBuilder<T extends List> extends SimpleATagBuilder {
+public abstract  class GenericListBuilder extends SimpleATagBuilder {
 
-    private T list;
+    private List list;
     private RichTextBuilder builder;
+    private Class<? extends List> type;
 
-    public GenericListBuilder() {
+    GenericListBuilder(Class<? extends List> type) {
+        this.type = type;
         builder = new RichTextBuilder();
     }
 
-    public void initNew(T list) {
-        this.list = list;
+    @Override
+    public void initNew() throws Exception {
+        super.initNew();
+        this.list = (List) type.getDeclaredConstructors()[0].newInstance();
     }
 
     @Override
