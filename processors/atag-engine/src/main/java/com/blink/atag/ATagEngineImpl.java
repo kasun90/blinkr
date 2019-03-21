@@ -47,6 +47,7 @@ public final class ATagEngineImpl implements AtagEngine {
         }
 
         controller.conclude().ifPresent(aTags::add);
+        logger.info("Raw article process request concluded");
         article.setTags(aTags);
         return article;
     }
