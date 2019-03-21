@@ -11,6 +11,8 @@ getblinkrwebroot() {
 }
 
 cloneorpull() {
+    git fetch --all
+    git reset --hard origin/master
     git pull
     if [[ $? -ne 0 ]]; then
         git clone ${1} .
