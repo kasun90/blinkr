@@ -1,17 +1,17 @@
 package com.blink.atag;
 
 import com.blink.atag.tags.*;
-import com.blink.atag.tags.List;
 import com.blink.atag.tags.builders.*;
 import com.blink.core.exception.BlinkRuntimeException;
 
-import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 final class BuilderRegistry {
     private static Map<Class<? extends SimpleATag>, Class<? extends SimpleATagBuilder>> builderMap = new HashMap<>();
-    private final Map<Class<? extends SimpleATag>, SimpleATagBuilder> builderCache = new HashMap<>();
 
     static {
         builderMap.put(Code.class, CodeBuilder.class);
@@ -25,6 +25,8 @@ final class BuilderRegistry {
         builderMap.put(RichText.class, RichTextBuilder.class);
         builderMap.put(Terminal.class, TerminalBuilder.class);
     }
+
+    private final Map<Class<? extends SimpleATag>, SimpleATagBuilder> builderCache = new HashMap<>();
 
     SimpleATagBuilder get(Class<? extends SimpleATag> tag) throws Exception {
         SimpleATagBuilder simpleATagBuilder = builderCache.get(tag);

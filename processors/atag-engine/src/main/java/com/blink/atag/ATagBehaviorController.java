@@ -1,5 +1,6 @@
 package com.blink.atag;
 
+import com.blink.atag.behaviors.GeneralBehavior;
 import com.blink.atag.tags.Paragraph;
 import com.blink.atag.tags.SimpleATag;
 import com.blink.atag.tags.builders.SimpleATagBuilder;
@@ -19,9 +20,10 @@ final class ATagBehaviorController implements BehaviorController, BuilderDelegat
     private BehaviorConfiguration configuration;
     private final Map<Class<? extends Behavior>, Behavior> behaviorCache = new HashMap<>();
 
-    public ATagBehaviorController(BuilderRegistry builderRegistry, BehaviorConfiguration configuration) throws Exception {
+    ATagBehaviorController(BuilderRegistry builderRegistry, BehaviorConfiguration configuration) throws Exception {
         this.builderRegistry = builderRegistry;
         this.configuration = configuration;
+        configuration.initialize();
         restoreDefaultActiveBuilder();
     }
 
@@ -38,7 +40,7 @@ final class ATagBehaviorController implements BehaviorController, BuilderDelegat
             behavior = createBehavior(behaviorRegistryEntry.getBehaviorClass());
             associatedTags = behaviorRegistryEntry.getAssociatedTags();
         } else
-            behavior = createBehavior(BehaviorConfiguration.GeneralBehavior.class);
+            behavior = createBehavior(GeneralBehavior.class);
 
         if (behavior instanceof BehaviorModifier) {
             BehaviorModifier behaviorModifier = (BehaviorModifier) behavior;
@@ -58,8 +60,6 @@ final class ATagBehaviorController implements BehaviorController, BuilderDelegat
         }
 
         Constructor<?> constructor;
-
-        behaviorClass.newInstance()
 
         for (Constructor<?> behaviorClassConstructor : behaviorClass.getConstructors()) {
             if (behaviorClassConstructor.getParameterCount() == 0) {

@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public abstract class BehaviorModifier implements Behavior {
     protected List<SimpleATagBuilder> builders;
-    BuilderDelegate builderDelegate;
-    SimpleATag currentOutput;
+    protected BuilderDelegate builderDelegate;
+    protected SimpleATag currentOutput;
 
     void setBuilders(List<SimpleATagBuilder> builders) {
         this.builders = builders;
@@ -22,7 +22,7 @@ public abstract class BehaviorModifier implements Behavior {
         this.builderDelegate = builderDelegate;
     }
 
-    void checkSingleBuilderPresence(Class<? extends Behavior> behaviorClass) {
+    protected void checkSingleBuilderPresence(Class<? extends Behavior> behaviorClass) {
         if (builders.isEmpty() || builders.size() > 1)
             throw new BlinkRuntimeException(MessageFormat.format("{0} only accepts single builder",
                     behaviorClass.getName()));

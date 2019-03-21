@@ -1,6 +1,6 @@
 package com.blink.atag;
 
-import com.blink.atag.tags.builders.*;
+import com.blink.core.exception.BlinkRuntimeException;
 import com.blink.core.log.Logger;
 import com.blink.core.service.Context;
 import com.blink.shared.article.ATag;
@@ -34,13 +34,16 @@ public final class ATagEngineImpl implements AtagEngine {
         ));
 
         try (BufferedReader br = new BufferedReader(new StringReader(raw))) {
-            String line;
+            br.lines().forEach(line -> {
+                try {
+                    Behavior behavior = controller.getBehavior(line);
+                    behavior.action(line);
+                    behavior.output().ifPresent(aTags::add);
+                } catch (Exception e) {
+                    throw new BlinkRuntimeException(e);
+                }
 
-            while ((line = br.readLine()) != null) {
-                Behavior behavior = controller.getBehavior(line);
-                behavior.action(line);
-                behavior.output().ifPresent(aTags::add);
-            }
+            });
         }
 
         controller.conclude().ifPresent(aTags::add);

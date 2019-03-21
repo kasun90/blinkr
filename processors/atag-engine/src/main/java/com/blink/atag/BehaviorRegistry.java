@@ -31,15 +31,15 @@ final class BehaviorRegistry {
             this.associatedTags = Arrays.asList(tags);
         }
 
-        public Rule getRule() {
+        Rule getRule() {
             return rule;
         }
 
-        public Class<? extends Behavior> getBehaviorClass() {
+        Class<? extends Behavior> getBehaviorClass() {
             return behaviorClass;
         }
 
-        public List<Class<? extends SimpleATag>> getAssociatedTags() {
+        List<Class<? extends SimpleATag>> getAssociatedTags() {
             return associatedTags;
         }
     }
