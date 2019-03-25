@@ -78,8 +78,7 @@ final class ATagBehaviorController implements BehaviorController, BuilderDelegat
     @Override
     public Optional<SimpleATag> conclude() throws Exception {
         Behavior behavior = getBehavior(BehaviorConfiguration.BREAK_LINE);
-        behavior.action(BehaviorConfiguration.BREAK_LINE);
-        return behavior.output();
+        return behavior.action(BehaviorConfiguration.BREAK_LINE).output();
     }
 
     @Override

@@ -37,8 +37,7 @@ public final class ATagEngineImpl implements AtagEngine {
             br.lines().forEach(line -> {
                 try {
                     Behavior behavior = controller.getBehavior(line);
-                    behavior.action(line);
-                    behavior.output().ifPresent(aTags::add);
+                    behavior.action(line).output().ifPresent(aTags::add);
                 } catch (Exception e) {
                     throw new BlinkRuntimeException(e);
                 }
