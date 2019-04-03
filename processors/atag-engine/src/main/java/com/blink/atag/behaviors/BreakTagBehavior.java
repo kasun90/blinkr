@@ -1,11 +1,12 @@
 package com.blink.atag.behaviors;
 
+import com.blink.atag.Behavior;
 import com.blink.atag.BehaviorModifier;
 import com.blink.atag.tags.builders.SimpleATagBuilder;
 
 public class BreakTagBehavior extends BehaviorModifier {
     @Override
-    public void action(final String line) {
+    public Behavior action(final String line) {
         for (SimpleATagBuilder builder : builders) {
             if (builder.isBuilding()) {
                 currentOutput = builder.build();
@@ -13,5 +14,6 @@ public class BreakTagBehavior extends BehaviorModifier {
                 break;
             }
         }
+        return this;
     }
 }
