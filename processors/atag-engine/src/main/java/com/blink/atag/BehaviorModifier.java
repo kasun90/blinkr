@@ -23,7 +23,10 @@ public abstract class BehaviorModifier implements Behavior {
     }
 
     protected void checkSingleBuilderPresence(Class<? extends Behavior> behaviorClass) {
-        if (builders.size() != 1)
+        if (builders == null)
+            throw new BlinkRuntimeException(MessageFormat.format("{0} should have an builder associated",
+                    behaviorClass.getName()));
+        else if (builders.size() != 1)
             throw new BlinkRuntimeException(MessageFormat.format("{0} only accepts single builder",
                     behaviorClass.getName()));
     }
