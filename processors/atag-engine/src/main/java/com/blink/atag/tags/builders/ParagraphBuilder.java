@@ -77,6 +77,9 @@ public class ParagraphBuilder extends SimpleATagBuilder {
 
     @Override
     public void reset() {
+        expectLink = false;
+        strongText = false;
+        currentLink = null;
         paragraph = new Paragraph();
         builder.setLength(0);
     }
